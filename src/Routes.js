@@ -14,7 +14,8 @@ import {
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
-  NotFound as NotFoundView
+  NotFound as NotFoundView,
+  Category as CategoryView,
 } from './views';
 
 const Routes = () => {
@@ -24,6 +25,12 @@ const Routes = () => {
         exact
         from="/"
         to="/dashboard"
+      />
+      <RouteWithLayout
+        component={CategoryView}
+        exact
+        layout={MainLayout}
+        path="/category"
       />
       <RouteWithLayout
         component={DashboardView}
