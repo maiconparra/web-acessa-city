@@ -12,6 +12,9 @@ import {
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { login, logout } from '../../utils/auth';
+
+import firebase from "firebase/app";
 
 import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
@@ -170,6 +173,24 @@ const SignIn = props => {
     }));
   };
 
+  const handleGoogleSignin = event => {
+    event.preventDefault();
+    
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+    firebase.auth().signInWithPopup(googleAuthProvider)
+      .then((result) => {                
+        login('token')
+        history.push("/");
+      }).catch((error) => {
+        console.log(error)
+      })     
+  }
+
+  const logout = event => {
+    event.preventDefault();
+    firebase.auth().signOut();
+  }
   const handleSignIn = event => {
     event.preventDefault();
     history.push('/');
@@ -180,6 +201,7 @@ const SignIn = props => {
 
   return (
     <div className={classes.root}>
+
       <Grid
         className={classes.grid}
         container
@@ -262,12 +284,17 @@ const SignIn = props => {
                   </Grid>
                   <Grid item>
                     <Button
-                      onClick={handleSignIn}
+                      onClick={handleGoogleSignin}
                       size="large"
                       variant="contained"
                     >
                       <GoogleIcon className={classes.socialIcon} />
                       Login with Google
+                    </Button>
+                    <Button
+                      onClick={logout}
+                    >
+                      Sair
                     </Button>
                   </Grid>
                 </Grid>
