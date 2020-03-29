@@ -26,13 +26,15 @@ class Profile extends React.Component {
   }
 
   componentDidMount() {
+    const comp = this;
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         console.log(user)
-        this.setState(function(state, props) {
+        comp.setState(function(state, props) {
           return {
               user: {
-                // name: user.displayName
+                name: user.displayName,
+                avatar: user.photoURL
               }
           }
       })        
