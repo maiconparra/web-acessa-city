@@ -8,26 +8,40 @@ import firebase from 'firebase/app'
 import { useState } from 'react';
 
 class Profile extends React.Component {
+
+  state = {
+    user: {
+      name: null,
+      avatar: null,
+      bio: null
+    }
+  }
   
   constructor(props) {
     super(props);
-
-    this.state = {
-      user: {
-        name: firebase.auth() ? '' : firebase.auth().currentUser.name,
-        avatar: '/images/avatars/avatar_11.png',
-        bio: 'Brain Director'
-      }
-    }
   }  
 
+  componentWillMount() {
+
+  }
+
   componentDidMount() {
-    // console.log(firebase.auth().;
-    this.setState(function(state, props) {
-      return {
-          user: {name: firebase.auth().currentUser}
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log(user)
+        this.setState(function(state, props) {
+          return {
+              user: {
+                // name: user.displayName
+              }
+          }
+      })        
+      } else {
+        // No user is signed in.
       }
-  })
+    });
+    console.log('--------');
+    console.log(firebase.auth());
   }
 
   render() {

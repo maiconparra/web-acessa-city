@@ -181,7 +181,7 @@ const SignIn = props => {
     firebase.auth().signInWithPopup(googleAuthProvider)
       .then((result) => {                
         login('token')
-        history.push("/");
+        history.push('/');
       }).catch((error) => {
         console.log(error)
       })     
