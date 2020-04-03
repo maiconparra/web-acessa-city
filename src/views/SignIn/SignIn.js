@@ -188,6 +188,13 @@ const SignIn = props => {
   }
 
   const logout = event => {
+
+    firebase
+              .auth()
+              .signInWithEmailAndPassword(formState.values.email, formState.values.password)
+              .then((user) => {
+                history.push(`/${user.credential.providerId}`)
+              })
     event.preventDefault();
     firebase.auth().signOut();
   }

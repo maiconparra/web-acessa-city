@@ -16,6 +16,7 @@ import {
   SignIn as SignInView,
   NotFound as NotFoundView,
   Category as CategoryView,
+  CityHallCreate as CityHallCreateView
 } from './views';
 
 const Routes = () => {
@@ -32,6 +33,12 @@ const Routes = () => {
         layout={MainLayout}
         path="/category"
       />
+      <RouteWithLayout
+        component={CityHallCreateView}
+        exact
+        layout={MainLayout}
+        path="/cityhall-create"
+      />      
       <RouteWithLayout
         component={DashboardView}
         exact

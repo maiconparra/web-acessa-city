@@ -1,9 +1,10 @@
 import axios from "axios";
 import { getToken } from './auth';
+import enviroment from '../enviroments/enviroment-dev';
 
 const api = axios.create({
-  baseURL: "https://localhost:5001/api/v1/",
-  responseType: "json",
+  baseURL: enviroment.functions.localApi,
+  responseType: 'json',
 });
 
 api.interceptors.request.use(async config => {
