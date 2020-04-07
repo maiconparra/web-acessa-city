@@ -13,6 +13,10 @@ import {
   TextField
 } from '@material-ui/core';
 
+// import CityhallService from '../../../api/cityhall/cityhall-service';
+
+import api from '../../../utils/API';
+
 const useStyles = makeStyles(() => ({
   root: {}
 }));
@@ -23,12 +27,13 @@ const CityHallCreate = props => {
   const classes = useStyles();
 
   const [values, setValues] = useState({
-    firstName: 'Shen',
-    lastName: 'Zhi',
-    email: 'shen.zhi@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
+    name: '',
+    cnpj: '',
+    address: '',
+    neighbornhood: '',
+    zipCode: '',
+    state: '',
+    city: ''
   });
 
   const handleChange = event => {
@@ -53,6 +58,20 @@ const CityHallCreate = props => {
     }
   ];
 
+  const city =[
+    {
+      value: 'campinas',
+      label: 'Campinas'
+    }
+  ]
+
+  async function onRegisterCityhall(event){
+    event.preventDefault();
+
+    return await api.post('/Cityhall', values);
+
+  }
+
   return (
     <Card
       {...rest}
@@ -61,6 +80,7 @@ const CityHallCreate = props => {
       <form
         autoComplete="off"
         noValidate
+        onChange={onRegisterCityhall}
       >
         <CardHeader
           subheader="The information can be edited"
@@ -79,13 +99,13 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                helperText="Insira o nome da prefeitura"
+                label="Nome da Prefeitura"
                 margin="dense"
-                name="firstName"
+                name="name"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.name}
                 variant="outlined"
               />
             </Grid>
@@ -96,12 +116,29 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                label="Last name"
+                label="CNPJ"
                 margin="dense"
-                name="lastName"
+                name="cnpj"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={values.cnpj}
+                variant="outlined"
+              />
+
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Address"
+                margin="dense"
+                name="address"
+                onChange={handleChange}
+                required
+                value={values.address}
                 variant="outlined"
               />
             </Grid>
@@ -112,28 +149,12 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                label="Email Address"
+                label="CEP"
                 margin="dense"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                margin="dense"
-                name="phone"
+                name="zipCode"
                 onChange={handleChange}
                 type="number"
-                value={values.phone}
+                value={values.zipCode}
                 variant="outlined"
               />
             </Grid>
@@ -172,6 +193,34 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
+                label="Select State"
+                margin="dense"
+                name="state"
+                onChange={handleChange}
+                required
+                select
+                // eslint-disable-next-line react/jsx-sort-props
+                SelectProps={{ native: true }}
+                value={values.city}
+                variant="outlined"
+              >
+                {city.map(option => (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
                 label="Country"
                 margin="dense"
                 name="country"
@@ -187,6 +236,7 @@ const CityHallCreate = props => {
         <CardActions>
           <Button
             color="primary"
+            type="submit"
             variant="contained"
           >
             Save details
