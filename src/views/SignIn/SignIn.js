@@ -14,7 +14,7 @@ import {
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { login, logout } from '../../utils/auth';
 
-import firebase from "firebase/app";
+import firebase from 'firebase/app';
 
 import { Facebook as FacebookIcon, Google as GoogleIcon } from 'icons';
 
@@ -189,18 +189,22 @@ const SignIn = props => {
 
   const logout = event => {
 
-    firebase
-              .auth()
-              .signInWithEmailAndPassword(formState.values.email, formState.values.password)
-              .then((user) => {
-                history.push(`/${user.credential.providerId}`)
-              })
+   
     event.preventDefault();
     firebase.auth().signOut();
   }
   const handleSignIn = event => {
     event.preventDefault();
-    history.push('/');
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(formState.values.email, formState.values.password)
+      .then((user) => {
+        history.push(`/${user.credential.providerId.toString()}`)
+      }).catch((error) => {
+        console.log(error.message);
+      });
+  
   };
 
   const hasError = field =>
