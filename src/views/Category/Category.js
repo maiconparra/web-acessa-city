@@ -14,7 +14,7 @@ import {
     TableHead,
     TableRow,
     Tooltip,
-    TableSortLabel
+    TextField
   } from '@material-ui/core';
 
 import API from '../../utils/API'
@@ -26,18 +26,25 @@ const useStyles = makeStyles(theme => ({
   }));
 
 class Category extends React.Component {
+
     constructor(props) {
         super(props);
 
         this.state = {
-            categories: []
+            categories: [],
+            category: {
+              name: ''
+            }
         }
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
     render() {
         const categories = this.state.categories;
         console.log(categories)
         return (
+          <div>
             <Table>
               <TableHead>
                 <TableRow>
@@ -55,9 +62,62 @@ class Category extends React.Component {
                     <TableCell>{category.name}</TableCell>
                   </TableRow>
                 ))}
-              </TableBody>
-            </Table>
+              </TableBody>              
+            </Table>                        
+            <Button
+                  // className={classes.signInButton}
+                  color="primary"
+                  disabled={false}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  onClick={() => this.handleClick()}
+            >
+              Teste
+              </Button>
+
+              <TextField
+                fullWidth
+                helperText="Digite o nome da categoria"
+                label="Nome da categoria"
+                margin="dense"
+                name="firstName"
+                onChange={this.handleChange}
+                required
+                value={this.state.category.name}
+                variant="outlined"
+              />              
+          </div>
         );
+    }
+
+    handleChange(event) {
+      this.setState({
+        category: {
+          name: event.target.value
+        }
+      })
+    }
+
+    handleClick() {
+
+    API.post('/category', this.state.category)
+      .then((result) => {
+        console.log(result)
+        this.refreshScreen();
+      })
+    }
+
+    async refreshScreen() {
+      let categories = await API.get('/category');
+      categories = categories.data;
+      //console.log(categories);
+      this.setState(function(state, props) {
+          return {
+              categories
+          }
+      })      
     }
 
     async componentDidMount() {

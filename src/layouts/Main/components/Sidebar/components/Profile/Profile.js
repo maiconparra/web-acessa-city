@@ -25,26 +25,26 @@ class Profile extends React.Component {
 
   }
 
-  componentDidMount() {
-    const comp = this;
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        console.log(user)
-        comp.setState(function(state, props) {
-          return {
-              user: {
-                name: user.displayName,
-                avatar: user.photoURL
-              }
-          }
-      })        
-      } else {
-        // No user is signed in.
-      }
-    });
-    console.log('--------');
-    console.log(firebase.auth());
-  }
+  // componentDidMount() {
+    // const comp = this;
+    // firebase.auth().onAuthStateChanged(function(user) {
+    //   if (user) {
+    //     console.log(user)
+    //     comp.setState(function(state, props) {
+    //       return {
+    //           user: {
+    //             name: user.displayName,
+    //             avatar: user.photoURL
+    //           }
+    //       }
+    //   })        
+    //   } else {
+    //     // No user is signed in.
+    //   }
+    // });
+  //   console.log('--------');
+  //   console.log(firebase.auth());
+  // }
 
   render() {
     const classes = {

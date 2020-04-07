@@ -36,6 +36,7 @@ const CityHallCreate = props => {
       ...values,
       [event.target.name]: event.target.value
     });
+    console.log(event.target.value);
   };
 
   const states = [
@@ -63,7 +64,7 @@ const CityHallCreate = props => {
         noValidate
       >
         <CardHeader
-          subheader="The information can be edited"
+          subheader="The information can be editedx"
           title="Cadastro de prefeitura"
         />
         <Divider />
@@ -77,10 +78,11 @@ const CityHallCreate = props => {
               md={6}
               xs={12}
             >
+
               <TextField
                 fullWidth
                 helperText="Please specify the first name"
-                label="First name"
+                label="Nome da prefeitura"
                 margin="dense"
                 name="firstName"
                 onChange={handleChange}

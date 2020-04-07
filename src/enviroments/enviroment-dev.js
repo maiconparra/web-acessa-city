@@ -11,7 +11,7 @@ const enviroment = {
   measurementId: 'G-VFS8ZJ3ECW'
   },
   functions: {
-    localApi: 'https://localhost:5001/AcessaCity.API/V1/'
+    localApi: 'https://localhost:5001/api/v1'
   }
 };
 

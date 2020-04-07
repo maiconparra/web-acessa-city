@@ -16,7 +16,8 @@ import {
   SignIn as SignInView,
   NotFound as NotFoundView,
   Category as CategoryView,
-  CityHallCreate as CityHallCreateView
+  CityHallCreate as CityHallCreateView,
+  MeuExemplo as MeuExemploBanana
 } from './views';
 
 const Routes = () => {
@@ -32,6 +33,12 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/category"
+      />
+      <RouteWithLayout
+        component={MeuExemploBanana}
+        exact
+        layout={MainLayout}
+        path="/meu-exemplo"
       />
       <RouteWithLayout
         component={CityHallCreateView}
