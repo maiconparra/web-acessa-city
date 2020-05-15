@@ -11,3 +11,6 @@ export { default as SignUp } from './SignUp';
 export { default as Typography } from './Typography';
 export { default as UserList } from './UserList';
 export { default as MeuExemplo } from './MeuExemplo';
+export { default as DenunciationList } from './Moderator/DenunciationList';
+export { default as CommentsList } from './Moderator/CommentsList';
+export { default as Profile } from './Moderator/Profile';

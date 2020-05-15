@@ -11,6 +11,10 @@ import ImageIcon from '@material-ui/icons/Image';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SettingsIcon from '@material-ui/icons/Settings';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import Forum from '@material-ui/icons/Forum';
+import Face from '@material-ui/icons/Face';
+import ExitToApp from '@material-ui/icons/ExitToApp';
 
 import { Profile, SidebarNav } from './components';
 
@@ -54,40 +58,45 @@ const Sidebar = props => {
       icon: <PeopleIcon />
     },
     {
-      title: 'Meu exemplo',
-      href: '/meu-exemplo',
-      icon: <PeopleIcon />
+      title: 'Denúcias de usuários',
+      href: '/denunciations',
+      icon: <RecordVoiceOverIcon />
+    },
+    {
+      title: 'Comentários',
+      href: '/reporting-comments',
+      icon: <Forum />
     },    
     {
-      title: 'Products',
-      href: '/products',
-      icon: <ShoppingBasketIcon />
+      title: 'Alterar perfil',
+      href: '/profile',
+      icon: <Face />
     },
     {
-      title: 'Authentication',
+      title: 'Sair',
       href: '/sign-in',
-      icon: <LockOpenIcon />
+      icon: <ExitToApp />
     },
-    {
-      title: 'Typography',
-      href: '/typography',
-      icon: <TextFieldsIcon />
-    },
-    {
-      title: 'Icons',
-      href: '/icons',
-      icon: <ImageIcon />
-    },
-    {
-      title: 'Account',
-      href: '/account',
-      icon: <AccountBoxIcon />
-    },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: <SettingsIcon />
-    }
+    // {
+    //   title: 'Typography',
+    //   href: '/typography',
+    //   icon: <TextFieldsIcon />
+    // },
+    // {
+    //   title: 'Icons',
+    //   href: '/icons',
+    //   icon: <ImageIcon />
+    // },
+    // {
+    //   title: 'Account',
+    //   href: '/account',
+    //   icon: <AccountBoxIcon />
+    // },
+    // {
+    //   title: 'Settings',
+    //   href: '/settings',
+    //   icon: <SettingsIcon />
+    // }
   ];
 
   return (

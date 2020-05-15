@@ -17,7 +17,11 @@ import {
   NotFound as NotFoundView,
   Category as CategoryView,
   CityHallCreate as CityHallCreateView,
-  MeuExemplo as MeuExemploBanana
+  MeuExemplo as MeuExemploBanana,
+  DenunciationList as DenunciationView,
+  CommentsList as CommentsView,
+  Profile as ProfileView
+
 } from './views';
 
 const Routes = () => {
@@ -100,6 +104,32 @@ const Routes = () => {
         layout={MinimalLayout}
         path="/sign-in"
       />
+
+        {/* Rotas do Moderador */}
+
+        <RouteWithLayout
+        component={DenunciationView}
+        exact
+        layout={MainLayout}
+        path="/denunciations"
+       />      
+
+      <RouteWithLayout
+        component={CommentsView}
+        exact
+        layout={MainLayout}
+        path="/reporting-comments"
+       />
+
+      <RouteWithLayout
+        component={ProfileView}
+        exact
+        layout={MainLayout}
+        path="/profile"
+      />
+
+       {/* FIM Rotas do Moderador */}
+
       <RouteWithLayout
         component={NotFoundView}
         exact
