@@ -19,6 +19,7 @@ import {
 import firebase from 'firebase/app'
 import API from '../../utils/API'
 import { useState } from 'react';
+import { ReportCommentaries } from '../../components';
 
 
 const MeuExemplo = props => {
@@ -79,22 +80,8 @@ const MeuExemplo = props => {
 
     return (
         <div>
-            {values.admin &&
-            <div>
-
-                <h1>ADMIN</h1>                
-                </div>
-            }
-            
-            {
-            <div>
-            <h1>{values.userId}</h1>
-            {/* prefeituras.prefeituras.map(prefeitura => (
-                <h3>{prefeitura.name}</h3>
-            )) */}
-            </div>
-            }
-        </div>
+            <ReportCommentaries open={true} reportId={'bfdbb9d4-20b9-439a-96c0-142d6944e5a2'}></ReportCommentaries>            
+        </div>        
     )
 }
 

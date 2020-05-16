@@ -47,6 +47,7 @@ import firebase from 'firebase/app'
 
 
 import API from '../../../../../utils/API';
+import { ReportCommentaries } from '../../../../../components/';
 import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
@@ -309,7 +310,7 @@ const DenunciationsTable = props => {
       ...denunciations,
       denunciations: denunciationsp2
     });
-    setComments(true);
+    setComments(true);               
   };
 
   const handleCloseComments = () => {
@@ -399,6 +400,10 @@ const DenunciationsTable = props => {
     setPage(page);
   };
 
+  const tratarClose = () => {
+    setComments(false)
+  }
+
   const handleRowsPerPageChange = event => {
     setRowsPerPage(event.target.value);
   };
@@ -408,6 +413,11 @@ const DenunciationsTable = props => {
       {...rest}
       className={clsx(classes.root, className)}
     >
+    {openComments && 
+    <ReportCommentaries open={openComments} close={tratarClose} reportId={openModalDenunciations.denunciations.id}>
+
+    </ReportCommentaries>
+    }
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
@@ -535,7 +545,7 @@ const DenunciationsTable = props => {
 
 
                 {/*Modal Cometarios*/}
-                {openComments &&
+                {false &&
 
                   <Modal
                     aria-labelledby="transition-modal-title"
