@@ -12,6 +12,7 @@ import {
 }from '@material-ui/core';
 
 import API from '../../../utils/API';
+import firebase from 'firebase/app'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -39,6 +40,22 @@ const DenunciationList = () => {
     API.post(`/report/${update.reportId}/coordinator-update`,update
     ).then(response => {
         const newCoodenador = response.data;
+        const param = {
+              userId: user.id,
+              reportStatusId: '96afa0df-8ad9-4a44-a726-70582b7bd010',
+              description: 'Aprovação de Moderador'
+        }
+        API.post(`/report/${update.reportId}/status-update`, param
+
+        ).then(responseStatus => {
+            
+          listDenunciations();
+          setMensagem('Denuncia enviada para o coodenador com sucesso!');
+          setOpenDialog(true);
+
+        }).catch(erro =>{
+
+        })
         console.log(newCoodenador)
        //setDenunciations(  [...denunciations, newDenunciation])
        }).catch(erro => {
@@ -50,21 +67,50 @@ const DenunciationList = () => {
     //Negar denuncia
     const envioDeny = (deny) => {
 
-       console.log("negação" + JSON.stringify(deny));
-      API.post(
+         deny.userId = user.id;
+         console.log("deny" + JSON.stringify(deny))
+      API.post(`/report/${deny.denunciationsId}/status-update`, deny
+
       ).then(response => {
-          const newCoodenador = response.data;
-          console.log(newCoodenador)
-         //setDenunciations(  [...denunciations, newDenunciation])
+        listDenunciations();
+        setMensagem('Denúncia negada!');
+        setOpenDialog(true);
+      
          }).catch(erro => {
           console.log(erro);
         })
     }
 
+    const [user, setUser] = useState({
+    })  
+  
+
+    function onChange(firebaseUser) {
+      if (firebaseUser) {
+        firebaseUser.getIdTokenResult().then((token) => {
+          const claims = token.claims;
+            setUser({
+                ...user,
+                id: claims.app_user_id
+            })
+            listCoodenador(claims.app_user_id);
+        })
+      } else {
+          // No user is signed in.
+      }
+  }
+  
+    React.useEffect(() => {        
+      const unsubscribe = firebase.auth().onAuthStateChanged(onChange)
+      return () => unsubscribe()
+    }, [])   
+  
+
   
     // Listar coordenadores
-    const listCoodenador = () => {
-      API.get('/user/96ff2b0a-9220-4200-9081-7ae172bb0bf4/coordinators'
+    const listCoodenador = (userId) => {
+       console.log("testttttttt"+ userId);
+      API.get(`/user/${userId}/coordinators`
       ).then(response => {
          const listCoodenadores = response.data;
          console.log("cooodenadorrr" +  JSON.stringify(listCoodenadores))
@@ -79,7 +125,7 @@ const DenunciationList = () => {
 
   // Listar os dados  na tela
   const listDenunciations = () => {
-    API.get('/report'
+    API.get('/report?status=48cf5f0f-40c9-4a79-9627-6fd22018f72c'
     ).then(response => {
        const listDenunciations2 = response.data;
        console.log(listDenunciations2);
@@ -94,7 +140,7 @@ const DenunciationList = () => {
 
  //Fitrar Denuncias
   const filter = (filtro) =>{
-    API.get(`/report?category=${filtro.category}&street=${filtro.street}&neighborhood=${filtro.neighborhood}&creationDate=${filtro.creationDate}`,
+    API.get(`/report?category=${filtro.category}&street=${filtro.street}&neighborhood=${filtro.neighborhood}&creationDate=${filtro.creationDate}&status=48cf5f0f-40c9-4a79-9627-6fd22018f72c`,
     ).then(response => {
       const filterDenunciation = response.data;
       setDenunciations(filterDenunciation);
@@ -108,11 +154,11 @@ const DenunciationList = () => {
   }
 
 
+
   // Atualizar os dados na tela
   useEffect(() => {
-    listDenunciations();
-    listCoodenador();
-  },[]);
+      listDenunciations();
+    },[]);
 
 
   return (

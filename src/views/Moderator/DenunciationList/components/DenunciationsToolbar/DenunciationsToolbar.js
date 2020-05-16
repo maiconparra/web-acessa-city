@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField, Grid, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
-
+// import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 
 // import { SearchInput } from 'components';  //chamar botão de pesquisa
 
@@ -50,8 +50,8 @@ const DenunciationsToolbar = props => {
     const filtro = {
       category: denunciationCategory,
       street: denunciationStreet,
-      neighborhood : denunciationNeighborhood,
-      creationDate : setDenunciationData,
+      neighborhood: denunciationNeighborhood,
+      creationDate: setDenunciationData,
     }
     props.filter(filtro);
     setDenunciationStreet('');
@@ -138,41 +138,18 @@ const DenunciationsToolbar = props => {
             </FormControl>
           </Grid>
 
+          {/* <Grid item xs={12} sm={2}>
+            <div
+              style={{
+                textAlign: 'right',
+                marginTop: 10
+              }}
+            >
+              <NotificationsActiveIcon />
+            </div>
+          </Grid> */}
+
         </Grid>
-
-        {/* <Grid container spacing={1}>
-
-          <Grid item xs={12} sm={5}>
-            <FormControl fullWidth>
-              <TextField placeholder="Descrição da Denúncia"
-                label="Digite a Denúncia:"
-                variant="outlined"
-                margin="dense"
-                value={descricao} 
-                onChange={e => setDescricao(e.target.value)}
-              />
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={5}>
-            <FormControl variant="outlined" margin="dense" fullWidth>
-              <InputLabel>Categoria:</InputLabel>
-              <Select native label="Categoria" value={categoria} onChange={e => setCategoria(e.target.value)}>
-                <option aria-label="None" value="" />
-                <option value={"TRABALHO"}>Trabalho</option>
-                <option value={"ESTUDO"}>Estudo</option>
-                <option value={"OUTROS"}>Outros</option>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={2}>
-            <FormControl margin="dense" fullWidth>
-              <Button onClick={submit} variant="contained" color="secondary">Adicionar</Button>
-            </FormControl>
-          </Grid>
-
-        </Grid> */}
       </div>
     </div>
   );

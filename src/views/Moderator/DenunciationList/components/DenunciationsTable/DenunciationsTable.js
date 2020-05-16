@@ -39,14 +39,15 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import DraftsIcon from '@material-ui/icons/Drafts';
 import SendIcon from '@material-ui/icons/Send';
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import ForumIcon from '@material-ui/icons/Forum';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 import { Button, TextField, Grid, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 import firebase from 'firebase/app'
 
 
-
-
+import API from '../../../../../utils/API';
+import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -229,6 +230,7 @@ const DenunciationsTable = props => {
 
     const denyDenunciations = {
       userId: deny.userId,
+      denunciationsId: openModalDenunciations.denunciations.id,
       reportStatusId: '52ccae2e-af86-4fcc-82ea-9234088dbedf',
       description: deny.message
 
@@ -241,7 +243,22 @@ const DenunciationsTable = props => {
   }
 
 
+  const [reportComments, setReportComments] = React.useState(false);
+  // Listar Cometarios
+  const listComments = () => {
+    API.get(`/report-commentary/report/0efd3d3e-2ff6-40e3-a7f0-6100fe403701`,
+    ).then(response => {
+       const listComments2 = response.data;
+             console.log("ENTRE.LLLLLL.." + JSON.stringify(listComments2))
+             setReportComments(listComments2);
+       }).catch(erro => {
+        console.log(erro);
+      })
+    }
+
+
   React.useEffect(() => {
+    listComments();
     // listen for auth state changes
     const unsubscribe = firebase.auth().onAuthStateChanged(getFirebase)
     console.log(3)
@@ -278,6 +295,26 @@ const DenunciationsTable = props => {
   };
 
   //FIM Modal de envio Coordenador
+
+
+  //modal comentario
+
+  const [openComments, setComments] = React.useState(false);
+
+
+  console.log(JSON.stringify(openComments))
+
+  const handleOpenComments = (denunciationsp2) => {
+    setOpenModalDenunciations({
+      ...denunciations,
+      denunciations: denunciationsp2
+    });
+    setComments(true);
+  };
+
+  const handleCloseComments = () => {
+    setComments(false);
+  };
 
   ////Modal de Denuncias 3 pontinho
   const [openDenunciation, setOpenDenunciation] = React.useState(false);
@@ -318,6 +355,54 @@ const DenunciationsTable = props => {
   };
   //FIM Abrir opções dos 3 pontinho
 
+
+  
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
+  // const handleSelectAll = event => {
+  //   const { users } = props;
+
+  //   let selectedUsers;
+
+  //   if (event.target.checked) {
+   
+  //   } else {
+  //     selectedUsers = [];
+  //   }
+
+  //   setSelectedUsers(selectedUsers);
+  // };
+
+  const handleSelectOne = (event, id) => {
+    const selectedIndex = selectedUsers.indexOf(id);
+    let newSelectedUsers = [];
+
+    if (selectedIndex === -1) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
+    } else if (selectedIndex === 0) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
+    } else if (selectedIndex === selectedUsers.length - 1) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelectedUsers = newSelectedUsers.concat(
+        selectedUsers.slice(0, selectedIndex),
+        selectedUsers.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedUsers(newSelectedUsers);
+  };
+
+  const handlePageChange = (event, page) => {
+    setPage(page);
+  };
+
+  const handleRowsPerPageChange = event => {
+    setRowsPerPage(event.target.value);
+  };
+
   return (
     <Card
       {...rest}
@@ -334,6 +419,7 @@ const DenunciationsTable = props => {
                   <TableCell>Bairro</TableCell>
                   <TableCell>Categoria</TableCell>
                   <TableCell>Datas</TableCell>
+                  <TableCell>Cometários</TableCell>
 
                 </TableRow>
               </TableHead>
@@ -346,6 +432,9 @@ const DenunciationsTable = props => {
                       <TableCell>{denunciation.neighborhood}</TableCell>
                       <TableCell>{denunciation.category.name}</TableCell>
                       <TableCell>{denunciation.creationDate}</TableCell>
+                      <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
+                        textAlign: 'center',
+                      }}><ForumIcon /></div></TableCell>
                     </TableRow>
 
                   )
@@ -444,6 +533,113 @@ const DenunciationsTable = props => {
                   // {/* FIM Abri Modal envio coordenador  */}
                 }
 
+
+                {/*Modal Cometarios*/}
+                {openComments &&
+
+                  <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    className={classes.modal}
+                    open={openComments}
+                    onClose={handleCloseComments}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                      timeout: 500,
+                    }}
+
+                  >
+                    {/* Modal da Dereita */}
+                    <Fade in={openComments}>
+
+                      <Card
+                        {...rest}
+                        className={clsx(classes.root, className)}
+                      >
+                        <CardContent className={classes.content}>
+                          <PerfectScrollbar>
+                            <div className={classes.inner}>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell padding="checkbox">
+                                      {/* <Checkbox
+                                        checked={selectedUsers.length === users.length}
+                                        color="primary"
+                                        indeterminate={
+                                          selectedUsers.length > 0 &&
+                                          selectedUsers.length < users.length
+                                        }
+                                        onChange={handleSelectAll}
+                                      /> */}
+                                    </TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Email</TableCell>
+                                    <TableCell>Location</TableCell>
+                                    <TableCell>Phone</TableCell>
+                                    <TableCell>Registration date</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {/* {users.slice(0, rowsPerPage).map(user => ( */}
+                                    <TableRow
+                                      // className={classes.tableRow}
+                                      // hover
+                                      // key={user.id}
+                                      // selected={selectedUsers.indexOf(user.id) !== -1}
+                                    >
+                                      <TableCell padding="checkbox">
+                                        <Checkbox
+                                          // checked={selectedUsers.indexOf(user.id) !== -1}
+                                          // color="primary"
+                                          // onChange={event => handleSelectOne(event, user.id)}
+                                          // value="true"
+                                        />
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className={classes.nameContainer}>
+                                          <Avatar
+                                            // className={classes.avatar}
+                                            // src={user.avatarUrl}
+                                          >
+                                            {/* {getInitials(user.name)} */}
+                                          </Avatar>
+                                          {/* <Typography variant="body1">{user.name}</Typography> */}
+                                        </div>
+                                      </TableCell>
+                                      {/* <TableCell>{user.email}</TableCell> */}
+                                      <TableCell>
+                                        {/* {user.address.city}, {user.address.state},{' '}
+                                        {user.address.country} */}
+                                      </TableCell>
+                                      {/* <TableCell>{user.phone}</TableCell> */}
+                                      <TableCell>
+                                        {/* {moment(user.createdAt).format('DD/MM/YYYY')} */}
+                                      </TableCell>
+                                    </TableRow>
+                                  // ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </PerfectScrollbar>
+                        </CardContent>
+                        <CardActions className={classes.actions}>
+                          <TablePagination
+                            component="div"
+                            // count={users.length}
+                            // onChangePage={handlePageChange}
+                            // onChangeRowsPerPage={handleRowsPerPageChange}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            rowsPerPageOptions={[5, 10, 25]}
+                          />
+                        </CardActions>
+                      </Card>
+                    </Fade>
+                  </Modal>
+                  // {/* FIM Abri Modal envio coordenador  */}
+                }
 
 
 
