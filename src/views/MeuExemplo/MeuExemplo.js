@@ -25,20 +25,23 @@ const MeuExemplo = props => {
 
     function onChange(user) {
         console.log(1)
+        console.log(user)
         let isAdmin = false
+        let teste = ''
         if (user) {
             user.getIdTokenResult().then((result) => {
+                // console.log(result);
                 isAdmin = result.claims.admin
+                teste = result.claims.app_user_id
                 setValues({
                     ...values,
-                    admin: isAdmin
+                    admin: isAdmin,
+                    userId: teste
                 })
             })
         } else {
             // No user is signed in.
         }       
-
-        console.log(isAdmin)
     }    
 
     React.useEffect(() => {        
@@ -56,6 +59,7 @@ const MeuExemplo = props => {
 
     const [values, setValues] = useState({
         admin: false,
+        userId: ''
     });
 
     const [prefeituras, setPrefeituras] = useState({
@@ -76,13 +80,19 @@ const MeuExemplo = props => {
     return (
         <div>
             {values.admin &&
-                <h1>ADMIN</h1>
+            <div>
+
+                <h1>ADMIN</h1>                
+                </div>
             }
             
             {
-            prefeituras.prefeituras.map(prefeitura => (
+            <div>
+            <h1>{values.userId}</h1>
+            {/* prefeituras.prefeituras.map(prefeitura => (
                 <h3>{prefeitura.name}</h3>
-            ))
+            )) */}
+            </div>
             }
         </div>
     )

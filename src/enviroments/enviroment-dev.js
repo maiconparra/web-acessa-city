@@ -11,7 +11,7 @@ const enviroment = {
     measurementId: 'G-VFS8ZJ3ECW'
   },
   functions: {
-    localApi: 'https://localhost:5001/api/v1'
+    localApi: 'http://localhost:5000/api/v1'
   }
 };
 

@@ -14,7 +14,6 @@ import Routes from './Routes';
 import firebase from "firebase/app";
 import "firebase/auth";
 import { login, logout } from 'utils/auth';
-import API from 'utils/API';
 
 import enviroment from 'enviroments/enviroment-dev';
 
@@ -29,7 +28,10 @@ Chart.helpers.extend(Chart.elements.Rectangle.prototype, {
 firebase.initializeApp(enviroment.firebase);
 firebase.auth().onIdTokenChanged(function(user) {
   if (user) {
-    API.post('/auth')
+    // API.post('/auth').then((result) => {
+    //   CurrentUser.setUser(result.data);
+    //   console.log("UserFromAPI", CurrentUser.getUser());
+    // })
   }
 });
 firebase.auth().onAuthStateChanged(function(user) {

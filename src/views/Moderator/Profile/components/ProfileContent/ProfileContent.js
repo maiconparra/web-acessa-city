@@ -12,6 +12,7 @@ import {
   TextField,
   Avatar
 } from '@material-ui/core';
+import firebase from 'firebase/app'
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -79,6 +80,33 @@ const ProfileContent = props => {
    fileUpload.current.click();
   }
 
+  const [user, setUser] = useState({
+  })  
+
+
+  function onChange(firebaseUser) {
+    if (firebaseUser) {
+      firebaseUser.getIdTokenResult().then((token) => {
+        const claims = token.claims;
+          setUser({
+              ...user,
+              name: claims.name,
+              avatar: claims.picture,
+              bio: claims.email,
+              admin: claims.admin
+          })
+          handleNameChange(claims.name);
+      })
+    } else {
+        // No user is signed in.
+    }
+}
+
+  React.useEffect(() => {        
+    const unsubscribe = firebase.auth().onAuthStateChanged(onChange)
+    return () => unsubscribe()
+  }, [])   
+
 
 
 
@@ -115,7 +143,7 @@ const ProfileContent = props => {
 
               }}
           type="image"
-          src="https://lh3.googleusercontent.com/a-/AOh14Gi5NkQbgvp5KJ6Ij38_AsKtNRX7-tG3d8x_mAEl"
+          src={user.avatar}
           onClick={showFileUpload}
         />
       </div>

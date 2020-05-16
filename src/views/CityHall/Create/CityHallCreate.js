@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import { useForm, ErrorMessage } from 'react-hook-form'
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -10,7 +11,7 @@ import {
   Divider,
   Grid,
   Button,
-  TextField
+  TextField,
 } from '@material-ui/core';
 
 // import CityhallService from '../../../api/cityhall/cityhall-service';
@@ -26,15 +27,65 @@ const CityHallCreate = props => {
 
   const classes = useStyles();
 
+  const [states, setStates] = useState({
+    states: []
+  })
+
+  const [cities, setCities] = useState({
+    cities: [],
+  })
+
   const [values, setValues] = useState({
     name: '',
     cnpj: '',
     address: '',
     neighbornhood: '',
     zipCode: '',
-    state: '',
-    city: ''
+    stateId: '',
+    cityId: ''
   });
+
+  const changeState = (stateId) => {
+    setValues({
+      ...values,
+      stateId: stateId
+    })
+
+    api.get('/state/'+stateId+'/cities').then((result) => {
+      setCities({
+        cities: result.data
+      });
+      if (result.data.length) {
+        setValues({
+          ...values,
+          stateId: stateId,
+          cityId: result.data[0].id
+        })
+      }
+    }) 
+    
+    console.log(values);
+  }
+
+  React.useEffect(() => {
+    api.get('/state').then((result) => {
+      console.log(result);
+      setStates({
+        states: result.data
+      });
+      if (result.data.length) {
+        setValues({
+          ...values,
+          stateId: result.data[0].id
+        })
+      }      
+    })
+  }, [])  
+
+  const handleStateChange = event => {
+    const stateId = event.target.value;
+    changeState(stateId);
+  }
 
   const handleChange = event => {
     setValues({
@@ -44,28 +95,6 @@ const CityHallCreate = props => {
     console.log(event.target.value);
   };
 
-  const states = [
-    {
-      value: 'alabama',
-      label: 'Alabama'
-    },
-    {
-      value: 'new-york',
-      label: 'New York'
-    },
-    {
-      value: 'san-francisco',
-      label: 'San Francisco'
-    }
-  ];
-
-  const city =[
-    {
-      value: 'campinas',
-      label: 'Campinas'
-    }
-  ]
-
   async function onRegisterCityhall(event){
     event.preventDefault();
 
@@ -73,6 +102,29 @@ const CityHallCreate = props => {
 
   }
 
+  // const { register, handleSubmit, watch, errors } = useForm()
+  // const onSubmit = data => { console.log(data) }
+
+  const { register, handleSubmit, watch, errors } = useForm(
+    {validateCriteriaMode: "all"}
+  )
+  const onSubmit = data => console.log(values)
+
+  const handleErrors = (fieldName) =>
+  <ErrorMessage errors={errors} name={fieldName}>
+  {({ messages }) =>
+    messages &&
+    Object.entries(messages).map(([type, message]) => (
+      linhaErro(message)
+    ))
+  }
+</ErrorMessage>   
+
+  const linhaErro = (message) => 
+    <p>{message}</p>
+
+
+  
   return (
     <Card
       {...rest}
@@ -81,10 +133,10 @@ const CityHallCreate = props => {
       <form
         autoComplete="off"
         noValidate
-        onChange={onRegisterCityhall}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <CardHeader
-          subheader="The information can be editedx"
+          subheader="Cadastrar uma nova prefeitura"
           title="Cadastro de prefeitura"
         />
         <Divider />
@@ -101,15 +153,23 @@ const CityHallCreate = props => {
 
               <TextField
                 fullWidth
-                helperText="Insira o nome da prefeitura"
                 label="Nome da Prefeitura"
                 margin="dense"
                 name="name"
                 onChange={handleChange}
                 required
-                value={values.name}
+                inputRef={register({ 
+                  required: true, 
+                  maxLength: {
+                    value: 80,
+                    message: "Tamanho máximo de 80 caracteres"
+                  }
+                })} 
+                defaultValue={values.name}
                 variant="outlined"
+                error={errors.name}
               />
+              {handleErrors('name')}
             </Grid>
             <Grid
               item
@@ -123,9 +183,12 @@ const CityHallCreate = props => {
                 name="cnpj"
                 onChange={handleChange}
                 required
-                value={values.cnpj}
+                inputRef={register({ required: true, maxLength: 20 })}                
+                defaultValue={values.cnpj}
                 variant="outlined"
+                error={errors.cnpj}
               />
+              {handleErrors('cnpj')}
 
             </Grid>
             <Grid
@@ -135,14 +198,23 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                label="Address"
+                label="Endereço"
                 margin="dense"
                 name="address"
                 onChange={handleChange}
                 required
-                value={values.address}
+                inputRef={register({ 
+                  required: true, 
+                  maxLength: {
+                    value: 80,
+                    message: "Tamanho máximo de 80 caracteres"
+                  }
+                })}                 
+                defaultValue={values.address}
                 variant="outlined"
+                error={errors.address}
               />
+              {handleErrors('address')}
             </Grid>
             <Grid
               item
@@ -155,10 +227,18 @@ const CityHallCreate = props => {
                 margin="dense"
                 name="zipCode"
                 onChange={handleChange}
-                type="number"
-                value={values.zipCode}
+                inputRef={register({ 
+                  required: true, 
+                  maxLength: {
+                    value: 80,
+                    message: "Tamanho máximo de 80 caracteres"
+                  }
+                })}                 
+                defaultValue={values.zipCode}
                 variant="outlined"
+                error={errors.zipCode}
               />
+              {handleErrors('zipCode')}
             </Grid>
             <Grid
               item
@@ -167,26 +247,31 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                label="Select State"
+                label="Estado"
                 margin="dense"
-                name="state"
-                onChange={handleChange}
+                name="stateId"
                 required
                 select
                 // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
-                value={values.state}
+                onChange={handleStateChange}
+                value={values.stateId}                
                 variant="outlined"
+                inputRef={register({ 
+                  required: true,                 
+                })}                  
+                error={errors.stateId}
               >
-                {states.map(option => (
+                {states.states.map(option => (
                   <option
-                    key={option.value}
-                    value={option.value}
+                    key={option.id}
+                    value={option.id}
                   >
-                    {option.label}
+                    {option.name}
                   </option>
                 ))}
               </TextField>
+              {handleErrors('stateId')}
             </Grid>
             <Grid
               item
@@ -195,26 +280,31 @@ const CityHallCreate = props => {
             >
               <TextField
                 fullWidth
-                label="Select State"
+                label="Escolha uma cidade"
                 margin="dense"
-                name="state"
+                name="cityId"
                 onChange={handleChange}
                 required
+                inputRef={register({ 
+                  required: true,                 
+                })}                
                 select
                 // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
-                value={values.city}
+                value={values.cityId}
                 variant="outlined"
+                error={errors.cityId}
               >
-                {city.map(option => (
+                {cities.cities.map(option => (
                   <option
-                    key={option.value}
-                    value={option.value}
+                    key={option.id}
+                    value={option.id}
                   >
-                    {option.label}
+                    {option.name}
                   </option>
                 ))}
               </TextField>
+              {handleErrors('cityId')}
             </Grid>
             <Grid
               item
@@ -228,7 +318,7 @@ const CityHallCreate = props => {
                 name="country"
                 onChange={handleChange}
                 required
-                value={values.country}
+                defaultValue={values.country}
                 variant="outlined"
               />
             </Grid>

@@ -4,129 +4,91 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import { Avatar, Typography } from '@material-ui/core';
-import firebase from 'firebase/app'
 import { useState } from 'react';
+import firebase from 'firebase/app'
 
-class Profile extends React.Component {
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minHeight: 'fit-content'
+  },
+  avatar: {
+    width: 60,
+    height: 60
+  },
+  name: {
+    marginTop: theme.spacing(1)
+  }
+}));
 
-  state = {
-    user: {
-      name: null,
-      avatar: null,
-      bio: null
+const Profile = props => {
+  const { className, ...rest } = props;
+
+  const classes = useStyles();
+
+  const [user, setUser] = useState({
+    name: '',
+    avatar: '',
+    bio: '',
+    admin: false
+  })
+
+  function onChange(firebaseUser) {
+    if (firebaseUser) {
+      firebaseUser.getIdTokenResult().then((token) => {
+        const claims = token.claims;
+          setUser({
+              ...user,
+              name: claims.name,
+              avatar: claims.picture,
+              bio: claims.email,
+              admin: claims.admin
+          })
+      })
+    } else {
+        // No user is signed in.
     }
-  }
-  
-  constructor(props) {
-    super(props);
-  }  
-
-  componentWillMount() {
-
-  }
-
-  // componentDidMount() {
-    // const comp = this;
-    // firebase.auth().onAuthStateChanged(function(user) {
-    //   if (user) {
-    //     console.log(user)
-    //     comp.setState(function(state, props) {
-    //       return {
-    //           user: {
-    //             name: user.displayName,
-    //             avatar: user.photoURL
-    //           }
-    //       }
-    //   })        
-    //   } else {
-    //     // No user is signed in.
-    //   }
-    // });
-  //   console.log('--------');
-  //   console.log(firebase.auth());
-  // }
-
-  render() {
-    const classes = {
-      root: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        minHeight: 'fit-content'
-      },
-      avatar: {
-        width: 60,
-        height: 60
-      },
-      name: {
-        marginTop: 1
-      }   
-    }
-
-    const root = {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      minHeight: 'fit-content'
-    }    
-    const { className, ...rest } = this.props;
-    return (
-      <div
-        {...rest}
-        style={root}
-      >
-        <Avatar
-          alt="Person"
-          style={classes.avatar}
-          component={RouterLink}
-          src={this.state.user.avatar}
-          to="/settings"
-        />
-        <Typography
-          style={classes.name}
-          variant="h4"
-        >
-          {this.state.user.name}
-        </Typography>
-        <Typography variant="body2">{this.state.user.bio}</Typography>
-      </div>
-    );    
-  }
 }
 
-// const Profile = props => {
-//   const { className, ...rest } = props;
+  React.useEffect(() => {        
+    const unsubscribe = firebase.auth().onAuthStateChanged(onChange)
+    return () => unsubscribe()
+  }, [])  
 
-//   const classes = useStyles();
-
-//   const user = {
-//     name: firebase.auth() ? '' : firebase.auth().currentUser.name,
-//     avatar: '/images/avatars/avatar_11.png',
-//     bio: 'Brain Director'
-//   };
-
-//   return (
-//     <div
-//       {...rest}
-//       className={clsx(classes.root, className)}
-//     >
-//       <Avatar
-//         alt="Person"
-//         className={classes.avatar}
-//         component={RouterLink}
-//         src={user.avatar}
-//         to="/settings"
-//       />
-//       <Typography
-//         className={classes.name}
-//         variant="h4"
-//       >
-//         {user.name}
-//       </Typography>
-//       <Typography variant="body2">{user.bio}</Typography>
-//     </div>
-//   );
-// };
+  return (
+    <div
+      {...rest}
+      className={clsx(classes.root, className)}
+    >
+      <Avatar
+        alt={user.name}
+        className={classes.avatar}
+        component={RouterLink}
+        src={user.avatar}
+        to="/settings"
+      />
+      <Typography
+        className={classes.name}
+        variant="h4"
+      >
+        {user.name}
+      </Typography>
+      <Typography variant="body2">
+        {user.bio}
+      </Typography>
+      <Typography variant="body2">
+        {
+          user.admin &&
+          <button>
+            Coisas de admin
+          </button>
+        }
+      </Typography>      
+    </div>
+  );
+};
 
 Profile.propTypes = {
   className: PropTypes.string
