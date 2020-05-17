@@ -20,7 +20,8 @@ import {
   MeuExemplo as MeuExemploBanana,
   DenunciationList as DenunciationView,
   CommentsList as CommentsView,
-  Profile as ProfileView
+  Profile as ProfileView,
+  CreateUser as CreateUserView
 
 } from './views';
 
@@ -31,6 +32,12 @@ const Routes = () => {
         exact
         from="/"
         to="/dashboard"
+      />
+      <RouteWithLayout
+        component={CreateUserView}
+        exact
+        layout={MainLayout}
+        path="/novo-usuario"
       />
       <RouteWithLayout
         component={CategoryView}

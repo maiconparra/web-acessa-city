@@ -188,11 +188,10 @@ const SignIn = props => {
   }
 
   const logout = event => {
-
-   
     event.preventDefault();
     firebase.auth().signOut();
   }
+  
   const handleSignIn = event => {
     event.preventDefault();
 
@@ -200,7 +199,8 @@ const SignIn = props => {
       .auth()
       .signInWithEmailAndPassword(formState.values.email, formState.values.password)
       .then((user) => {
-        history.push(`/${user.credential.providerId.toString()}`)
+        login('token')
+        history.push('/');
       }).catch((error) => {
         console.log(error.message);
       });
@@ -269,13 +269,13 @@ const SignIn = props => {
                   className={classes.title}
                   variant="h2"
                 >
-                  Sign in
+                  Fazer login
                 </Typography>
                 <Typography
                   color="textSecondary"
                   gutterBottom
                 >
-                  Sign in with social media
+                  Bem-vindo de volta.
                 </Typography>
                 <Grid
                   className={classes.socialButtons}
@@ -290,7 +290,7 @@ const SignIn = props => {
                       variant="contained"
                     >
                       <FacebookIcon className={classes.socialIcon} />
-                      Login with Facebook
+                      Login com Facebook
                     </Button>
                   </Grid>
                   <Grid item>
@@ -300,12 +300,7 @@ const SignIn = props => {
                       variant="contained"
                     >
                       <GoogleIcon className={classes.socialIcon} />
-                      Login with Google
-                    </Button>
-                    <Button
-                      onClick={logout}
-                    >
-                      Sair
+                      Login com Google
                     </Button>
                   </Grid>
                 </Grid>
@@ -315,7 +310,7 @@ const SignIn = props => {
                   color="textSecondary"
                   variant="body1"
                 >
-                  or login with email address
+                  Administração? Faça login com suas credenciais.
                 </Typography>
                 <TextField
                   className={classes.textField}
@@ -324,7 +319,7 @@ const SignIn = props => {
                   helperText={
                     hasError('email') ? formState.errors.email[0] : null
                   }
-                  label="Email address"
+                  label="Endereço de e-mail"
                   name="email"
                   onChange={handleChange}
                   type="text"
@@ -338,7 +333,7 @@ const SignIn = props => {
                   helperText={
                     hasError('password') ? formState.errors.password[0] : null
                   }
-                  label="Password"
+                  label="Senha"
                   name="password"
                   onChange={handleChange}
                   type="password"
@@ -354,7 +349,7 @@ const SignIn = props => {
                   type="submit"
                   variant="contained"
                 >
-                  Sign in now
+                  Entrar agora
                 </Button>
                 <Typography
                   color="textSecondary"
