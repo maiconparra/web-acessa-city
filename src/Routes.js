@@ -20,7 +20,10 @@ import {
   MeuExemplo as MeuExemploBanana,
   DenunciationList as DenunciationView,
   CommentsList as CommentsView,
-  Profile as ProfileView
+  Profile as ProfileView,
+  ProfileCoordinator as ProfileCoordinatorView,
+  CommentsListCoordinator as CommentsCoordinatorView,
+  DenunciationListCoordinator as DenunciationCoordinatorView,
 
 } from './views';
 
@@ -129,6 +132,33 @@ const Routes = () => {
       />
 
        {/* FIM Rotas do Moderador */}
+
+
+       {/* Rotas do Coordinator */}
+
+       <RouteWithLayout
+        component={DenunciationCoordinatorView}
+        exact
+        layout={MainLayout}
+        path="/denunciations-coordinator"
+       />      
+
+      <RouteWithLayout
+        component={CommentsCoordinatorView}
+        exact
+        layout={MainLayout}
+        path="/reporting-comments-coordinator"
+       />
+
+      <RouteWithLayout
+        component={ProfileCoordinatorView}
+        exact
+        layout={MainLayout}
+        path="/profile-coordinator"
+      />
+
+       {/* FIM Rotas do Coordinator */}
+
 
       <RouteWithLayout
         component={NotFoundView}

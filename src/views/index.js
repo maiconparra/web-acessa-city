@@ -14,3 +14,6 @@ export { default as MeuExemplo } from './MeuExemplo';
 export { default as DenunciationList } from './Moderator/DenunciationList';
 export { default as CommentsList } from './Moderator/CommentsList';
 export { default as Profile } from './Moderator/Profile';
+export { default as DenunciationListCoordinator } from './Coordinator/DenunciationList';
+export { default as CommentsListCoordinator } from './Coordinator/CommentsList';
+export { default as ProfileCoordinator } from './Coordinator/Profile';
