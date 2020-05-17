@@ -60,6 +60,7 @@ const Sidebar = props => {
         href: '/users',
         icon: <PeopleIcon />
       },
+      /* SIDEBAR MODERADOR */
       {
         title: 'Denúcias de usuários',
         href: '/denunciations',
@@ -73,6 +74,22 @@ const Sidebar = props => {
       {
         title: 'Alterar perfil',
         href: '/profile',
+        icon: <Face />
+      },
+      /* SIDEBAR COORDENADOR */
+      {
+        title: 'Denúcias de usuários Coordenador',
+        href: '/denunciations-coordinator',
+        icon: <RecordVoiceOverIcon />
+      },
+      {
+        title: 'Comentários Coordenador',
+        href: '/reporting-comments-coordinator',
+        icon: <Forum />
+      },    
+      {
+        title: 'Alterar perfil Coordenador',
+        href: '/profile-coordinator',
         icon: <Face />
       },
       {
