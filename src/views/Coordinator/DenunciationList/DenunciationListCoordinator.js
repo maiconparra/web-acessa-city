@@ -185,7 +185,7 @@ const DenunciationListCoordinator = () => {
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <DenunciationsToolbar denunciations={denunciations} denunciationsSlect={denunciationsSlect}  filter={filter} filterAprove={filterAprove}/>
+       <DenunciationsToolbar denunciationsSlect={denunciationsSlect}  filter={filter} filterAprove={filterAprove}/>
       <div className={classes.content}>
         <DenunciationsTable denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress}/>
       </div>

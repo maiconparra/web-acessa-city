@@ -5,6 +5,10 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles, withStyles } from '@material-ui/styles';
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Card,
   CardActions,
   CardContent,
@@ -136,7 +140,8 @@ const StyledMenuItem = withStyles((theme) => ({
 const DenunciationsTable = props => {
   const { className, denunciations, coodenadores, ...rest } = props;
   const classes = useStyles();
-
+  const [openDialog, setOpenDialog] = useState(false);
+  const [mensagem, setMensagem] = useState('');
 
 
   /// Salvar coodenadores
@@ -391,56 +396,38 @@ const DenunciationsTable = props => {
   //FIM Abrir opções dos 3 pontinho
 
 
-
-  const [selectedUsers, setSelectedUsers] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [page, setPage] = useState(0);
-
-  // const handleSelectAll = event => {
-  //   const { users } = props;
-
-  //   let selectedUsers;
-
-  //   if (event.target.checked) {
-
-  //   } else {
-  //     selectedUsers = [];
-  //   }
-
-  //   setSelectedUsers(selectedUsers);
-  // };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedUsers.indexOf(id);
-    let newSelectedUsers = [];
-
-    if (selectedIndex === -1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-    } else if (selectedIndex === 0) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedUsers = newSelectedUsers.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedUsers(newSelectedUsers);
-  };
-
-  const handlePageChange = (event, page) => {
-    setPage(page);
-  };
-
   const tratarClose = () => {
     setComments(false)
   }
 
-  const handleRowsPerPageChange = event => {
-    setRowsPerPage(event.target.value);
-  };
+  const [progressStatus, setProgressStatus] = React.useState(true);
+
+
+  //Filtro denúncias em progresso
+  const submitEmProgresso = (event) => {
+    event.preventDefault();
+
+    const filtroAprove = {
+      id: 'c37d9588-1875-44dd-8cf1-6781de7533c3',
+    }
+    props.filterAprove(filtroAprove);
+    setProgressStatus(false)
+    setMensagem('Denúncias em progresso!');
+    setOpenDialog(true);
+
+  }
+
+  const submitEmProgresso2 = (event) => {
+    event.preventDefault();
+
+    const filtroAprove = {
+      id: '96afa0df-8ad9-4a44-a726-70582b7bd010',
+    }
+    props.filterAprove(filtroAprove);
+    setProgressStatus(true)
+    setMensagem('Denúncias não aprovadas!');
+    setOpenDialog(true);
+  }
 
   return (
     <Card
@@ -577,6 +564,8 @@ const DenunciationsTable = props => {
                   // {/* FIM Abri Modal envio coordenador  */}
                 }
 
+
+                
                 {/* // Modal Aprovação */}
                 <Modal
                   aria-labelledby="transition-modal-title"
@@ -657,24 +646,7 @@ const DenunciationsTable = props => {
                         <Grid item xs={12} sm={12}>
                           <InputLabel>Descreva o motivo da negação:</InputLabel>
                         </Grid>
-
-                        {/* <Grid item xs={12} sm={8}>
-
-                                <FormControl variant="outlined" margin="dense" fullWidth>
-                                  <InputLabel>Coodenadores:</InputLabel>
-                                  <Select native label="Coodenadores" value={coodenador} onChange={e => setCoodenador(e.target.value)}>
-                                    <option aria-label="None" value="" />
-                                    {coodenadores.map(listCoodenadores => {
-                                      return (
-                                        <option value={listCoodenadores.name}>{listCoodenadores.name}</option>
-                                      )
-                                    })
-                                    }
-                                  </Select>
-                                </FormControl>
-
-                              </Grid> */}
-
+            
                         <Grid item md={12} xs={12}>
                           <TextField
                             onChange={e => handleDenyChange(e.target.value)}
@@ -705,6 +677,17 @@ const DenunciationsTable = props => {
           </div>
         </PerfectScrollbar>
       </CardContent>
+
+      <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
+        <DialogTitle>Atenção</DialogTitle>
+        <DialogContent>
+          {mensagem}
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
+        </DialogActions>
+      </Dialog>
+
     </Card>
   );
 };

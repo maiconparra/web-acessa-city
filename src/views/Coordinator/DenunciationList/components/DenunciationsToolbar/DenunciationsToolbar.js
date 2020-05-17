@@ -72,7 +72,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const DenunciationsToolbar = props => {
-  const { className, denunciations, denunciationsSlect, ...rest } = props;
+  const { className,denunciationsSlect, ...rest } = props;
 
   const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState('');
@@ -133,8 +133,6 @@ const DenunciationsToolbar = props => {
     setOpenDialog(true);
   }
 
-
-
   //Modal de Aprovação
   // const [openAprove, setOpenAprove] = React.useState(false);
 
@@ -146,13 +144,9 @@ const DenunciationsToolbar = props => {
   //   setOpenAprove(false);
   // };
 
-
-
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.root}>
-
-
 
         <Grid container spacing={1}>
 
@@ -243,7 +237,6 @@ const DenunciationsToolbar = props => {
               </div>
             }
 
-
             {progressStatus == false &&
 
               <div
@@ -255,9 +248,9 @@ const DenunciationsToolbar = props => {
                   <Button
                     onClick={submitEmProgresso2}
                     style={{
-                      background: 'green',
+                      background: 'red',
                     }}
-                    variant="contained" color="secondary"> Denúncias <CheckIcon /></Button>
+                    variant="contained" color="secondary"> Denúncias </Button>
                 </FormControl>
               </div>
 
