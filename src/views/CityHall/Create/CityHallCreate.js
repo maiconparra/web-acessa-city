@@ -34,24 +34,25 @@ const CityHallCreate = props => {
   const [cities, setCities] = useState({
     cities: [],
   })
-
+//cityId 7ae590f1-c6a4-4bb3-91bf-1e82ea45bb4b
   const [values, setValues] = useState({
     name: '',
+    cityId: '',
     cnpj: '',
     address: '',
-    neighbornhood: '',
+    //neighbornhood: '',
     zipCode: '',
-    stateId: '',
-    cityId: ''
+    cityId: '',
+    number: ''
   });
-
+  
   const changeState = (stateId) => {
     setValues({
       ...values,
       stateId: stateId
     })
 
-    api.get('/state/'+stateId+'/cities').then((result) => {
+    api.get('/state/' + stateId + '/cities').then((result) => {
       setCities({
         cities: result.data
       });
@@ -62,10 +63,11 @@ const CityHallCreate = props => {
           cityId: result.data[0].id
         })
       }
-    }) 
-    
+    })
+
     console.log(values);
   }
+
 
   React.useEffect(() => {
     api.get('/state').then((result) => {
@@ -78,53 +80,54 @@ const CityHallCreate = props => {
           ...values,
           stateId: result.data[0].id
         })
-      }      
+      }
     })
-  }, [])  
+  }, [])
 
   const handleStateChange = event => {
     const stateId = event.target.value;
     changeState(stateId);
   }
 
+  async function onRegisterCityhall(values) {
+    
+    return await api.post('/Cityhall', values);
+
+  }
+
+//Recebe os dados
   const handleChange = event => {
     setValues({
       ...values,
       [event.target.name]: event.target.value
     });
     console.log(event.target.value);
+    onRegisterCityhall(values);
   };
 
-  async function onRegisterCityhall(event){
-    event.preventDefault();
-
-    return await api.post('/Cityhall', values);
-
-  }
+  
 
   // const { register, handleSubmit, watch, errors } = useForm()
   // const onSubmit = data => { console.log(data) }
 
   const { register, handleSubmit, watch, errors } = useForm(
-    {validateCriteriaMode: "all"}
+    { validateCriteriaMode: "all" }
   )
   const onSubmit = data => console.log(values)
 
   const handleErrors = (fieldName) =>
-  <ErrorMessage errors={errors} name={fieldName}>
-  {({ messages }) =>
-    messages &&
-    Object.entries(messages).map(([type, message]) => (
-      linhaErro(message)
-    ))
-  }
-</ErrorMessage>   
+    <ErrorMessage errors={errors} name={fieldName}>
+      {({ messages }) =>
+        messages &&
+        Object.entries(messages).map(([type, message]) => (
+          linhaErro(message)
+        ))
+      }
+    </ErrorMessage>
 
-  const linhaErro = (message) => 
+  const linhaErro = (message) =>
     <p>{message}</p>
 
-
-  
   return (
     <Card
       {...rest}
@@ -156,15 +159,15 @@ const CityHallCreate = props => {
                 label="Nome da Prefeitura"
                 margin="dense"
                 name="name"
-                onChange={handleChange}
+                //onChange={handleChange}
                 required
-                inputRef={register({ 
-                  required: true, 
+                inputRef={register({
+                  required: true,
                   maxLength: {
                     value: 80,
                     message: "Tamanho máximo de 80 caracteres"
                   }
-                })} 
+                })}
                 defaultValue={values.name}
                 variant="outlined"
                 error={errors.name}
@@ -181,9 +184,20 @@ const CityHallCreate = props => {
                 label="CNPJ"
                 margin="dense"
                 name="cnpj"
-                onChange={handleChange}
+                type="number"
+                //onChange={handleChange}
                 required
-                inputRef={register({ required: true, maxLength: 20 })}                
+                inputRef={register({
+                  required: true,
+                  maxLength: {
+                    value: 14,
+                    message: "Tamanho máximo de 14 caracteres."
+                  },
+                  minLength: {
+                    value: 14,
+                    message: "Tamanho necessário é de 14 caracteres."
+                  },
+                })}
                 defaultValue={values.cnpj}
                 variant="outlined"
                 error={errors.cnpj}
@@ -201,15 +215,15 @@ const CityHallCreate = props => {
                 label="Endereço"
                 margin="dense"
                 name="address"
-                onChange={handleChange}
+                //onChange={handleChange}
                 required
-                inputRef={register({ 
-                  required: true, 
+                inputRef={register({
+                  required: true,
                   maxLength: {
                     value: 80,
                     message: "Tamanho máximo de 80 caracteres"
                   }
-                })}                 
+                })}
                 defaultValue={values.address}
                 variant="outlined"
                 error={errors.address}
@@ -226,14 +240,19 @@ const CityHallCreate = props => {
                 label="CEP"
                 margin="dense"
                 name="zipCode"
-                onChange={handleChange}
-                inputRef={register({ 
-                  required: true, 
+                type="number"
+                //onChange={handleChange}
+                inputRef={register({
+                  required: true,
                   maxLength: {
-                    value: 80,
-                    message: "Tamanho máximo de 80 caracteres"
+                    value: 8,
+                    message: "Tamanho máximo de 8 caracteres"
+                  },
+                  minLength: {
+                    value: 8,
+                    message: "Tamanho necessário de 8 caracteres"
                   }
-                })}                 
+                })}
                 defaultValue={values.zipCode}
                 variant="outlined"
                 error={errors.zipCode}
@@ -255,11 +274,11 @@ const CityHallCreate = props => {
                 // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
                 onChange={handleStateChange}
-                value={values.stateId}                
+                value={values.stateId}
                 variant="outlined"
-                inputRef={register({ 
-                  required: true,                 
-                })}                  
+                inputRef={register({
+                  required: true,
+                })}
                 error={errors.stateId}
               >
                 {states.states.map(option => (
@@ -283,11 +302,11 @@ const CityHallCreate = props => {
                 label="Escolha uma cidade"
                 margin="dense"
                 name="cityId"
-                onChange={handleChange}
+                //onChange={handleChange}
                 required
-                inputRef={register({ 
-                  required: true,                 
-                })}                
+                inputRef={register({
+                  required: true,
+                })}
                 select
                 // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
@@ -311,16 +330,37 @@ const CityHallCreate = props => {
               md={6}
               xs={12}
             >
+              {/* Numero da prefeitura*/}
               <TextField
                 fullWidth
-                label="Country"
+                label="Número"
                 margin="dense"
-                name="country"
-                onChange={handleChange}
+                name="number"
+                type="number"
+               // onChange={handleChange}
                 required
-                defaultValue={values.country}
+                inputRef={register({
+                  required: true,
+                  maxLength: {
+                    value: 5,
+                    message: "Tamanho máximo de 10 caracteres."
+                  },
+                  minLength: {
+                    value: 1,
+                    message: "Tamanho necessário de ao menos 1 caracteres."
+                  },
+                })}
+                defaultValue={values.number}
                 variant="outlined"
+                error={errors.number}
               />
+              {handleErrors('number')}
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
             </Grid>
           </Grid>
         </CardContent>
@@ -330,8 +370,9 @@ const CityHallCreate = props => {
             color="primary"
             type="submit"
             variant="contained"
-          >
-            Save details
+            //onClick={cadastrarPrefeitura}
+            >
+            Cadastrar
           </Button>
         </CardActions>
       </form>

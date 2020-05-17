@@ -18,3 +18,4 @@ export { default as CreateUser} from './CreateUser';
 export { default as DenunciationListCoordinator } from './Coordinator/DenunciationList';
 export { default as CommentsListCoordinator } from './Coordinator/CommentsList';
 export { default as ProfileCoordinator } from './Coordinator/Profile';
+export { default as AproveCityHallList } from './CityHall/Aprove';
