@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 
-import { DenunciationsToolbar, DenunciationsTable } from './components';
+import { AproveCityHallTable } from './components';
+import { AproveCityHallToolbar } from './components';
+
 
 import {
    Dialog,
@@ -23,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DenunciationListCoordinator = () => {
+const AproveCityHallList = () => {
   const classes = useStyles();
 
   const [denunciations, setDenunciations] = useState([]);
@@ -34,8 +36,7 @@ const DenunciationListCoordinator = () => {
 
 
 
-   //Enviar coodenador
-   //Alt    
+   //Enviar coodenador 
   const envioCoordenador = (update) => {
       
     API.post(`/report/${update.reportId}/coordinator-update`,update
@@ -92,6 +93,7 @@ const DenunciationListCoordinator = () => {
           const claims = token.claims;
             setUser({
                 ...user,
+                id: claims.app_user_id
             })
             listCoodenador(claims.app_user_id);
         })
@@ -125,7 +127,7 @@ const DenunciationListCoordinator = () => {
 
   // Listar os dados  na tela
   const listDenunciations = () => {
-    API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
+    API.get('/report?status=48cf5f0f-40c9-4a79-9627-6fd22018f72c'
     ).then(response => {
        const listDenunciations2 = response.data;
        console.log(listDenunciations2);
@@ -154,27 +156,6 @@ const DenunciationListCoordinator = () => {
   }
 
 
-  const filterAprove = (aprove) =>{
-
-      console.log("aprovado id", JSON.stringify(aprove) )
-    API.get(`/report?status=${aprove.id}`,
-    ).then(response => {
-      const filterAprove2 = response.data;
-      setDenunciations(filterAprove2);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-  }
-
-
-  const envioProgress = (progress) =>{
-
-     console.log("Progresso" + JSON.stringify(progress))
-    
-  }
-
 
   // Atualizar os dados na tela
   useEffect(() => {
@@ -185,9 +166,9 @@ const DenunciationListCoordinator = () => {
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <DenunciationsToolbar denunciationsSlect={denunciationsSlect}  filter={filter} filterAprove={filterAprove}/>
+       <AproveCityHallToolbar denunciationsSlect={denunciationsSlect}  filter={filter}/>
       <div className={classes.content}>
-        <DenunciationsTable denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress}/>
+        <AproveCityHallTable denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny}/>
       </div>
       <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
         <DialogTitle>Atenção</DialogTitle>
@@ -202,4 +183,4 @@ const DenunciationListCoordinator = () => {
   );
 };
 
-export default DenunciationListCoordinator;
+export default AproveCityHallList;

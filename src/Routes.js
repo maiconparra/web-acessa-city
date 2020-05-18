@@ -25,6 +25,8 @@ import {
   ProfileCoordinator as ProfileCoordinatorView,
   CommentsListCoordinator as CommentsCoordinatorView,
   DenunciationListCoordinator as DenunciationCoordinatorView,
+  AproveCityHallList as AproveCityHallListView,
+  
 
 } from './views';
 
@@ -166,7 +168,13 @@ const Routes = () => {
 
        {/* FIM Rotas do Coordinator */}
 
-
+       <RouteWithLayout
+        component={AproveCityHallListView}
+        exact
+        layout={MainLayout}
+        path="/cityhall-aprove"
+      />
+       
       <RouteWithLayout
         component={NotFoundView}
         exact

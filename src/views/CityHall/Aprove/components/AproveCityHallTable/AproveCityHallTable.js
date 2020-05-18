@@ -5,10 +5,6 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { makeStyles, withStyles } from '@material-ui/styles';
 import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Card,
   CardActions,
   CardContent,
@@ -22,10 +18,7 @@ import {
   Typography,
   CardHeader,
   TablePagination,
-  Box,
-  Paper,
-  Rows,
-  TableContainer
+  Box
 } from '@material-ui/core';
 
 //Modal
@@ -137,11 +130,10 @@ const StyledMenuItem = withStyles((theme) => ({
 
 //FIM Abrir opções dos 3 pontinho
 
-const DenunciationsTable = props => {
+const AproveCityHallTable = props => {
   const { className, denunciations, coodenadores, ...rest } = props;
   const classes = useStyles();
-  const [openDialog, setOpenDialog] = useState(false);
-  const [mensagem, setMensagem] = useState('');
+
 
 
   /// Salvar coodenadores
@@ -225,6 +217,7 @@ const DenunciationsTable = props => {
     userId: ''
   });
 
+
   const handleDenyChange = (sender) => {
     setDeny({
       ...deny,
@@ -247,6 +240,7 @@ const DenunciationsTable = props => {
     setDeny({ message: '', userId: '' });
     setOpenDeny(false);
     setOpen(false);
+
   }
 
 
@@ -255,13 +249,14 @@ const DenunciationsTable = props => {
   const listComments = () => {
     API.get(`/report-commentary/report/0efd3d3e-2ff6-40e3-a7f0-6100fe403701`,
     ).then(response => {
-      const listComments2 = response.data;
-      console.log("ENTRE.LLLLLL.." + JSON.stringify(listComments2))
-      setReportComments(listComments2);
-    }).catch(erro => {
-      console.log(erro);
-    })
-  }
+       const listComments2 = response.data;
+             console.log("ENTRE.LLLLLL.." + JSON.stringify(listComments2))
+             setReportComments(listComments2);
+       }).catch(erro => {
+        console.log(erro);
+      })
+    }
+
 
   React.useEffect(() => {
     listComments();
@@ -272,46 +267,12 @@ const DenunciationsTable = props => {
     return () => unsubscribe()
   }, [])
 
+
   //////////////////////
 
 
-//Envio aprovação (em análise).
-  const [progress, setProgress] = useState({
-    description: '',
-    data: ''
-  });
 
-  const handleProgress = (sender) => {
-    setProgress({
-      ...progress,
-      description: sender
-    })
-  }
 
-  const handleProgress2 = (sender) => {
-    setProgress({
-      ...progress,
-      data: sender
-    })
-  }
-
-  const submitProgress = (event) => {
-    event.preventDefault();
-
-    const progressAprove = {
-      denunciationsId: openModalDenunciations.denunciations.id,
-      reportStatusId: 'c37d9588-1875-44dd-8cf1-6781de7533c3',
-      description: progress.description,
-      data: progress.data
-
-    }
-    props.envioProgress(progressAprove);
-    setProgress({denunciationsId:'', reportStatusId:'', description: '', data: '', });
-    setOpenAprove(false);
-    setOpen(false);
-
-  }
-  
 
   //Modal de envio Coordenador de fora
   const [openModalDenunciations, setOpenModalDenunciations] = useState({
@@ -349,7 +310,7 @@ const DenunciationsTable = props => {
       ...denunciations,
       denunciations: denunciationsp2
     });
-    setComments(true);
+    setComments(true);               
   };
 
   const handleCloseComments = () => {
@@ -396,49 +357,67 @@ const DenunciationsTable = props => {
   //FIM Abrir opções dos 3 pontinho
 
 
+  
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+
+  // const handleSelectAll = event => {
+  //   const { users } = props;
+
+  //   let selectedUsers;
+
+  //   if (event.target.checked) {
+   
+  //   } else {
+  //     selectedUsers = [];
+  //   }
+
+  //   setSelectedUsers(selectedUsers);
+  // };
+
+  const handleSelectOne = (event, id) => {
+    const selectedIndex = selectedUsers.indexOf(id);
+    let newSelectedUsers = [];
+
+    if (selectedIndex === -1) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
+    } else if (selectedIndex === 0) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
+    } else if (selectedIndex === selectedUsers.length - 1) {
+      newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelectedUsers = newSelectedUsers.concat(
+        selectedUsers.slice(0, selectedIndex),
+        selectedUsers.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedUsers(newSelectedUsers);
+  };
+
+  const handlePageChange = (event, page) => {
+    setPage(page);
+  };
+
   const tratarClose = () => {
     setComments(false)
   }
 
-  const [progressStatus, setProgressStatus] = React.useState(true);
-
-
-  //Filtro denúncias em progresso
-  const submitEmProgresso = (event) => {
-    event.preventDefault();
-
-    const filtroAprove = {
-      id: 'c37d9588-1875-44dd-8cf1-6781de7533c3',
-    }
-    props.filterAprove(filtroAprove);
-    setProgressStatus(false)
-    setMensagem('Denúncias em progresso!');
-    setOpenDialog(true);
-
-  }
-
-  const submitEmProgresso2 = (event) => {
-    event.preventDefault();
-
-    const filtroAprove = {
-      id: '96afa0df-8ad9-4a44-a726-70582b7bd010',
-    }
-    props.filterAprove(filtroAprove);
-    setProgressStatus(true)
-    setMensagem('Denúncias não aprovadas!');
-    setOpenDialog(true);
-  }
+  const handleRowsPerPageChange = event => {
+    setRowsPerPage(event.target.value);
+  };
 
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-      {openComments &&
-        <ReportCommentaries open={openComments} close={tratarClose} reportId={openModalDenunciations.denunciations.id}>
+    {openComments && 
+    <ReportCommentaries open={openComments} close={tratarClose} reportId={openModalDenunciations.denunciations.id}>
 
-        </ReportCommentaries>
-      }
+    </ReportCommentaries>
+    }
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
@@ -564,8 +543,6 @@ const DenunciationsTable = props => {
                   // {/* FIM Abri Modal envio coordenador  */}
                 }
 
-
-                
                 {/* // Modal Aprovação */}
                 <Modal
                   aria-labelledby="transition-modal-title"
@@ -586,44 +563,35 @@ const DenunciationsTable = props => {
                       <Grid container spacing={1}>
 
                         <Grid item xs={12} sm={12}>
-                          <InputLabel>Escolha a data de Finalização</InputLabel>
-                        </Grid>
-
-                        <Grid item xs={12} sm={12}>
-                          <TextField
-                            onChange={e => handleProgress(e.target.value)}
-                            fullWidth
-                            label="Descrição do motivo"
-                            margin="dense"
-                            name="descricao"
-                            required
-                            value={progress.description}
-                            variant="outlined"
-                          />
+                          <InputLabel>Selecione um coordenador:</InputLabel>
                         </Grid>
                         <Grid item xs={12} sm={8}>
-                          <TextField
-                            onChange={e => handleProgress2(e.target.value)}
-                            id="date"
-                            label="Finalização"
-                            type="date"
-                            defaultValue="2017-05-24"
-                            className={classes.textField}
-                            value={progress.data}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                          />
+
+                          <FormControl variant="outlined" margin="dense" fullWidth>
+                            <InputLabel>Coodenadores:</InputLabel>
+                            <Select native label="Coodenadores" value={coodenador.id} onChange={e => handleCoordinatorChange(e.target.value)}>
+                              <option aria-label="None" value="" />
+                              {coodenadores.map(listCoodenadores => {
+                                return (
+                                  <option value={listCoodenadores.id}>{listCoodenadores.firstName}</option>
+                                )
+                              })
+                              }
+                            </Select>
+                          </FormControl>
+
                         </Grid>
                         <Grid item xs={12} sm={4}>
                           <FormControl margin="dense" fullWidth>
-                            <Button onClick={submitProgress} variant="contained" color="secondary">Enviar</Button>
+                            <Button onClick={submit} variant="contained" color="secondary">Enviar</Button>
                           </FormControl>
                         </Grid>
                       </Grid>
                     </div>
                   </Fade>
                 </Modal>
+
+
 
                 {/* // Modal Negação */}
                 <Modal
@@ -646,7 +614,24 @@ const DenunciationsTable = props => {
                         <Grid item xs={12} sm={12}>
                           <InputLabel>Descreva o motivo da negação:</InputLabel>
                         </Grid>
-            
+
+                        {/* <Grid item xs={12} sm={8}>
+
+                                <FormControl variant="outlined" margin="dense" fullWidth>
+                                  <InputLabel>Coodenadores:</InputLabel>
+                                  <Select native label="Coodenadores" value={coodenador} onChange={e => setCoodenador(e.target.value)}>
+                                    <option aria-label="None" value="" />
+                                    {coodenadores.map(listCoodenadores => {
+                                      return (
+                                        <option value={listCoodenadores.name}>{listCoodenadores.name}</option>
+                                      )
+                                    })
+                                    }
+                                  </Select>
+                                </FormControl>
+
+                              </Grid> */}
+
                         <Grid item md={12} xs={12}>
                           <TextField
                             onChange={e => handleDenyChange(e.target.value)}
@@ -677,24 +662,13 @@ const DenunciationsTable = props => {
           </div>
         </PerfectScrollbar>
       </CardContent>
-
-      <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
-        <DialogTitle>Atenção</DialogTitle>
-        <DialogContent>
-          {mensagem}
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
-        </DialogActions>
-      </Dialog>
-
     </Card>
   );
 };
 
-DenunciationsTable.propTypes = {
+AproveCityHallTable.propTypes = {
   className: PropTypes.string,
   users: PropTypes.array.isRequired
 };
 
-export default DenunciationsTable;
+export default AproveCityHallTable;
