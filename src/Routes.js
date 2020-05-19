@@ -96,7 +96,7 @@ const Routes = () => {
         component={AccountView}
         exact
         layout={MainLayout}
-        path="/account"
+        path="/meu-perfil"
       />
       <RouteWithLayout
         component={SettingsView}

@@ -67,7 +67,7 @@ const Profile = props => {
         className={classes.avatar}
         component={RouterLink}
         src={user.avatar}
-        to="/settings"
+        to="/meu-perfil"
       />
       <Typography
         className={classes.name}

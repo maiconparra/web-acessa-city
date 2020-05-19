@@ -23,12 +23,12 @@ const AccountDetails = props => {
   const classes = useStyles();
 
   const [values, setValues] = useState({
-    firstName: 'Shen',
-    lastName: 'Zhi',
-    email: 'shen.zhi@devias.io',
+    firstName: '',
+    lastName: '',
+    email: '',
     phone: '',
-    state: 'Alabama',
-    country: 'USA'
+    state: '',
+    country: ''
   });
 
   const handleChange = event => {
@@ -63,8 +63,8 @@ const AccountDetails = props => {
         noValidate
       >
         <CardHeader
-          subheader="The information can be edited"
-          title="Profile"
+          subheader="Meus dados pessoais"
+          title="Perfil"
         />
         <Divider />
         <CardContent>
@@ -79,8 +79,8 @@ const AccountDetails = props => {
             >
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
+                helperText="Seu primeiro nome"
+                label="Nome"
                 margin="dense"
                 name="firstName"
                 onChange={handleChange}
@@ -96,44 +96,28 @@ const AccountDetails = props => {
             >
               <TextField
                 fullWidth
-                label="Last name"
+                label="Sobrenome"
                 margin="dense"
                 name="lastName"
                 onChange={handleChange}
-                required
                 value={values.lastName}
                 variant="outlined"
               />
             </Grid>
             <Grid
               item
-              md={6}
+              md={12}
               xs={12}
             >
               <TextField
                 fullWidth
-                label="Email Address"
+                disabled={true}
+                label="Endereço de e-mail"
                 margin="dense"
                 name="email"
                 onChange={handleChange}
                 required
                 value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                margin="dense"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
                 variant="outlined"
               />
             </Grid>
@@ -189,7 +173,7 @@ const AccountDetails = props => {
             color="primary"
             variant="contained"
           >
-            Save details
+            Atualizar dados
           </Button>
         </CardActions>
       </form>
