@@ -27,12 +27,16 @@ const DenunciationListCoordinator = () => {
   const classes = useStyles();
 
   const [denunciations, setDenunciations] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [denunciationsSlect, setDenunciationsSelect] = useState([]);
   const [coodenadores, setCoordenadores] = useState([]);
+  const [statusProgressDenunciation, setStatusProgressDenunciation] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
 
+ 
+  
 
    //Enviar coodenador
    //Alt    
@@ -140,7 +144,22 @@ const DenunciationListCoordinator = () => {
 
  //Fitrar Denuncias
   const filter = (filtro) =>{
-    API.get(`/report?category=${filtro.category}&street=${filtro.street}&neighborhood=${filtro.neighborhood}&creationDate=${filtro.creationDate}&status=48cf5f0f-40c9-4a79-9627-6fd22018f72c`,
+      let stringFiltro = ''
+      if(filtro.category){
+        stringFiltro +=  '&category=' + filtro.category 
+      }
+
+      if(filtro.street){
+        stringFiltro +=  '&street=' + filtro.street 
+      }
+
+      if(filtro.neighborhood){
+        stringFiltro +=  '&neighborhood=' + filtro.neighborhood 
+      }
+      
+
+    console.log("filtro aqui" + JSON.stringify(filtro))
+    API.get(`/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010${stringFiltro}`,
     ).then(response => {
       const filterDenunciation = response.data;
       setDenunciations(filterDenunciation);
@@ -153,10 +172,9 @@ const DenunciationListCoordinator = () => {
       })
   }
 
-
+  //filtrar Aprovados
   const filterAprove = (aprove) =>{
-
-      console.log("aprovado id", JSON.stringify(aprove) )
+    setStatusProgressDenunciation(aprove.statusProgress) //manar status se é denuncian ão aprovadas ou aprovaas
     API.get(`/report?status=${aprove.id}`,
     ).then(response => {
       const filterAprove2 = response.data;
@@ -168,26 +186,46 @@ const DenunciationListCoordinator = () => {
       })
   }
 
-
+  /////Envio de em progresso
   const envioProgress = (progress) =>{
+  
+  console.log("Progresso" + JSON.stringify(progress))
+  }
 
-     console.log("Progresso" + JSON.stringify(progress))
-    
+
+  ///Lista de categorias
+   ///Listar os dados  na tela co comentarios
+
+   const listCategory = () => {
+    API.get('/category'
+    ).then(response => {
+       const listCategory2 = response.data;
+       setCategories(listCategory2);
+       }).catch(erro => {
+        console.log(erro);
+        setMensagem('Ocorreu um erro', erro);
+        setOpenDialog(true);
+      })
+  }
+  //encerrar dnunucias
+  const enviorEncerrar =(encerrar) => {
+    console.log("filtro aqui ecerrado" + JSON.stringify(encerrar))
   }
 
 
   // Atualizar os dados na tela
   useEffect(() => {
       listDenunciations();
+      listCategory();
     },[]);
 
 
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <DenunciationsToolbar denunciationsSlect={denunciationsSlect}  filter={filter} filterAprove={filterAprove}/>
+       <DenunciationsToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
       <div className={classes.content}>
-        <DenunciationsTable denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress}/>
+        <DenunciationsTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
       </div>
       <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
         <DialogTitle>Atenção</DialogTitle>

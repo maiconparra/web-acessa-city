@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import { Button, TextField, Grid, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core';
 // import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
@@ -124,7 +125,7 @@ const DenunciationsToolbar = props => {
                 <option aria-label="None" value="" />
                 {denunciationsSlect.map(denunciationData => {
                   return (
-                    <option value={denunciationData.creationDate}>{denunciationData.creationDate}</option>
+                    <option value={denunciationData.creationDate}>{moment(denunciationData.creationDate).format('DD/MM/YYYY')}</option>
                   )
                 })
                 }

@@ -441,7 +441,7 @@ const DenunciationsTable = props => {
                       <TableCell>{denunciation.street}</TableCell>
                       <TableCell>{denunciation.neighborhood}</TableCell>
                       <TableCell>{denunciation.category.name}</TableCell>
-                      <TableCell>{denunciation.creationDate}</TableCell>
+                      <TableCell>{moment(denunciation.creationDate).format('DD/MM/YYYY')}</TableCell>
                       <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
                         textAlign: 'center',
                       }}><ForumIcon /></div></TableCell>
