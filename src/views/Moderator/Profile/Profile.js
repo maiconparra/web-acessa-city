@@ -28,14 +28,21 @@ const Profile = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
+ 
   const envioPassword = (password) => {
     console.log("senha recuperada:" , JSON.stringify(password));
+  }
+
+  const envioImg =(img) =>{
+    console.log("Eu estou aquii" , JSON.stringify(img));
+    setMensagem("Foto Alterado!");
+    setOpenDialog(true);
   }
 
   return (
     <div className={classes.root}>
       <div className={classes.content}>
-        <ProfileContent envioPassword={envioPassword} />
+        <ProfileContent envioPassword={envioPassword}  envioImg={envioImg}/>
       </div>
       <Dialog open={openDialog} onClose={e => setOpenDialog(false)}>
         <DialogTitle>Atenção</DialogTitle>

@@ -20,6 +20,7 @@ import firebase from 'firebase/app'
 import API from '../../utils/API'
 import { useState } from 'react';
 import { ReportCommentaries } from '../../components';
+import ReportInteractionHistory from '../ReportInteractionHistory';
 
 
 const MeuExemplo = props => {
@@ -78,10 +79,14 @@ const MeuExemplo = props => {
         })        
     }
 
+    // return (
+    //     <div>
+    //         <ReportCommentaries open={false} reportId={'bfdbb9d4-20b9-439a-96c0-142d6944e5a2'}></ReportCommentaries>            
+    //     </div>        
+    // )
     return (
-        <div>
-            <ReportCommentaries open={true} reportId={'bfdbb9d4-20b9-439a-96c0-142d6944e5a2'}></ReportCommentaries>            
-        </div>        
+        // <h1>ss</h1>
+        <ReportInteractionHistory currentUserId={values.userId} reportId={'c8180392-ba2e-4a64-9d4e-8b66f56a2292'} ></ReportInteractionHistory>
     )
 }
 
