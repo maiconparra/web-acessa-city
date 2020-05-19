@@ -106,7 +106,7 @@ const CityHallCreate = props => {
     console.log("onRegisterCityhall ==== " + values.number)
     return await api.post('/city-hall', values).then((data)=>{
       console.log("Sucesso")
-      alert("Cidade cadastrada com sucesso, aguarde a aprovação.") 
+      alert("Prefeitura cadastrada com sucesso, aguarde a aprovação.") 
       limparCampos();      
     }).catch((erro)=>{
       console.log("Falhou")
@@ -176,6 +176,7 @@ const CityHallCreate = props => {
             >
 
               <TextField
+                helperText="Informe o nome da prefeitura"
                 fullWidth
                 label="Nome da Prefeitura"
                 margin="dense"
@@ -201,6 +202,7 @@ const CityHallCreate = props => {
               xs={12}
             >
               <TextField
+                helperText="Informe o CNPJ da prefeitura"
                 fullWidth
                 label="CNPJ"
                 margin="dense"
@@ -232,6 +234,7 @@ const CityHallCreate = props => {
               xs={12}
             >
               <TextField
+                helperText="Informe o endereço da prefeitura"
                 fullWidth
                 label="Endereço"
                 margin="dense"
@@ -257,6 +260,7 @@ const CityHallCreate = props => {
               xs={12}
             >
               <TextField
+                helperText="Informe o bairro da prefeitura"
                 fullWidth
                 label="Bairro"
                 margin="dense"
@@ -281,14 +285,15 @@ const CityHallCreate = props => {
               md={6}
               xs={12}
             >
-
               <TextField
+                helperText="Informe o CEP da prefeitura"
                 fullWidth
                 label="CEP"
                 margin="dense"
                 name="zipCode"
                 type="number"
                 onChange={handleChange}
+                required
                 inputRef={register({
                   required: true,
                   maxLength: {
@@ -313,6 +318,7 @@ const CityHallCreate = props => {
             >
               {/* Numero da prefeitura*/}
               <TextField
+                helperText="Informe o número da prefeitura"
                 fullWidth
                 label="Número"
                 margin="dense"
@@ -343,13 +349,13 @@ const CityHallCreate = props => {
               xs={12}
             >
               <TextField
+                helperText="Informe o estado da prefeitura"
                 fullWidth
-                label="Estado"
+                //label="Estado"
                 margin="dense"
                 name="stateId"
                 required
                 select
-                // eslint-disable-next-line react/jsx-sort-props
                 SelectProps={{ native: true }}
                 onChange={handleStateChange}
                 value={values.stateId}
@@ -376,8 +382,9 @@ const CityHallCreate = props => {
               xs={12}
             >
               <TextField
+              helperText="Informe a cidade da prefeitura"
                 fullWidth
-                label="Escolha uma cidade"
+                label="Cidade"
                 margin="dense"
                 name="cityId"
                 onChange={handleChange}
@@ -386,7 +393,7 @@ const CityHallCreate = props => {
                   required: true,
                 })}
                 select
-                SelectProps={{ native: true }}
+                SelectProps={{ native: false }}
                 value={values.cityId}
                 variant="outlined"
                 error={errors.cityId}
