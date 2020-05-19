@@ -127,7 +127,7 @@ const AproveCityHallList = () => {
 
   // Listar os dados  na tela
   const listDenunciations = () => {
-    API.get('/report?status=48cf5f0f-40c9-4a79-9627-6fd22018f72c'
+    API.get('/city-hall'
     ).then(response => {
        const listDenunciations2 = response.data;
        console.log(listDenunciations2);

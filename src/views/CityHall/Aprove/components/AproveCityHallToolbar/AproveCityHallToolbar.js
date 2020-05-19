@@ -71,7 +71,7 @@ const AproveCityHallToolbar = props => {
 
           <Grid item xs={12} sm={2}>
 
-            <FormControl variant="outlined" margin="dense" fullWidth>
+            {/* <FormControl variant="outlined" margin="dense" fullWidth>
               <InputLabel>Categoria:</InputLabel>
               <Select native label="Categoria" value={denunciationCategory} onChange={e => setDenunciationCategory(e.target.value)}>
                 <option aria-label="None" value="" />
@@ -83,7 +83,7 @@ const AproveCityHallToolbar = props => {
                 })
                 }
               </Select>
-            </FormControl>
+            </FormControl> */}
 
           </Grid>
 

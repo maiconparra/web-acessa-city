@@ -20,6 +20,10 @@ import {
   TablePagination,
   Box
 } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
+import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
+import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 
 //Modal
 import Modal from '@material-ui/core/Modal';
@@ -28,8 +32,8 @@ import Fade from '@material-ui/core/Fade';
 //Fim Modal
 
 //Icone 3 bolinhas
-import MoreIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
+/* import MoreIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton'; */
 //FIM Icone 3 bolinhas
 
 import Menu from '@material-ui/core/Menu';
@@ -249,13 +253,13 @@ const AproveCityHallTable = props => {
   const listComments = () => {
     API.get(`/report-commentary/report/0efd3d3e-2ff6-40e3-a7f0-6100fe403701`,
     ).then(response => {
-       const listComments2 = response.data;
-             console.log("ENTRE.LLLLLL.." + JSON.stringify(listComments2))
-             setReportComments(listComments2);
-       }).catch(erro => {
-        console.log(erro);
-      })
-    }
+      const listComments2 = response.data;
+      console.log("ENTRE.LLLLLL.." + JSON.stringify(listComments2))
+      setReportComments(listComments2);
+    }).catch(erro => {
+      console.log(erro);
+    })
+  }
 
 
   React.useEffect(() => {
@@ -310,7 +314,7 @@ const AproveCityHallTable = props => {
       ...denunciations,
       denunciations: denunciationsp2
     });
-    setComments(true);               
+    setComments(true);
   };
 
   const handleCloseComments = () => {
@@ -357,7 +361,7 @@ const AproveCityHallTable = props => {
   //FIM Abrir opções dos 3 pontinho
 
 
-  
+
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
@@ -368,7 +372,7 @@ const AproveCityHallTable = props => {
   //   let selectedUsers;
 
   //   if (event.target.checked) {
-   
+
   //   } else {
   //     selectedUsers = [];
   //   }
@@ -407,46 +411,90 @@ const AproveCityHallTable = props => {
   const handleRowsPerPageChange = event => {
     setRowsPerPage(event.target.value);
   };
+  /* APROVAR PREFEITURA */
+  
+  const aproveCityHall = () => {
+    //let idCityHall = 'a378ed8d-e5dc-4b4e-96bd-27fc5257fb6e'
+    API.put(`/city-hall/confirm-register/a378ed8d-e5dc-4b4e-96bd-27fc5257fb6e`
+    ///api/v1/city-hall/confirm-register/{id}
+    ).then(response => {
+      console.log('SUCESSO')
+    }).catch(erro => {
+      //console.log(erro);
+      console.log('ERRO')
+    })
+  }
+  /* NEGAR PREFEITURA */
+  /* const denyCityHall = (cityHallId) = {
+
+  } */
 
   return (
     <Card
       {...rest}
       className={clsx(classes.root, className)}
     >
-    {openComments && 
-    <ReportCommentaries open={openComments} close={tratarClose} reportId={openModalDenunciations.denunciations.id}>
+      {openComments &&
+        <ReportCommentaries open={openComments} close={tratarClose} reportId={openModalDenunciations.denunciations.id}>
 
-    </ReportCommentaries>
-    }
+        </ReportCommentaries>
+      }
       <CardContent className={classes.content}>
         <PerfectScrollbar>
           <div className={classes.inner}>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Denúncias</TableCell>
+                  <TableCell>Nome</TableCell>
                   <TableCell>Endereço</TableCell>
                   <TableCell>Bairro</TableCell>
-                  <TableCell>Categoria</TableCell>
-                  <TableCell>Datas</TableCell>
-                  <TableCell>Cometários</TableCell>
-
+                  <TableCell>Número</TableCell>
+                  <TableCell>CNPJ</TableCell>
+                  <TableCell>CEP</TableCell>
+                  <TableCell>Cidade</TableCell>
+                  <TableCell>Estado</TableCell>
                 </TableRow>
+
               </TableHead>
+
               <TableBody>
                 {denunciations.map(denunciation => {
                   return (
                     <TableRow key={denunciation.id}>
-                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.title}</TableCell>
-                      <TableCell>{denunciation.street}</TableCell>
+                      {/* <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.title}</TableCell> */}
+                      <TableCell>{denunciation.name}</TableCell>
+                      <TableCell>{denunciation.address}</TableCell>
                       <TableCell>{denunciation.neighborhood}</TableCell>
-                      <TableCell>{denunciation.category.name}</TableCell>
-                      <TableCell>{denunciation.creationDate}</TableCell>
-                      <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
+                      <TableCell>{denunciation.number}</TableCell>
+                      <TableCell>{denunciation.cnpj}</TableCell>
+                      <TableCell>{denunciation.zipCode}</TableCell>
+                      <TableCell>{denunciation.city.name}</TableCell>
+                      <TableCell>{denunciation.city.cityState.name}</TableCell>
+                      <TableCell>
+                        <FormControl margin="dense">
+                          <Button
+                            onClick={aproveCityHall}
+                            style={{
+                              background: 'green',
+                            }}
+                            variant="contained" color="secondary"><CheckIcon /></Button>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell>
+                        <FormControl margin="dense">
+                          <Button
+                            //onClick={denyCityHall(denunciation.id)}
+                            style={{
+                              background: 'red',
+                            }}
+                            variant="contained" color="secondary"><CloseIcon /></Button>
+                        </FormControl>
+                      </TableCell>
+                      {console.log("AQUI PREFEITURA " + JSON.stringify(denunciation))}
+                      {/* <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
                         textAlign: 'center',
-                      }}><ForumIcon /></div></TableCell>
+                      }}><ForumIcon /></div></TableCell> */}
                     </TableRow>
-
                   )
                 })
                 }
