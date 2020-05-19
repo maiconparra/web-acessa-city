@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -13,6 +13,8 @@ import {
   Button,
   LinearProgress
 } from '@material-ui/core';
+import firebase from 'firebase/app'
+import s3 from 'utils/AWS-S3'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -21,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {
     marginLeft: 'auto',
-    height: 110,
+    height: 100,
     width: 100,
     flexShrink: 0,
     flexGrow: 0
@@ -39,13 +41,55 @@ const AccountProfile = props => {
 
   const classes = useStyles();
 
-  const user = {
-    name: 'Shen Zhi',
-    city: 'Los Angeles',
-    country: 'USA',
-    timezone: 'GTM-7',
-    avatar: '/images/avatars/avatar_11.png'
-  };
+  var fileUploadInput = React.createRef();  
+
+  const updatePhoto = photoUrl => {
+    var fb_user = firebase.auth().currentUser;
+
+    fb_user.updateProfile({
+      photoURL: photoUrl
+    }).then(function() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          setUser({
+            ...user,
+            name: user.displayName,
+            avatar: user.photoURL,
+          })
+        }
+      });
+    }).catch(function(error) {
+      // An error happened.
+    });
+  }
+
+  const uploadFileImg = (e) => {
+    s3(e.target.files[0])
+      .then((result) => {
+        const photo = result.fotoUrl
+        updatePhoto(photo)
+
+      }).catch((erro) =>{
+
+      })
+  }  
+
+  const [user, setUser] = useState({
+    name: '',
+    avatar: ''
+  });
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        setUser({
+          ...user,
+          name: user.displayName,
+          avatar: user.photoURL,          
+        })
+      }
+    });
+  }, [])  
 
   return (
     <Card
@@ -59,21 +103,20 @@ const AccountProfile = props => {
               gutterBottom
               variant="h2"
             >
-              John Doe
+              {user.name}
             </Typography>
             <Typography
               className={classes.locationText}
               color="textSecondary"
               variant="body1"
             >
-              {user.city}, {user.country}
+              info1, info2
             </Typography>
             <Typography
               className={classes.dateText}
               color="textSecondary"
               variant="body1"
             >
-              {moment().format('hh:mm A')} ({user.timezone})
             </Typography>
           </div>
           <Avatar
@@ -91,14 +134,19 @@ const AccountProfile = props => {
       </CardContent>
       <Divider />
       <CardActions>
+        <input onChange={uploadFileImg} type="file" id="my_file" accept="image/*"
+          hidden={true}
+          ref={fileUploadInput}
+        />        
         <Button
           className={classes.uploadButton}
           color="primary"
           variant="text"
+          onClick={() => fileUploadInput.current.click()}
         >
-          Upload picture
+          Atualizar foto
         </Button>
-        <Button variant="text">Remove picture</Button>
+        <Button onClick={() => updatePhoto("")} variant="text">Remover foto</Button>
       </CardActions>
     </Card>
   );
