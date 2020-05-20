@@ -20,6 +20,7 @@ const CreateUser = () => {
         spacing={4}
       >
         <Grid>
+          {/* <AccountProfile></AccountProfile> */}
           <AccountDetails />
         </Grid>
       </Grid>

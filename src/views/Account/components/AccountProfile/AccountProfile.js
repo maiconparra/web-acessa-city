@@ -13,8 +13,9 @@ import {
   Button,
   LinearProgress
 } from '@material-ui/core';
-import firebase from 'firebase/app'
 import s3 from 'utils/AWS-S3'
+import api from 'utils/API'
+import currentUser from 'utils/AppUser'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -44,23 +45,16 @@ const AccountProfile = props => {
   var fileUploadInput = React.createRef();  
 
   const updatePhoto = photoUrl => {
-    var fb_user = firebase.auth().currentUser;
 
-    fb_user.updateProfile({
+    const update = {
+      userId: user.id,
       photoURL: photoUrl
-    }).then(function() {
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          setUser({
-            ...user,
-            name: user.displayName,
-            avatar: user.photoURL,
-          })
-        }
-      });
-    }).catch(function(error) {
-      // An error happened.
-    });
+    }
+
+    api.put('/user/update-photo-profile', update)
+      .then(response => {
+        setUser(response.data)
+      })
   }
 
   const uploadFileImg = (e) => {
@@ -74,21 +68,13 @@ const AccountProfile = props => {
       })
   }  
 
-  const [user, setUser] = useState({
-    name: '',
-    avatar: ''
-  });
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-        setUser({
-          ...user,
-          name: user.displayName,
-          avatar: user.photoURL,          
-        })
-      }
-    });
+    currentUser()
+      .then(user => {
+        setUser(user)
+      })
   }, [])  
 
   return (
@@ -103,7 +89,7 @@ const AccountProfile = props => {
               gutterBottom
               variant="h2"
             >
-              {user.name}
+              {user.firstName}
             </Typography>
             <Typography
               className={classes.locationText}
@@ -121,7 +107,7 @@ const AccountProfile = props => {
           </div>
           <Avatar
             className={classes.avatar}
-            src={user.avatar}
+            src={user.profileUrl}
           />
         </div>
         <div className={classes.progress}>
