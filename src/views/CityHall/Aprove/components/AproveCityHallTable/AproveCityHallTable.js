@@ -411,16 +411,14 @@ const AproveCityHallTable = props => {
   const handleRowsPerPageChange = event => {
     setRowsPerPage(event.target.value);
   };
+
   /* APROVAR PREFEITURA */
-  
-  const aproveCityHall = () => {
-    //let idCityHall = 'a378ed8d-e5dc-4b4e-96bd-27fc5257fb6e'
-    API.put(`/city-hall/confirm-register/a378ed8d-e5dc-4b4e-96bd-27fc5257fb6e`
-    ///api/v1/city-hall/confirm-register/{id}
+  const aproveCityHall = (idCityHall) => {
+    console.log("AAAAAAAAAA " + idCityHall.id)
+   API.put(`/city-hall/confirm-register/${idCityHall.id}`
     ).then(response => {
       console.log('SUCESSO')
     }).catch(erro => {
-      //console.log(erro);
       console.log('ERRO')
     })
   }
@@ -473,7 +471,7 @@ const AproveCityHallTable = props => {
                       <TableCell>
                         <FormControl margin="dense">
                           <Button
-                            onClick={aproveCityHall}
+                            onClick={()=>aproveCityHall(denunciation)}
                             style={{
                               background: 'green',
                             }}
@@ -538,8 +536,7 @@ const AproveCityHallTable = props => {
                             <div>
                             </div>
                           </CardContent>
-
-
+                          
                         </Card>
                         <Card className={classes.root}
                           style={{

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import { useForm, ErrorMessage } from 'react-hook-form'
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -12,20 +11,73 @@ import {
   Grid,
   Button,
   TextField,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  SnackbarContent
 } from '@material-ui/core';
-
-// import CityhallService from '../../../api/cityhall/cityhall-service';
-
-import api from '../../../utils/API';
-
-const useStyles = makeStyles(() => ({
-  root: {}
+import api from 'utils/API';
+import { useForm, ErrorMessage } from 'react-hook-form'
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
+
 
 const CityHallCreate = props => {
   const { className, ...rest } = props;
 
   const classes = useStyles();
+
+  const [values, setValues] = useState({
+    name: '',
+    cityId: '7ae590f1-c6a4-4bb3-91bf-1e82ea45bb4b',
+    cnpj: '',
+    address: '',
+    neighborhood: '',
+    zipCode: '',
+    number: '',
+    email: ''
+  });
+
+  const { register, watch } = useForm(
+    { validateCriteriaMode: "all" }
+  )
+
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [errors, setErrors] = useState([]);
+
+  const handleChange = event => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
+
+  const limparForm = () => {
+    setValues({
+      name: '',
+      cnpj: '',
+      email: '',
+      address: '',
+      neighborhood: '',
+      zipCode: '',
+      number: '',
+      cityId: '',
+      stateId: ''
+    })
+  }
+
+  const handleSnackClick = () => {
+    setErrors([]);
+  }
 
   const [states, setStates] = useState({
     states: []
@@ -35,36 +87,12 @@ const CityHallCreate = props => {
     cities: [],
   })
 
-  const [values, setValues] = useState({
-    name: '',
-    cityId: '',
-    cnpj: '',
-    address: '',
-    neighborhood: '',
-    zipCode: '',
-    cityId: '',
-    number: ''
-  });
-
-  const limparCampos = () => {
-    setValues({
-      name: '',
-      cityId: '',
-      cnpj: '',
-      address: '',
-      neighborhood: '',
-      zipCode: '',
-      number: '',
-
-    })
-  }
-
+  //TRAZER OS ESTADOS
   const changeState = (stateId) => {
     setValues({
       ...values,
       stateId: stateId
     })
-
     api.get('/state/' + stateId + '/cities').then((result) => {
       setCities({
         cities: result.data
@@ -77,7 +105,6 @@ const CityHallCreate = props => {
         })
       }
     })
-
     console.log(values);
   }
 
@@ -101,271 +128,227 @@ const CityHallCreate = props => {
     changeState(stateId);
   }
 
-  async function onRegisterCityhall(values) {
+  const campoVazio = values =>{
+    values.name === '' ||
+    values.cnpj=== ''||
+    values.email=== ''||
+    values.address=== ''||
+    values.neighborhood=== ''||
+    values.zipCode=== ''||
+    values.number=== ''||
+    values.cityId=== ''
+    ?  
+    setErrors([
+      "Existem campos vazios."
+    ]) : 
+    setErrors([
+      "A prefeitura " + values.name + ", e o usuário " +
+      values.email + " foram criados com sucesso."
+    ])
+  }
+  const handleClick = () => {
+    setOpen(true)
+    console.log(values);
+    campoVazio(values) 
+    var newCityHall = values;
+    api.post('/city-hall', newCityHall)
+      .then((result) => {
+        setOpen(false)
+        setErrors([
+          "A prefeitura " + values.name + ", e o usuário " +
+          values.email + " foram criados com sucesso."
+        ])
+        limparForm()
+      })
+      .catch((aError) => {
+        if (aError.response.status == 400) {
+          setOpen(false)
+          console.log(aError.response.data.errors)
+          setErrors(aError.response.data.errors)
+        }
+        else if (aError.response.status == 500) {
+          setErrors([
+            "Erro no servidor"
+          ])
+        }
 
-    console.log("onRegisterCityhall ==== " + values.number)
-    return await api.post('/city-hall', values).then((data)=>{
-      console.log("Sucesso")
-      alert("Prefeitura cadastrada com sucesso, aguarde a aprovação.") 
-      limparCampos();      
-    }).catch((erro)=>{
-      console.log("Falhou")
-      alert("Cidade já cadastrada!") 
-    })
-    
+        setOpen(false)
+      })
   }
 
-  //Recebe os dados
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-    console.log(event.target.value);
-
-  };
-
-  const { register, watch, errors } = useForm(
-    { validateCriteriaMode: "all" }
-  )
-  const onSubmit = data => {
-    console.log("onSubmit" + JSON.stringify(values))    
-    onRegisterCityhall(values);
-    console.log("TESTE 1")
-    
-
+  const teste = () => {
+    return (<div>
+      {errors.map(error => (
+        <div>
+        <SnackbarContent message={<h3>{error}</h3>} />
+        </div>
+      ))}
+    </div>)
   }
-
-  const handleErrors = (fieldName) =>
-    <ErrorMessage errors={errors} name={fieldName}>
-      {({ messages }) =>
-        messages &&
-        Object.entries(messages).map(([type, message]) => (
-          linhaErro(message)
-        ))
-      }
-    </ErrorMessage>
-
-  const linhaErro = (message) =>
-    <p>{message}</p>
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <form
-        autoComplete="off"
-        noValidate
-        onSubmit={onSubmit}
+    <div>
+      <Card
+        {...rest}
+        className={clsx(classes.root, className)}
       >
-        <CardHeader
-          subheader="Cadastrar uma nova prefeitura"
-          title="Cadastro de prefeitura"
-        />
-        <Divider />
-        <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
+        <form
+          autoComplete="off"
+          noValidate
+        >
+          <CardHeader
+            subheader="Cadastrar prefeitura"
+            title="Cadastrar prefeitura"
+          />
+          <Divider />
+          <CardContent>
             <Grid
-              item
-              md={6}
-              xs={12}
+              container
+              spacing={3}
             >
-
-              <TextField
-                helperText="Informe o nome da prefeitura"
-                fullWidth
-                label="Nome da Prefeitura"
-                margin="dense"
-                name="name"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 80,
-                    message: "Excedeu o tamanho de 80 caracteres"
-                  }
-                })}
-                defaultValue={values.name}
-                variant="outlined"
-                error={errors.name}
-              />
-              {handleErrors('name')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                helperText="Informe o CNPJ da prefeitura"
-                fullWidth
-                label="CNPJ"
-                margin="dense"
-                name="cnpj"
-                type="number"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 14,
-                    message: "Excedeu o tamanho de 14 caracteres."
-                  },
-                  minLength: {
-                    value: 14,
-                    message: "Tamanho necessário é de 14 caracteres."
-                  },
-                })}
-                defaultValue={values.cnpj}
-                variant="outlined"
-                error={errors.cnpj}
-              />
-              {handleErrors('cnpj')}
-
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                helperText="Informe o endereço da prefeitura"
-                fullWidth
-                label="Endereço"
-                margin="dense"
-                name="address"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 80,
-                    message: "Excedeu o tamanho de 80 caracteres"
-                  }
-                })}
-                defaultValue={values.address}
-                variant="outlined"
-                error={errors.address}
-              />
-              {handleErrors('address')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                helperText="Informe o bairro da prefeitura"
-                fullWidth
-                label="Bairro"
-                margin="dense"
-                name="neighborhood"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 80,
-                    message: "Excedeu o tamanho de 80 caracteres"
-                  }
-                })}
-                defaultValue={values.neighborhood}
-                variant="outlined"
-                error={errors.neighborhood}
-              />
-              {handleErrors('neighborhood')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                helperText="Informe o CEP da prefeitura"
-                fullWidth
-                label="CEP"
-                margin="dense"
-                name="zipCode"
-                type="number"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 8,
-                    message: "Excedeu o tamanho de 8 caracteres"
-                  },
-                  minLength: {
-                    value: 8,
-                    message: "Tamanho necessário de 8 caracteres"
-                  }
-                })}
-                defaultValue={values.zipCode}
-                variant="outlined"
-                error={errors.zipCode}
-              />
-              {handleErrors('zipCode')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              {/* Numero da prefeitura*/}
-              <TextField
-                helperText="Informe o número da prefeitura"
-                fullWidth
-                label="Número"
-                margin="dense"
-                name="number"
-                type="number"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                  maxLength: {
-                    value: 5,
-                    message: "Excedeu o tamanho de 10 caracteres."
-                  },
-                  minLength: {
-                    value: 1,
-                    message: "Tamanho necessário de ao menos 1 caracteres."
-                  },
-                })}
-                defaultValue={values.number}
-                variant="outlined"
-                error={errors.number}
-              />
-              {handleErrors('number')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                helperText="Informe o estado da prefeitura"
-                fullWidth
-                //label="Estado"
-                margin="dense"
-                name="stateId"
-                required
-                select
-                SelectProps={{ native: true }}
-                onChange={handleStateChange}
-                value={values.stateId}
-                variant="outlined"
-                inputRef={register({
-                  required: true,
-                })}
-                error={errors.stateId}
+              <Grid
+                item
+                md={6}
+                xs={12}
               >
-                {states.states.map(option => (
+                <TextField
+                  fullWidth
+                  helperText="Informe o nome da prefeitura"
+                  label="Nome da prefeitura"
+                  margin="dense"
+                  name="name"
+                  onChange={handleChange}
+                  required
+                  value={values.name}
+                  variant="outlined"               
+
+                />
+              </Grid>
+              <Grid
+                item
+                md={2}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o CNPJ da prefeitura"
+                  label="CNPJ"
+                  margin="dense"
+                  name="cnpj"
+                  onChange={handleChange}
+                  required
+                  value={values.cnpj}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={2}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o CEP da prefeitura"
+                  label="CEP"
+                  margin="dense"
+                  name="zipCode"
+                  onChange={handleChange}
+                  required
+                  value={values.zipCode}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={2}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o número da prefeitura"
+                  label="Número"
+                  margin="dense"
+                  name="number"
+                  onChange={handleChange}
+                  required
+                  value={values.number}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o endereço de e-mail"
+                  label="Endereço de e-mail"
+                  margin="dense"
+                  name="email"
+                  required
+                  onChange={handleChange}
+                  required
+                  value={values.email}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o endereço da prefeitura"
+                  label="Endereço"
+                  margin="dense"
+                  name="address"
+                  required
+                  onChange={handleChange}
+                  type="text"
+                  value={values.address}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o bairro da prefeitura"
+                  label="Bairro"
+                  margin="dense"
+                  name="neighborhood"
+                  onChange={handleChange}
+                  required
+                  type="text"
+                  value={values.neighborhood}
+                  variant="outlined"
+                />
+              </Grid>             
+             
+              <Grid
+                item
+                md={3}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Informe o estado"
+                  label="Estado"
+                  margin="dense"
+                  name="state"
+                  onChange={handleChange}
+                  required
+                  select
+                  SelectProps={{ native: true }}
+                  onChange={handleStateChange}
+                  value={values.state}
+                  variant="outlined"
+                >{states.states.map(option => (
                   <option
                     key={option.id}
                     value={option.id}
@@ -373,32 +356,25 @@ const CityHallCreate = props => {
                     {option.name}
                   </option>
                 ))}
-              </TextField>
-              {handleErrors('stateId')}
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-              helperText="Informe a cidade da prefeitura"
-                fullWidth
-                label="Cidade"
-                margin="dense"
-                name="cityId"
-                onChange={handleChange}
-                required
-                inputRef={register({
-                  required: true,
-                })}
-                select
-                SelectProps={{ native: false }}
-                value={values.cityId}
-                variant="outlined"
-                error={errors.cityId}
+                </TextField>
+              </Grid>
+              <Grid
+                item
+                md={3}
+                xs={12}
               >
-                {cities.cities.map(option => (
+                <TextField
+                  fullWidth
+                  helperText="Informe a cidade"
+                  label="Cidade"
+                  margin="dense"
+                  name="state"
+                  select
+                  onChange={handleChange}
+                  required
+                  value={values.cityId}
+                  variant="outlined"
+                >{cities.cities.map(option => (
                   <option
                     key={option.id}
                     value={option.id}
@@ -406,29 +382,29 @@ const CityHallCreate = props => {
                     {option.name}
                   </option>
                 ))}
-              </TextField>
-              {handleErrors('cityId')}
+                </TextField>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleClick}
             >
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <CardActions>
-          <Button
-            color="primary"
-            type="submit"
-            variant="contained"
-          >
-            Cadastrar
-          </Button>
-        </CardActions>
-      </form>
-    </Card>
+              Cadastrar
+            </Button>
+          </CardActions>
+        </form>
+      </Card>
+      <Snackbar open={errors.length} autoHideDuration={20000} onClick={handleSnackClick}>
+        {teste()}
+      </Snackbar>
+      <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </div>
   );
 };
 
