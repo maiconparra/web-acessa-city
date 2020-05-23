@@ -39,18 +39,21 @@ import currentUser from 'utils/AppUser'
 
 const Routes = () => {
 
-  const [roles, setRoles] = useState({
-    loaded: true,
-    admin: false,
-    user: false,
-  });
+const [roles, setRoles] = useState({
+  loaded: false
+});
 
   useEffect(() => {
     currentUser().then(user => {
+      console.log('UserRoles::::', user)
       setRoles({
         ...roles,
         loaded: true,
-        admin: true,
+        admin: user.roles.indexOf("admin"),
+        coordinator: user.roles.includes('coordinator'),
+        moderator: user.roles.includes('moderator'),
+        city_hall: user.roles.includes('city_hall'),
+        user: user.roles.includes('user')
       })
     })
       .catch(() => {
