@@ -26,6 +26,7 @@ import {
   CommentsListCoordinator as CommentsCoordinatorView,
   DenunciationListCoordinator as DenunciationCoordinatorView,
   AproveCityHallList as AproveCityHallListView,
+  CategoryList as CategoryListView
   
 
 } from './views';
@@ -173,6 +174,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/cityhall-aprove"
+      />
+
+      <RouteWithLayout
+        component={CategoryListView}
+        exact
+        layout={MainLayout}
+        path="/categorias"
       />
        
       <RouteWithLayout
