@@ -40,7 +40,7 @@ import currentUser from 'utils/AppUser'
 const Routes = () => {
 
 const [roles, setRoles] = useState({
-  loaded: false,
+  loaded: true,
   admin: false,
   user: false,  
 });
@@ -51,15 +51,18 @@ const [roles, setRoles] = useState({
         ...roles,
         loaded: true,
         admin: true,
-
       })
     })
+    .catch(() => {
+      setRoles({
+        ...roles,
+        loaded: true
+      })
+    }) 
   }, [])
 
 
   if (roles.loaded) {
-
-  
   return (
     <Switch>
       <Redirect
@@ -106,6 +109,7 @@ const [roles, setRoles] = useState({
         exact
         layout={MainLayout}
         path="/users"
+        permission={true}
       />
       <RouteWithLayout
         component={ProductListView}

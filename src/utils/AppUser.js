@@ -11,6 +11,12 @@ const currentUser = () => {
                   then(response => {
                       resolve(response.data)
                   })
+                  .catch(error => {
+                    reject(error)
+                  })
+              })
+              .catch(error => {
+                reject(error)
               })
             }
         });
