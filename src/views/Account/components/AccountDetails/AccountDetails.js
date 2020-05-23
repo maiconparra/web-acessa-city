@@ -26,9 +26,8 @@ const AccountDetails = props => {
     firstName: '',
     lastName: '',
     email: '',
-    phone: '',
-    state: '',
-    country: ''
+    senha: '',
+    confirmarSenha: ''
   });
 
   const handleChange = event => {
@@ -37,21 +36,7 @@ const AccountDetails = props => {
       [event.target.name]: event.target.value
     });
   };
-
-  const states = [
-    {
-      value: 'alabama',
-      label: 'Alabama'
-    },
-    {
-      value: 'new-york',
-      label: 'New York'
-    },
-    {
-      value: 'san-francisco',
-      label: 'San Francisco'
-    }
-  ];
+  
 
   return (
     <Card
@@ -70,7 +55,7 @@ const AccountDetails = props => {
         <CardContent>
           <Grid
             container
-            spacing={3}
+            spacing={2}
           >
             <Grid
               item
@@ -96,6 +81,7 @@ const AccountDetails = props => {
             >
               <TextField
                 fullWidth
+                helperText="Seu segundo nome"
                 label="Sobrenome"
                 margin="dense"
                 name="lastName"
@@ -111,7 +97,7 @@ const AccountDetails = props => {
             >
               <TextField
                 fullWidth
-                disabled={true}
+                helperText="Seu email"
                 label="Endereço de e-mail"
                 margin="dense"
                 name="email"
@@ -128,42 +114,35 @@ const AccountDetails = props => {
             >
               <TextField
                 fullWidth
-                label="Select State"
+                helperText="Senha"
+                label="Senha"
                 margin="dense"
-                name="state"
-                onChange={handleChange}
+                name="password"
+                type="password"
                 required
-                select
-                // eslint-disable-next-line react/jsx-sort-props
-                SelectProps={{ native: true }}
-                value={values.state}
+                value={values.senha}
                 variant="outlined"
-              >
-                {states.map(option => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+              />
+
             </Grid>
             <Grid
               item
               md={6}
               xs={12}
             >
+
               <TextField
                 fullWidth
-                label="Country"
+                helperText="Confirmar senha"
+                label="Confirmação da senha"
                 margin="dense"
-                name="country"
-                onChange={handleChange}
+                name="password"
+                type="password"
                 required
-                value={values.country}
+                value={values.confirmarSenha}
                 variant="outlined"
               />
+
             </Grid>
           </Grid>
         </CardContent>

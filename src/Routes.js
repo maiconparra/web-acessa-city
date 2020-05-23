@@ -20,16 +20,14 @@ import {
   MeuExemplo as MeuExemploBanana,
   DenunciationList as DenunciationView,
   CommentsList as CommentsView,
-  Profile as ProfileView,
   CreateUser as CreateUserView,
-  ProfileCoordinator as ProfileCoordinatorView,
   CommentsListCoordinator as CommentsCoordinatorView,
   DenunciationListCoordinator as DenunciationCoordinatorView,
-  AproveCityHallList as AproveCityHallListView,
   CategoryList as CategoryListView,
+  AproveCityHallList as AproveCityHallListView,
   PrefecturesList as PrefecturesListView,
   CitizensList as CitizensListView,
-  ProfileMaster as ProfileMasterView,
+
 
 
 } from './views';
@@ -39,9 +37,9 @@ import currentUser from 'utils/AppUser'
 
 const Routes = () => {
 
-const [roles, setRoles] = useState({
-  loaded: false
-});
+  const [roles, setRoles] = useState({
+    loaded: false
+  });
 
   useEffect(() => {
     currentUser().then(user => {
@@ -65,7 +63,7 @@ const [roles, setRoles] = useState({
   }, [])
 
 
-  if (roles.loaded) {
+  if (true) {
     return (
       <Switch>
         <Redirect
@@ -77,7 +75,6 @@ const [roles, setRoles] = useState({
           component={CategoryView}
           exact
           layout={MainLayout}
-          permission={roles.admin}
           path="/category"
         />
         <RouteWithLayout
@@ -86,24 +83,8 @@ const [roles, setRoles] = useState({
           layout={MainLayout}
           path="/meu-exemplo"
         />
-        <RouteWithLayout
-          component={CityHallCreateView}
-          exact
-          layout={MainLayout}
-          path="/cityhall-create"
-        />
-        <RouteWithLayout
-          component={DashboardView}
-          exact
-          layout={MainLayout}
-          path="/dashboard"
-        />
-        <RouteWithLayout
-          component={UserListView}
-          exact
-          layout={MainLayout}
-          path="/users"
-        />
+
+
         <RouteWithLayout
           component={ProductListView}
           exact
@@ -122,30 +103,29 @@ const [roles, setRoles] = useState({
           layout={MainLayout}
           path="/icons"
         />
-        <RouteWithLayout
-          component={AccountView}
-          exact
-          layout={MainLayout}
-          path="/meu-perfil"
-        />
+
         <RouteWithLayout
           component={SettingsView}
           exact
           layout={MainLayout}
           path="/settings"
         />
+
+
+
+
+        {/* Rotas da Prefeitura */}
         <RouteWithLayout
-          component={SignUpView}
+          component={CreateUserView}
           exact
-          layout={MinimalLayout}
-          path="/sign-up"
+          layout={MainLayout}
+          path="/novo-usuario"
+          permission={roles.city_hall}
         />
-        <Route
-          component={SignInView}
-          exact
-          layout={MinimalLayout}
-          path="/sign-in"
-        />
+        {/* FIM Rotas da Prefeitura*/}
+
+
+
 
         {/* Rotas do Moderador */}
 
@@ -153,24 +133,21 @@ const [roles, setRoles] = useState({
           component={DenunciationView}
           exact
           layout={MainLayout}
-          path="/denunciations"
+          path="/denuncias-moderador"
+          permission={true}
         />
 
         <RouteWithLayout
           component={CommentsView}
           exact
           layout={MainLayout}
-          path="/reporting-comments"
-        />
-
-        <RouteWithLayout
-          component={ProfileView}
-          exact
-          layout={MainLayout}
-          path="/profile"
+          path="/comentarios-moderador"
+          permission={true}
         />
 
         {/* FIM Rotas do Moderador */}
+
+
 
 
         {/* Rotas do Coordinator */}
@@ -179,7 +156,7 @@ const [roles, setRoles] = useState({
           component={DenunciationCoordinatorView}
           exact
           layout={MainLayout}
-          path="/denuncias-coordenador"
+          path="/denuncias"
           permission={roles.coordinator}
         />
 
@@ -187,66 +164,87 @@ const [roles, setRoles] = useState({
           component={CommentsCoordinatorView}
           exact
           layout={MainLayout}
-          path="/comentatios-denuncias-coordenador"
+          path="/comentarios"
           permission={roles.coordinator}
         />
-
         <RouteWithLayout
-          component={CreateUserView}
+          component={CategoryListView}
           exact
           layout={MainLayout}
-          path="/novo-usuario"
+          path="/categorias-subcategorias"
           permission={roles.coordinator}
         />
-
-        <RouteWithLayout
-          component={ProfileCoordinatorView}
-          exact
-          layout={MainLayout}
-          path="/perfil-coordenador"
-          permission={roles.coordinator}
-        />
-
         {/* FIM Rotas do Coordinator */}
 
 
         {/* Rotas do Master */}
 
+        {/* <RouteWithLayout
+          component={AproveCityHallListView}
+          exact
+          layout={MainLayout}
+          path="/aprovar-prefeitura"
+          permission={true}
+        /> */}
+
+        <RouteWithLayout
+          component={CityHallCreateView}
+          exact
+          layout={MainLayout}
+          path="/criar-prefeitura"
+          permission={roles.admin}
+        />
+
         <RouteWithLayout
           component={PrefecturesListView}
           exact
           layout={MainLayout}
-          path="/prefectures"
+          path="/prefeituras"
+          permission={roles.admin}
         />
+
 
         <RouteWithLayout
           component={CitizensListView}
           exact
           layout={MainLayout}
-          path="/citizens"
+          path="/cidadaos"
+          permission={roles.admin}
         />
-
-        <RouteWithLayout
-          component={ProfileMasterView}
-          exact
-          layout={MainLayout}
-          path="/profile-master"
-        />
-
         {/* FIM Rotas do Master */}
 
+
+
+        {/* ROTAS PARA TODOS */}
+
         <RouteWithLayout
-          component={AproveCityHallListView}
+          component={SignUpView}
           exact
-          layout={MainLayout}
-          path="/cityhall-aprove"
+          layout={MinimalLayout}
+          path="/sign-up"
+        />
+
+        <Route
+          component={SignInView}
+          exact
+          layout={MinimalLayout}
+          path="/sign-in"
         />
 
         <RouteWithLayout
-          component={CategoryListView}
+          component={DashboardView}
           exact
           layout={MainLayout}
-          path="/categorias"
+          path="/dashboard"
+          permission={true}
+        />
+
+        <RouteWithLayout
+          component={AccountView}
+          exact
+          layout={MainLayout}
+          path="/meu-perfil"
+          permission={true}
         />
 
         <Route
@@ -255,7 +253,12 @@ const [roles, setRoles] = useState({
           layout={MinimalLayout}
           path="/not-found"
         />
+
         <Redirect to="/not-found" />
+
+        {/* FIM PARA TODOS */}
+
+
       </Switch>
     );
   }

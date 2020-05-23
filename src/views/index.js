@@ -13,15 +13,12 @@ export { default as UserList } from './UserList';
 export { default as MeuExemplo } from './MeuExemplo';
 export { default as DenunciationList } from './Moderator/DenunciationList';
 export { default as CommentsList } from './Moderator/CommentsList';
-export { default as Profile } from './Moderator/Profile';
 export { default as CreateUser} from './CityHall/CreateUser';
 export { default as DenunciationListCoordinator } from './Coordinator/DenunciationList';
 export { default as CommentsListCoordinator } from './Coordinator/CommentsList';
-export { default as ProfileCoordinator } from './Coordinator/Profile';
 export { default as ReportInteractionHistory} from './ReportInteractionHistory';
 export { default as AproveCityHallList } from './CityHall/Aprove';
-export { default as CategoryList } from './NewCategory/CategoryList';
+export { default as CategoryList } from './Coordinator/CategoryList';
 export { default as PrefecturesList } from './AdminMaster/PrefecturesList';
 export { default as CitizensList } from './AdminMaster/CitizensList';
-export { default as ProfileMaster } from './AdminMaster/Profile';
 

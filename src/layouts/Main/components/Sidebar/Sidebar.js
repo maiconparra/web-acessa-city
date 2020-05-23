@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
@@ -18,6 +18,9 @@ import Face from '@material-ui/icons/Face';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import GroupIcon from '@material-ui/icons/Group';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import Category from '@material-ui/icons/Category';
+
 import { Profile, SidebarNav } from './components';
 import firebase from 'firebase/app'
 
@@ -49,10 +52,15 @@ const Sidebar = props => {
 
   const classes = useStyles();
   const [menuPages, setMenuPages] = useState({
-    items: 
-    [
-    
-    ]    
+    items:
+      [
+        {
+          title: 'Dashboard',
+          href: '/dashboard',
+          icon: <DashboardIcon />
+        },
+
+      ]
   });
 
 
@@ -83,15 +91,7 @@ const Sidebar = props => {
 
   //    /* SIDEBAR MASTER */
   //    {
-  //     title: 'Lista de Prefeituras',
-  //     href: '/prefectures',
-  //     icon: <AccountBalanceIcon />
-  //   },
-  //   {
-  //     title: 'Lista de Cidadão',
-  //     href: '/citizens',
-  //     icon: <GroupIcon />
-  //   },   
+
   //   {
   //     title: 'Alterar perfil Master',
   //     href: '/profile-master',
@@ -123,36 +123,89 @@ const Sidebar = props => {
   //   icon: <SettingsIcon />
   // }
 
-  const [user, setUser] = useState({
-  })  
 
-  
-  const coordinadorMenu = (menu) => {
+  // {
+  //   title: 'Cadastrar Usuário',
+  //   href: '/novo-usuario',
+  //   icon: <PersonAddIcon />
+  // },
+
+  const [user, setUser] = useState({
+  })
+
+
+  const masterMenu = (menu) => {
     menu.push(
+
       {
-        title: 'Denúcias de usuários Coordenador',
-        href: '/denuncias-coordenador',
-        icon: <RecordVoiceOverIcon />
+        title: 'Criar Prefeitura',
+        href: '/criar-prefeitura',
+        icon: <AccountBalanceIcon />
       },
       {
-        title: 'Comentários Coordenador',
-        href: '/comentatios-denuncias-coordenador',
-        icon: <Forum />
-      },    
+        title: 'Gerenciar Prefeituras',
+        href: '/prefeituras',
+        icon: <AccountBalanceIcon />
+      },
       {
-        title: 'Cadastrar Usuário',
-        href: '/novo-usuario',
-        icon: <Forum />
-      },  
-      {
-        title: 'Alterar perfil Coordenador',
-        href: '/perfil-coordenador',
-        icon: <Face />
+        title: 'Lista de Cidadão',
+        href: '/cidadaos',
+        icon: <GroupIcon />
       },
 
     )
   }
 
+
+  const cityHallMenu = (menu) => {
+    menu.push(
+   
+      {
+        title: 'Gerenciar Cood/Mod',
+        href: '/novo-usuario',
+        icon: <PersonAddIcon />
+      },
+
+    )
+  }
+
+  const coordinadorMenu = (menu) => {
+    menu.push(
+      {
+        title: 'Denúcias',
+        href: '/denuncias',
+        icon: <RecordVoiceOverIcon />
+      },
+      {
+        title: 'Comentários',
+        href: '/comentarios',
+        icon: <Forum />
+      },
+      {
+        title: 'Gerenciar Cat/Sub',
+        href: '/categorias-subcategorias',
+        icon: <Category />
+      },
+      
+    )
+  }
+ 
+
+  const moderatorMenu = (menu) => {
+    menu.push(
+      {
+        title: 'Denúcias de Usuário',
+        href: '/denuncias-moderador',
+        icon: <RecordVoiceOverIcon />
+      },
+      {
+        title: 'Comentários',
+        href: '/comentarios-moderador',
+        icon: <Forum />
+      },
+
+    )
+  }
 
   function onChange(firebaseUser) {
     if (firebaseUser) {
@@ -161,27 +214,31 @@ const Sidebar = props => {
         let novoMenu = menuPages.items;
 
         const claims = token.claims;
-        if (claims.coordinator) {        
+
+        if (claims.admin) {
+          masterMenu(novoMenu);
+        }
+
+        if (claims.city_hall) {
+          cityHallMenu(novoMenu);
+        }
+
+        if (claims.coordinator) {
           coordinadorMenu(novoMenu);
         }
 
-        // if (claims.coordinator) {
-        //   novoMenu.push(
-        //     {
-        //       title: 'Denúcias de usuários',
-        //       href: '/denunciations',
-        //       icon: <RecordVoiceOverIcon />
-        //     },
-        //     {
-        //       title: 'Denúcias de usuários',
-        //       href: '/denunciations',
-        //       icon: <RecordVoiceOverIcon />
-        //     },
-        //   )
-        // }
+        if (claims.moderator) {
+          moderatorMenu(novoMenu);
+        }
+
 
         // último elemento do menu
         novoMenu.push(
+          {
+            title: 'Alterar perfil',
+            href: '/meu-perfil',
+            icon: <Face />
+          },
           {
             title: 'Sair',
             href: '/sign-in',
@@ -195,15 +252,15 @@ const Sidebar = props => {
 
       })
     } else {
-        // No user is signed in.
+      // No user is signed in.
     }
-  }  
+  }
 
-  React.useEffect(() => {        
+  React.useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(onChange)
 
     return () => unsubscribe()
-  }, [])     
+  }, [])
 
   return (
     <Drawer
@@ -219,10 +276,10 @@ const Sidebar = props => {
       >
         <Profile />
         <Divider className={classes.divider} />
-          <SidebarNav
-            className={classes.nav}
-            pages={menuPages.items}
-          />
+        <SidebarNav
+          className={classes.nav}
+          pages={menuPages.items}
+        />
       </div>
     </Drawer>
   );

@@ -42,7 +42,11 @@ const AccountProfile = props => {
 
   const classes = useStyles();
 
-  var fileUploadInput = React.createRef();  
+  var fileUploadInput = React.createRef();
+
+  const showFileUpload = (e) => {
+    fileUploadInput.current.click();
+  }
 
   const updatePhoto = photoUrl => {
 
@@ -63,10 +67,10 @@ const AccountProfile = props => {
         const photo = result.fotoUrl
         updatePhoto(photo)
 
-      }).catch((erro) =>{
+      }).catch((erro) => {
 
       })
-  }  
+  }
 
   const [user, setUser] = useState({});
 
@@ -75,7 +79,7 @@ const AccountProfile = props => {
       .then(user => {
         setUser(user)
       })
-  }, [])  
+  }, [])
 
   return (
     <Card
@@ -96,34 +100,39 @@ const AccountProfile = props => {
               color="textSecondary"
               variant="body1"
             >
-              info1, info2
-            </Typography>
-            <Typography
-              className={classes.dateText}
-              color="textSecondary"
-              variant="body1"
-            >
+              {user.email}
             </Typography>
           </div>
-          <Avatar
-            className={classes.avatar}
-            src={user.profileUrl}
-          />
+ 
+            <input
+              onChange={uploadFileImg}
+              type="file"
+              id="my_file"
+              accept="image/*"
+              style={{ display: "none" }}
+              ref={fileUploadInput}
+            />
+            <Avatar
+              className={classes.avatar}
+              src={user.profileUrl}
+              onClick={showFileUpload}
+            />
+        
         </div>
-        <div className={classes.progress}>
+        {/* <div className={classes.progress}>
           <Typography variant="body1">Profile Completeness: 70%</Typography>
           <LinearProgress
             value={70}
             variant="determinate"
           />
-        </div>
+        </div> */}
       </CardContent>
       <Divider />
       <CardActions>
         <input onChange={uploadFileImg} type="file" id="my_file" accept="image/*"
           hidden={true}
           ref={fileUploadInput}
-        />        
+        />
         <Button
           className={classes.uploadButton}
           color="primary"
