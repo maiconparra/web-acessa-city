@@ -26,8 +26,11 @@ import {
   CommentsListCoordinator as CommentsCoordinatorView,
   DenunciationListCoordinator as DenunciationCoordinatorView,
   AproveCityHallList as AproveCityHallListView,
-  CategoryList as CategoryListView
-  
+  CategoryList as CategoryListView,  
+  PrefecturesList as PrefecturesListView,
+  CitizensList as  CitizensListView,
+  ProfileMaster as ProfileMasterView,
+
 
 } from './views';
 
@@ -168,6 +171,32 @@ const Routes = () => {
       />
 
        {/* FIM Rotas do Coordinator */}
+
+
+        {/* Rotas do Master */}
+
+        <RouteWithLayout
+        component={PrefecturesListView}
+        exact
+        layout={MainLayout}
+        path="/prefectures"
+       />      
+    
+      <RouteWithLayout
+        component={CitizensListView}
+        exact
+        layout={MainLayout}
+        path="/citizens"
+       /> 
+
+      <RouteWithLayout
+        component={ProfileMasterView}
+        exact
+        layout={MainLayout}
+        path="/profile-master"
+      />
+
+       {/* FIM Rotas do Master */}
 
        <RouteWithLayout
         component={AproveCityHallListView}
