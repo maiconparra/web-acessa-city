@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const DenunciationsToolbar = props => {
+const CitizensToolbar = props => {
   const { className, denunciationsSlect, categories, ...rest } = props;
 
   const [descricao, setDescricao] = useState('');
@@ -326,10 +326,10 @@ const DenunciationsToolbar = props => {
   );
 };
 
-DenunciationsToolbar.propTypes = {
+CitizensToolbar.propTypes = {
   className: PropTypes.string
 };
 
-export default DenunciationsToolbar;
+export default CitizensToolbar;
 
 

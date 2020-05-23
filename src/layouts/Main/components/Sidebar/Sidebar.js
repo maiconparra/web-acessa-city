@@ -16,6 +16,8 @@ import CreateIcon from '@material-ui/icons/Create';
 import Forum from '@material-ui/icons/Forum';
 import Face from '@material-ui/icons/Face';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import GroupIcon from '@material-ui/icons/Group';
 
 import { Profile, SidebarNav } from './components';
 import firebase from 'firebase/app'
@@ -92,6 +94,23 @@ const Sidebar = props => {
         href: '/profile-coordinator',
         icon: <Face />
       },
+
+         /* SIDEBAR COORDENADOR */
+         {
+          title: 'Lista de Prefeituras',
+          href: '/prefectures',
+          icon: <AccountBalanceIcon />
+        },
+        {
+          title: 'Lista de Cidadão',
+          href: '/citizens',
+          icon: <GroupIcon />
+        },   
+        {
+          title: 'Alterar perfil Master',
+          href: '/profile-master',
+          icon: <Face />
+        },
       {
         title: 'Sair',
         href: '/sign-in',

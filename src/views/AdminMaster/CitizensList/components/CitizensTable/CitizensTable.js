@@ -137,7 +137,7 @@ const StyledMenuItem = withStyles((theme) => ({
 
 //FIM Abrir opções dos 3 pontinho
 
-const DenunciationsTable = props => {
+const CitizensTable = props => {
   const { className, denunciations, statusProgressDenunciation, coodenadores, ...rest } = props;
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
@@ -793,9 +793,9 @@ const DenunciationsTable = props => {
   );
 };
 
-DenunciationsTable.propTypes = {
+CitizensTable.propTypes = {
   className: PropTypes.string,
   users: PropTypes.array.isRequired
 };
 
-export default DenunciationsTable;
+export default CitizensTable;

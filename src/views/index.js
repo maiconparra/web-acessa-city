@@ -20,3 +20,7 @@ export { default as CommentsListCoordinator } from './Coordinator/CommentsList';
 export { default as ProfileCoordinator } from './Coordinator/Profile';
 export { default as ReportInteractionHistory} from './ReportInteractionHistory';
 export { default as AproveCityHallList } from './CityHall/Aprove';
+export { default as PrefecturesList } from './AdminMaster/PrefecturesList';
+export { default as CitizensList } from './AdminMaster/CitizensList';
+export { default as ProfileMaster } from './AdminMaster/Profile';
+
