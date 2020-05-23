@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import moment from 'moment';
 
-import { DenunciationsToolbar, DenunciationsTable } from './components';
+import { CategoryTable } from './components';
+import { CategoryToolbar } from './components';
 
 import {
    Dialog,
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DenunciationListCoordinator = () => {
+const CategoryList = () => {
   const classes = useStyles();
 
   const [denunciations, setDenunciations] = useState([]);
@@ -88,7 +88,6 @@ const DenunciationListCoordinator = () => {
     }
 
     const [user, setUser] = useState({
-      userId:''
     })  
   
 
@@ -98,7 +97,6 @@ const DenunciationListCoordinator = () => {
           const claims = token.claims;
             setUser({
                 ...user,
-                userId: claims.app_user_id
             })
             listCoodenador(claims.app_user_id);
         })
@@ -132,7 +130,7 @@ const DenunciationListCoordinator = () => {
 
   // Listar os dados  na tela
   const listDenunciations = () => {
-    API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
+    API.get('/category'
     ).then(response => {
        const listDenunciations2 = response.data;
        console.log(listDenunciations2);
@@ -191,31 +189,8 @@ const DenunciationListCoordinator = () => {
 
   /////Envio de em progresso
   const envioProgress = (progress) =>{
-
-    //console.log("user", user.userId);
-    // console.log("progress", JSON.stringify(progress))
-    var dataformatada = moment(progress.data).format('MM/DD/YYYY');
-
-    const progressJson ={
-      reportId: progress.denunciationsId,
-      userId: user.userId,
-      description: progress.description,
-      startDate: dataformatada 
-    }
-    console.log("progress", JSON.stringify(progressJson))
-    API.post(`/report/start-progress`, progressJson
-    ).then(response => {
-         listDenunciations();
-        setMensagem("Denuncia em Progresso");
-        setOpenDialog(true);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-
-
   
+  console.log("Progresso" + JSON.stringify(progress))
   }
 
 
@@ -249,9 +224,9 @@ const DenunciationListCoordinator = () => {
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <DenunciationsToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
+       <CategoryToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
       <div className={classes.content}>
-        <DenunciationsTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
+        <CategoryTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
       </div>
       <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
         <DialogTitle>Atenção</DialogTitle>
@@ -266,4 +241,4 @@ const DenunciationListCoordinator = () => {
   );
 };
 
-export default DenunciationListCoordinator;
+export default CategoryList;

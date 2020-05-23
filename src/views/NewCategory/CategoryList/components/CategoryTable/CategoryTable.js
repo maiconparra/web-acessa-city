@@ -137,7 +137,7 @@ const StyledMenuItem = withStyles((theme) => ({
 
 //FIM Abrir opções dos 3 pontinho
 
-const DenunciationsTable = props => {
+const CategoryTable = props => {
   const { className, denunciations, statusProgressDenunciation, coodenadores, ...rest } = props;
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState(false);
@@ -177,10 +177,6 @@ const DenunciationsTable = props => {
 
   //Modal de Aprovação
   const [openAprove, setOpenAprove] = React.useState(false);
-
-  const handleOpenAprove = () => {
-    setOpenAprove(true);
-  };
 
   const handleCloseAprove = () => {
     setOpenAprove(false);
@@ -300,8 +296,8 @@ const DenunciationsTable = props => {
     event.preventDefault();
 
     const progressAprove = {
-      
       denunciationsId: openModalDenunciations.denunciations.id,
+      reportStatusId: 'c37d9588-1875-44dd-8cf1-6781de7533c3',
       description: progress.description,
       data: progress.data
 
@@ -330,6 +326,7 @@ const DenunciationsTable = props => {
     });
     setOpen(true);
   };
+
 
   const handleClose = () => {
     setOpen(false);
@@ -462,8 +459,8 @@ const DenunciationsTable = props => {
 
     props.enviorEncerrar(encerrar);
     setFinishDenunciation({ denunciationsId: '', description: '', data: '', });
-     setOpenAprove(false);
-     setOpen(false);
+    setOpenAprove(false);
+    setOpen(false);
 
   }
 
@@ -484,12 +481,8 @@ const DenunciationsTable = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Denúncias</TableCell>
-                  <TableCell>Endereço</TableCell>
-                  <TableCell>Bairro</TableCell>
+
                   <TableCell>Categoria</TableCell>
-                  <TableCell>Datas</TableCell>
-                  <TableCell>Cometários</TableCell>
 
                 </TableRow>
               </TableHead>
@@ -499,14 +492,11 @@ const DenunciationsTable = props => {
                     <TableRow key={denunciation.id}
                       hover={true}
                     >
-                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.title}</TableCell>
-                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.street}</TableCell>
-                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.neighborhood}</TableCell>
-                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.category.name}</TableCell>
-                      <TableCell onClick={() => handleOpen(denunciation)}>{moment(denunciation.creationDate).format('DD/MM/YYYY')}</TableCell>
-                      <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
+                      <TableCell onClick={() => handleOpen(denunciation)}>{denunciation.name}</TableCell>
+
+                      {/*  <TableCell onClick={() => handleOpenComments(denunciation)}><div style={{
                         textAlign: 'center',
-                      }}><ForumIcon /></div></TableCell>
+                      }}><ForumIcon /></div></TableCell> */}
                     </TableRow>
 
                   )
@@ -534,45 +524,36 @@ const DenunciationsTable = props => {
                         <Card className={classes.root}
                           style={{
                             textAlign: 'center',
-                            maxWidth: 500,
+                            width: 500,
                             maxHeight: 500,
                           }}>
 
                           <CardContent>
                             <div>
+                              <CardHeader title="Categoria" />
                               <div>
-                                <div>
-                                  <CardHeader title={openModalDenunciations.denunciations.title} />
-                                  {openModalDenunciations.denunciations.attachments.length > 0 &&
-                                    <img class="image" src={openModalDenunciations.denunciations.attachments[0].url} />
-                                  }
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card className={classes.root}
-                          style={{
-                            maxWidth: 700
-                          }}
-                        >
-                          <CardContent>
-                            <div>
-                              <CardHeader title="Descrição:" />
-                              <div>
-                                <Typography align="justify">{openModalDenunciations.denunciations.description}</Typography>
+                                <TextField
+                                  fullWidth
+                                  helperText="Informe o novo nome da categoria"
+                                  label="Nome da categoria"
+                                  margin="dense"
+                                  name="name"
+                                  //onChange={handleChange}
+                                  required
+                                  //value={values.name}
+                                  variant="outlined"
+                                />
+                                
                               </div>
                             </div>
                           </CardContent>
                         </Card>
                         {statusProgressDenunciation &&
-                        <Box className={classes.root}>
+                          <Box className={classes.root}>
                             <Button
-                              onClick={handleOpenAprove}
+                              //onClick={handleOpenAprove}
                               mx={200}
-                              color="primary"
+                              color="secondary"
                               align="right"
                               disabled={false}
                               width="10px"
@@ -581,43 +562,10 @@ const DenunciationsTable = props => {
                               variant="contained"
                               className={classes.button}
                             >
-                              Aprovar
+                              Confirmar
                                 </Button>
-                            <Button
-                              onClick={handleOpenDeny}
-                              mx={200}
-                              color="primary"
-                              align="right"
-                              disabled={false}
-                              width="10px"
-                              size="large"
-                              type="submit"
-                              variant="contained"
-                              className={classes.button}
-                            >
-                              Negar
-                                </Button>
-                          
-                        </Box>
-                      }
-                        {statusProgressDenunciation==false &&
-                        <Box className={classes.root}>
-                            <Button
-                              onClick={handleOpenAprove}
-                              mx={200}
-                              color="primary"
-                              align="right"
-                              disabled={false}
-                              width="10px"
-                              size="large"
-                              type="submit"
-                              variant="contained"
-                              className={classes.button}
-                            >
-                              Encerrar
-                                </Button>
-                        </Box>
-                      }
+                          </Box>
+                        }
                       </div>
                     </Fade>
                   </Modal>
@@ -638,91 +586,7 @@ const DenunciationsTable = props => {
                     timeout: 500,
                   }}
                 >
-                  {/* Modal da Dereita */}
-                  <Fade in={openAprove}>
-                    <div className={classes.paper}>
-                      {statusProgressDenunciation &&
-                        <Grid container spacing={1}>
-
-                          <Grid item xs={12} sm={12}>
-                            <InputLabel>Escolha a data de Finalização</InputLabel>
-                          </Grid>
-
-                          <Grid item xs={12} sm={12}>
-                            <TextField
-                              onChange={e => handleProgress(e.target.value)}
-                              fullWidth
-                              label="Descrição do motivo"
-                              margin="dense"
-                              name="descricao"
-                              required
-                              value={progress.description}
-                              variant="outlined"
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={8}>
-                            <TextField
-                              onChange={e => handleProgress2(e.target.value)}
-                              id="date"
-                              label="Finalização"
-                              type="date"
-                              defaultValue="24-05-2017"
-                              className={classes.textField}
-                              value={progress.data}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={4}>
-                            <FormControl margin="dense" fullWidth>
-                              <Button onClick={submitProgress} variant="contained" color="secondary">Enviar</Button>
-                            </FormControl>
-                          </Grid>
-                        </Grid>
-                      }
-                      {statusProgressDenunciation == false &&
-                        <Grid container spacing={1}>
-
-                          <Grid item xs={12} sm={12}>
-                            <InputLabel>Escolha a data de Finalização</InputLabel>
-                          </Grid>
-
-                          <Grid item xs={12} sm={12}>
-                            <TextField
-                              onChange={e => handleEncerrar(e.target.value)}
-                              fullWidth
-                              label="Descrição do motivo"
-                              margin="dense"
-                              name="descricao"
-                              required
-                              value={finishDenunciation.description}
-                              variant="outlined"
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={8}>
-                            <TextField
-                              onChange={e => handleEncerrar2(e.target.value)}
-                              id="date"
-                              label="Finalização"
-                              type="date"
-                              defaultValue="2017-05-24"
-                              className={classes.textField}
-                              value={finishDenunciation.data}
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={4}>
-                            <FormControl margin="dense" fullWidth>
-                              <Button onClick={submitEncerrar} variant="contained" color="secondary">Encerrar</Button>
-                            </FormControl>
-                          </Grid>
-                        </Grid>
-                      }
-                    </div>
-                  </Fade>
+                  
                 </Modal>
 
                 {/* // Modal Negação */}
@@ -793,9 +657,9 @@ const DenunciationsTable = props => {
   );
 };
 
-DenunciationsTable.propTypes = {
+CategoryTable.propTypes = {
   className: PropTypes.string,
   users: PropTypes.array.isRequired
 };
 
-export default DenunciationsTable;
+export default CategoryTable;

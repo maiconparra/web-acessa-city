@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import moment from 'moment';
 
-import { DenunciationsToolbar, DenunciationsTable } from './components';
+import { PrefecturesToolbar, PrefecturesTable } from './components';
 
 import {
    Dialog,
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DenunciationListCoordinator = () => {
+const PrefecturesList = () => {
   const classes = useStyles();
 
   const [denunciations, setDenunciations] = useState([]);
@@ -249,9 +249,9 @@ const DenunciationListCoordinator = () => {
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <DenunciationsToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
+       <PrefecturesToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
       <div className={classes.content}>
-        <DenunciationsTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
+        <PrefecturesTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
       </div>
       <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
         <DialogTitle>Atenção</DialogTitle>
@@ -266,4 +266,4 @@ const DenunciationListCoordinator = () => {
   );
 };
 
-export default DenunciationListCoordinator;
+export default PrefecturesList;
