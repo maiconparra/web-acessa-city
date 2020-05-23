@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { isAuthenticated } from '../../utils/auth';
 
 const RouteWithLayout = props => {
-  const { layout: Layout, component: Component, ...rest } = props;
+  const { layout: Layout, component: Component, permission, ...rest } = props;
 
   const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route
@@ -19,14 +19,38 @@ const RouteWithLayout = props => {
     />
   );  
 
+
+  const handleRender = (matchProps) => {
+    if (isAuthenticated()) {
+      if (permission) {
+        return (
+          <Layout>
+            <Component {...matchProps} />
+          </Layout>
+        )
+      }
+      else {
+        return (
+          <Redirect to={{ pathname: "/not-found", state: { from: props.location } }} />
+        )
+      }
+    }
+    else {
+      return (
+        <Redirect to={{ pathname: "/sign-in", state: { from: props.location } }} />
+      )      
+    }
+  }
+
   return (
     <Route
       {...rest}
       render={matchProps => (
+
+        
         isAuthenticated() ? (
-            <Layout>
-              <Component {...matchProps} />
-            </Layout>
+          // roles == '49236e08-3e33-4467-9bdf-1381fa4ec91e' ? (
+          handleRender(matchProps)
         ) : (
           <Redirect to={{ pathname: "/sign-in", state: { from: props.location } }} />
         )        

@@ -88,7 +88,7 @@ const MeuExemplo = props => {
     // )
     return (
         // <h1>ss</h1>
-        <ReportInteractionHistory currentUserId={values.userId} reportId={'0148f5c9-7990-4c1f-9550-a283d4113822'} ></ReportInteractionHistory>
+        <ReportInteractionHistory currentUserId={values.userId} reportId={'c147203d-a022-4b93-97ff-37ae5e82d768'} ></ReportInteractionHistory>
     )
 }
 

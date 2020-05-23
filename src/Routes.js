@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Redirect, Route } from 'react-router-dom';
 
 import { RouteWithLayout } from './components';
@@ -30,7 +30,32 @@ import {
 
 } from './views';
 
+import currentUser from 'utils/AppUser'
+
+
 const Routes = () => {
+
+const [roles, setRoles] = useState({
+  loaded: false,
+  admin: false,
+  user: false,  
+});
+
+  useEffect(() => {
+    currentUser().then(user => {
+      setRoles({
+        ...roles,
+        loaded: true,
+        admin: true,
+
+      })
+    })
+  }, [])
+
+
+  if (roles.loaded) {
+
+  
   return (
     <Switch>
       <Redirect
@@ -43,11 +68,13 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/novo-usuario"
-      />
+        permission={roles.admin || roles.admin_prefeitura}
+      />      
       <RouteWithLayout
         component={CategoryView}
         exact
         layout={MainLayout}
+        permission={roles.admin}
         path="/category"
       />
       <RouteWithLayout
@@ -55,6 +82,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/meu-exemplo"
+        permission={true}
       />
       <RouteWithLayout
         component={CityHallCreateView}
@@ -67,6 +95,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/dashboard"
+        permission={true}
       />
       <RouteWithLayout
         component={UserListView}
@@ -97,6 +126,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/meu-perfil"
+        permission={true}
       />
       <RouteWithLayout
         component={SettingsView}
@@ -124,6 +154,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/denunciations"
+        permission={roles.admin}
        />      
 
       <RouteWithLayout
@@ -131,6 +162,7 @@ const Routes = () => {
         exact
         layout={MainLayout}
         path="/reporting-comments"
+        permission={roles.admin}
        />
 
       <RouteWithLayout
@@ -175,7 +207,7 @@ const Routes = () => {
         path="/cityhall-aprove"
       />
        
-      <RouteWithLayout
+      <Route
         component={NotFoundView}
         exact
         layout={MinimalLayout}
@@ -184,6 +216,10 @@ const Routes = () => {
       <Redirect to="/not-found" />
     </Switch>
   );
+}
+else {
+  return <h1>carregando...</h1>
+}
 };
 
 export default Routes;

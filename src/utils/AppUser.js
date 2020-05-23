@@ -17,4 +17,18 @@ const currentUser = () => {
     }) 
 }
 
+export const userClaims = () => {
+    return new Promise((resolve, reject) => {
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              user.getIdTokenResult().then((token) => {
+                const claims = token.claims;
+
+                return resolve(claims);
+              })
+            }
+        });
+    }) 
+}
+
 export default currentUser;

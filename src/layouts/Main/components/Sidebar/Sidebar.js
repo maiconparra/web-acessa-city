@@ -62,11 +62,6 @@ const Sidebar = props => {
       },
       /* SIDEBAR MODERADOR */
       {
-        title: 'Denúcias de usuários',
-        href: '/denunciations',
-        icon: <RecordVoiceOverIcon />
-      },
-      {
         title: 'Comentários',
         href: '/reporting-comments',
         icon: <Forum />
@@ -91,11 +86,6 @@ const Sidebar = props => {
         title: 'Alterar perfil Coordenador',
         href: '/profile-coordinator',
         icon: <Face />
-      },
-      {
-        title: 'Sair',
-        href: '/sign-in',
-        icon: <ExitToApp />
       },
       // {
       //   title: 'Typography',
@@ -123,26 +113,57 @@ const Sidebar = props => {
   const [user, setUser] = useState({
   })  
 
-  const [drawMenu, setDrawMenu] = useState(false);
+  
+  const adminMenu = (menu) => {
+    menu.push(
+      {
+        title: 'Cadastrar prefeitura',
+        href: '/cityhall-create',
+        icon: <CreateIcon />              
+      },
+    )
+  }
 
 
   function onChange(firebaseUser) {
     if (firebaseUser) {
       firebaseUser.getIdTokenResult().then((token) => {
+
+        let novoMenu = menuPages.items;
+
         const claims = token.claims;
-        if (claims.admin) {
-          menuPages.items.push(
+        if (claims.admin) {        
+          adminMenu(novoMenu);
+        }
+
+        if (claims.coordinator) {
+          novoMenu.push(
             {
-              title: 'Cadastrar prefeitura',
-              href: '/cityhall-create',
-              icon: <CreateIcon />              
-            }            
+              title: 'Denúcias de usuários',
+              href: '/denunciations',
+              icon: <RecordVoiceOverIcon />
+            },
+            {
+              title: 'Denúcias de usuários',
+              href: '/denunciations',
+              icon: <RecordVoiceOverIcon />
+            },
           )
         }
 
-        setUser({
-          admin: claims.admin
-        })        
+        // último elemento do menu
+        novoMenu.push(
+          {
+            title: 'Sair',
+            href: '/sign-in',
+            icon: <ExitToApp />
+          },
+        )
+
+        setMenuPages({
+          items: novoMenu
+        })
+
       })
     } else {
         // No user is signed in.
