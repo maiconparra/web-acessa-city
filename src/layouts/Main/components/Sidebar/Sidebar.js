@@ -18,7 +18,6 @@ import Face from '@material-ui/icons/Face';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import GroupIcon from '@material-ui/icons/Group';
-
 import { Profile, SidebarNav } from './components';
 import firebase from 'firebase/app'
 
@@ -52,99 +51,105 @@ const Sidebar = props => {
   const [menuPages, setMenuPages] = useState({
     items: 
     [
-      {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: <DashboardIcon />
-      },   
-      {
-        title: 'Usuários',
-        href: '/users',
-        icon: <PeopleIcon />
-      },
-      /* SIDEBAR MODERADOR */
-      {
-        title: 'Comentários',
-        href: '/reporting-comments',
-        icon: <Forum />
-      },    
-      {
-        title: 'Alterar perfil',
-        href: '/profile',
-        icon: <Face />
-      },
-      /* SIDEBAR COORDENADOR */
-      {
-        title: 'Denúcias de usuários Coordenador',
-        href: '/denunciations-coordinator',
-        icon: <RecordVoiceOverIcon />
-      },
-      {
-        title: 'Comentários Coordenador',
-        href: '/reporting-comments-coordinator',
-        icon: <Forum />
-      },    
-      {
-        title: 'Alterar perfil Coordenador',
-        href: '/profile-coordinator',
-        icon: <Face />
-      },
-
-         /* SIDEBAR COORDENADOR */
-         {
-          title: 'Lista de Prefeituras',
-          href: '/prefectures',
-          icon: <AccountBalanceIcon />
-        },
-        {
-          title: 'Lista de Cidadão',
-          href: '/citizens',
-          icon: <GroupIcon />
-        },   
-        {
-          title: 'Alterar perfil Master',
-          href: '/profile-master',
-          icon: <Face />
-        },
-      {
-        title: 'Sair',
-        href: '/sign-in',
-        icon: <ExitToApp />
-      },
-      // {
-      //   title: 'Typography',
-      //   href: '/typography',
-      //   icon: <TextFieldsIcon />
-      // },
-      // {
-      //   title: 'Icons',
-      //   href: '/icons',
-      //   icon: <ImageIcon />
-      // },
-      // {
-      //   title: 'Account',
-      //   href: '/account',
-      //   icon: <AccountBoxIcon />
-      // },
-      // {
-      //   title: 'Settings',
-      //   href: '/settings',
-      //   icon: <SettingsIcon />
-      // }
+    
     ]    
   });
+
+
+
+
+  // {
+  //   title: 'Dashboard',
+  //   href: '/dashboard',
+  //   icon: <DashboardIcon />
+  // },   
+  // {
+  //   title: 'Usuários',
+  //   href: '/users',
+  //   icon: <PeopleIcon />
+  // },
+  // /* SIDEBAR MODERADOR */
+  // {
+  //   title: 'Comentários',
+  //   href: '/reporting-comments',
+  //   icon: <Forum />
+  // },    
+  // {
+  //   title: 'Alterar perfil',
+  //   href: '/profile',
+  //   icon: <Face />
+  // },
+  // /* SIDEBAR COORDENADOR */
+
+  //    /* SIDEBAR MASTER */
+  //    {
+  //     title: 'Lista de Prefeituras',
+  //     href: '/prefectures',
+  //     icon: <AccountBalanceIcon />
+  //   },
+  //   {
+  //     title: 'Lista de Cidadão',
+  //     href: '/citizens',
+  //     icon: <GroupIcon />
+  //   },   
+  //   {
+  //     title: 'Alterar perfil Master',
+  //     href: '/profile-master',
+  //     icon: <Face />
+  //   },
+  // {
+  //   title: 'Sair',
+  //   href: '/sign-in',
+  //   icon: <ExitToApp />
+  // },
+  // {
+  //   title: 'Typography',
+  //   href: '/typography',
+  //   icon: <TextFieldsIcon />
+  // },
+  // {
+  //   title: 'Icons',
+  //   href: '/icons',
+  //   icon: <ImageIcon />
+  // },
+  // {
+  //   title: 'Account',
+  //   href: '/account',
+  //   icon: <AccountBoxIcon />
+  // },
+  // {
+  //   title: 'Settings',
+  //   href: '/settings',
+  //   icon: <SettingsIcon />
+  // }
 
   const [user, setUser] = useState({
   })  
 
   
-  const adminMenu = (menu) => {
+  const coordinadorMenu = (menu) => {
     menu.push(
       {
-        title: 'Cadastrar prefeitura',
-        href: '/cityhall-create',
-        icon: <CreateIcon />              
+        title: 'Denúcias de usuários Coordenador',
+        href: '/denuncias-coordenador',
+        icon: <RecordVoiceOverIcon />
       },
+      {
+        title: 'Comentários Coordenador',
+        href: '/comentatios-denuncias-coordenador',
+        icon: <Forum />
+      },    
+      {
+        title: 'Cadastrar Usuário',
+        href: '/novo-usuario',
+        icon: <Forum />
+      },  
+      {
+        title: 'Alterar perfil Coordenador',
+        href: '/perfil-coordenador',
+        icon: <Face />
+      },
+
     )
   }
 
@@ -156,24 +161,24 @@ const Sidebar = props => {
         let novoMenu = menuPages.items;
 
         const claims = token.claims;
-        if (claims.admin) {        
-          adminMenu(novoMenu);
+        if (claims.coordinator) {        
+          coordinadorMenu(novoMenu);
         }
 
-        if (claims.coordinator) {
-          novoMenu.push(
-            {
-              title: 'Denúcias de usuários',
-              href: '/denunciations',
-              icon: <RecordVoiceOverIcon />
-            },
-            {
-              title: 'Denúcias de usuários',
-              href: '/denunciations',
-              icon: <RecordVoiceOverIcon />
-            },
-          )
-        }
+        // if (claims.coordinator) {
+        //   novoMenu.push(
+        //     {
+        //       title: 'Denúcias de usuários',
+        //       href: '/denunciations',
+        //       icon: <RecordVoiceOverIcon />
+        //     },
+        //     {
+        //       title: 'Denúcias de usuários',
+        //       href: '/denunciations',
+        //       icon: <RecordVoiceOverIcon />
+        //     },
+        //   )
+        // }
 
         // último elemento do menu
         novoMenu.push(
