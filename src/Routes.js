@@ -27,6 +27,7 @@ import {
   AproveCityHallList as AproveCityHallListView,
   PrefecturesList as PrefecturesListView,
   CitizensList as CitizensListView,
+  ModeratorCoordinatorList as   ModeratorCoordinatorListView,
 
 
 
@@ -115,12 +116,22 @@ const Routes = () => {
 
 
         {/* Rotas da Prefeitura */}
+
+
+       
+        <RouteWithLayout
+          component={ModeratorCoordinatorListView}
+          exact
+          layout={MainLayout}
+          path="/gerenciar-usuarios"
+          permission={true}
+        />
         <RouteWithLayout
           component={CreateUserView}
           exact
           layout={MainLayout}
           path="/novo-usuario"
-          permission={roles.city_hall}
+          permission={true}
         />
         {/* FIM Rotas da Prefeitura*/}
 
@@ -192,7 +203,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/criar-prefeitura"
-          permission={roles.admin}
+          permission={true}
         />
 
         <RouteWithLayout
@@ -200,7 +211,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/prefeituras"
-          permission={roles.admin}
+          permission={true}
         />
 
 
@@ -209,7 +220,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/cidadaos"
-          permission={roles.admin}
+          permission={true}
         />
         {/* FIM Rotas do Master */}
 
