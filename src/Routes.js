@@ -38,16 +38,18 @@ import currentUser from 'utils/AppUser'
 const Routes = () => {
 
   const [roles, setRoles] = useState({
-    loaded: false
+    loaded: false,
+    // admin: true
   });
 
   useEffect(() => {
+    console.log(22);
     currentUser().then(user => {
-      console.log('UserRoles::::', user)
+      console.log('Routes: UserRoles::::', user.roles.includes('admin'))
       setRoles({
         ...roles,
         loaded: true,
-        admin: user.roles.indexOf("admin"),
+        admin: user.roles.includes('admin'),
         coordinator: user.roles.includes('coordinator'),
         moderator: user.roles.includes('moderator'),
         city_hall: user.roles.includes('city_hall'),
@@ -55,6 +57,7 @@ const Routes = () => {
       })
     })
       .catch(() => {
+        console.log('erro::::')
         setRoles({
           ...roles,
           loaded: true
@@ -63,9 +66,11 @@ const Routes = () => {
   }, [])
 
 
-  if (true) {
+  if (roles.loaded) {
     return (
+      
       <Switch>
+
         <Redirect
           exact
           from="/"
@@ -120,7 +125,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/novo-usuario"
-          permission={roles.city_hall}
+          permission={roles.admin || roles.city_hall}
         />
         {/* FIM Rotas da Prefeitura*/}
 

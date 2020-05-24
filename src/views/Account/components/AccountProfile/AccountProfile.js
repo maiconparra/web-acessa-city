@@ -75,9 +75,10 @@ const AccountProfile = props => {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    console.log(2)
     currentUser()
-      .then(user => {
-        setUser(user)
+      .then(fuser => {
+        setUser(fuser)
       })
   }, [])
 

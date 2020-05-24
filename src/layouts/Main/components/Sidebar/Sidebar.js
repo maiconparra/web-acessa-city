@@ -151,6 +151,11 @@ const Sidebar = props => {
         title: 'Lista de Cidadão',
         href: '/cidadaos',
         icon: <GroupIcon />
+      },  
+      {
+        title: 'Cadastrar usuários',
+        href: '/novo-usuario',
+        icon: <PersonAddIcon />
       },
 
     )

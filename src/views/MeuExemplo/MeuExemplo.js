@@ -57,6 +57,7 @@ const MeuExemplo = props => {
         }, [])
 
     React.useEffect(() => {
+        console.log(12);
         currentUser().then(user => console.log(user))
         CarregarPrefeituras();        
     }, [])

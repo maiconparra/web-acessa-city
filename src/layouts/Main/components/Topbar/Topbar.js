@@ -8,6 +8,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
 import InputIcon from '@material-ui/icons/Input';
 import firebase from 'firebase/app'
+import {logout} from 'utils/auth'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,9 +27,10 @@ const Topbar = props => {
 
   const classes = useStyles();
 
-  const logout = event => {
+  const xlogout = event => {
     event.preventDefault();
     firebase.auth().signOut().then(function() {
+      logout();
       history.push('/sign-in')
     }).catch(function(error) {
       // An error happened.
@@ -62,7 +64,7 @@ const Topbar = props => {
             </Badge>
           </IconButton>
           <IconButton
-            onClick={logout}
+            onClick={xlogout}
             className={classes.signOutButton}
             color="inherit"
           >

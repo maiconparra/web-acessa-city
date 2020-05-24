@@ -12,7 +12,7 @@ import {
   Typography
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { login, logout } from '../../utils/auth';
+import { asyncLogin, logout } from '../../utils/auth';
 
 import firebase from 'firebase/app';
 
@@ -179,9 +179,24 @@ const SignIn = props => {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 
     firebase.auth().signInWithPopup(googleAuthProvider)
-      .then((result) => {                
-        login('token')
-        history.push('/');
+      .then((result) => {          
+        firebase.auth().onAuthStateChanged(function(user) {
+          console.log('FbUser:::', user);
+            if (user) {
+              user.getIdTokenResult().then((token) => {
+                console.log(token.token)
+                asyncLogin(token.token).then(result => {
+                  window.location = '/'
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+              })
+              .catch(error => {
+
+              })
+            }
+        })
       }).catch((error) => {
         console.log(error)
       })     
@@ -198,9 +213,24 @@ const SignIn = props => {
     firebase
       .auth()
       .signInWithEmailAndPassword(formState.values.email, formState.values.password)
-      .then((user) => {
-        login('token')
-        history.push('/');
+      .then((result) => {          
+        firebase.auth().onAuthStateChanged(function(user) {
+          console.log('FbUser:::', user);
+            if (user) {
+              user.getIdTokenResult().then((token) => {
+                console.log(token.token)
+                asyncLogin(token.token).then(result => {                  
+                  history.push('/');
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+              })
+              .catch(error => {
+
+              })
+            }
+        })
       }).catch((error) => {
         console.log(error.message);
       });
