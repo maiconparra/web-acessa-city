@@ -21,4 +21,7 @@ export { default as AproveCityHallList } from './CityHall/Aprove';
 export { default as CategoryList } from './Coordinator/CategoryList';
 export { default as PrefecturesList } from './AdminMaster/PrefecturesList';
 export { default as CitizensList } from './AdminMaster/CitizensList';
+export { default as ModeratorCoordinatorList } from './CityHall/ModeratorCoordinatorList';
+
+
 

@@ -164,6 +164,12 @@ const Sidebar = props => {
 
   const cityHallMenu = (menu) => {
     menu.push(
+
+      {
+        title: 'Lista Cood/Mod',
+        href: '/gerenciar-usuarios',
+        icon: <PersonAddIcon />
+      },
    
       {
         title: 'Gerenciar Cood/Mod',

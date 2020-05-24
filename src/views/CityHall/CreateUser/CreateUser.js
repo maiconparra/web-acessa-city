@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Grid } from '@material-ui/core';
-
 import { AccountProfile, AccountDetails } from './components';
+import api from 'utils/API';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -13,6 +13,17 @@ const useStyles = makeStyles(theme => ({
 const CreateUser = () => {
   const classes = useStyles();
 
+
+  const createUser = (user) => {
+    api.post('/user', user)
+    .then((result) => {
+       console.log("sucesso")
+    })
+    .catch((aError) => {
+      console.log("erro")
+    })
+  }
+
   return (
     <div className={classes.root}>
       <Grid
@@ -21,7 +32,7 @@ const CreateUser = () => {
       >
         <Grid>
           {/* <AccountProfile></AccountProfile> */}
-          <AccountDetails />
+          <AccountDetails createUser={createUser} />
         </Grid>
       </Grid>
     </div>

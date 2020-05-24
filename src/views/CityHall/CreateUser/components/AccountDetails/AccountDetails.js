@@ -14,16 +14,19 @@ import {
   Backdrop,
   CircularProgress,
   Snackbar,
-  SnackbarContent
+  SnackbarContent,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from '@material-ui/core';
-import api from 'utils/API';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },  
+  },
 }));
 
 
@@ -33,18 +36,17 @@ const AccountDetails = props => {
   const classes = useStyles();
 
   const [values, setValues] = useState({
-    firstName: '',
+    name: '',
     lastName: '',
-    emailVerified: true,
     email: '',
     password: '',
-    confirmPassword: ''
+    role: '',
   });
 
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
-  };  
+  };
 
   const [errors, setErrors] = useState([]);
 
@@ -55,55 +57,45 @@ const AccountDetails = props => {
     });
   };
 
-  const limparForm = () => {
-    setValues({
-      firstName: '',
-      lastName: '',
-      emailVerified: true,
-      email: '',
-      password: '',
-      confirmPassword: ''      
-    })
-  }
-
   const handleSnackClick = () => {
     setErrors([]);
   }
 
-  const handleClick = () => {
-    setOpen(true)
-    console.log(values);
-    var newUser = values;
-    newUser.displayName = values.firstName + ' ' + values.lastName;
-    api.post('/user', newUser)
-    .then((result) => {
-      setOpen(false)
-      setErrors([
-        "O usuário " + values.email + " foi criado com sucesso."
-      ])
-      limparForm()
-    })
-    .catch((aError) => {
-      if (aError.response.status == 400) {
-        setOpen(false)        
-        console.log(aError.response.data.errors)
-        setErrors(aError.response.data.errors)
-      }
-      else if (aError.response.status == 500) {
-        setErrors([
-          "Erro no servidor"
-        ])
-      }
+  const handleClick = (event) => {
+    event.preventDefault();
 
-      setOpen(false)
+    const userCreate = {
+
+      email: values.email,
+      emailVerified: true,
+      password: values.password,
+      displayName: values.name + ' ' + values.lastName,
+      photoUrl: 'https://acessacity.s3.amazonaws.com/photos/user.png',
+      disabled: false,
+      roles: [
+        values.role
+      ]
+    }
+    props.createUser(userCreate);
+    limparForm()
+  }
+
+
+  const limparForm = () => {
+    setValues({
+      name: '',
+      lastName: '',
+      email: '',
+      password: '',
+      role: '',
     })
   }
 
   const teste = () => {
-    return (<div>    
-    {errors.map(error => (
-      <SnackbarContent message={<h3>{error}</h3>} />
-    ))}
+    return (<div>
+      {errors.map(error => (
+        <SnackbarContent message={<h3>{error}</h3>} />
+      ))}
     </div>)
   }
 
@@ -137,10 +129,10 @@ const AccountDetails = props => {
                   helperText="Informe o primeiro nome"
                   label="Primeiro nome"
                   margin="dense"
-                  name="firstName"
+                  name="name"
                   onChange={handleChange}
                   required
-                  value={values.firstName}
+                  value={values.name}
                   variant="outlined"
                 />
               </Grid>
@@ -200,18 +192,22 @@ const AccountDetails = props => {
                 md={3}
                 xs={12}
               >
-                <TextField
-                  fullWidth
-                  helperText="Informe a confirmação de senha"
-                  label="Confirmar senha"
-                  margin="dense"
-                  name="confirmPassword"
-                  onChange={handleChange}
-                  type="password"
-                  value={values.confirmPassword}
-                  variant="outlined"
-                />
-              </Grid>            
+                <FormControl variant="outlined" margin="dense" fullWidth>
+                  <InputLabel>Tipo:</InputLabel>
+                  <Select native
+                    label="Role"
+                    value={values.role}
+                    onChange={handleChange}
+                    label="Role"
+                    inputProps={{
+                      name: 'role',
+                    }}>
+                    <option aria-label="None" value="" />
+                    <option value='coordinator'>Coordenador</option>
+                    <option value='moderator'>Moderador</option>
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
           </CardContent>
           <Divider />
@@ -228,11 +224,11 @@ const AccountDetails = props => {
       </Card>
       <Snackbar open={errors.length} autoHideDuration={20000} onClick={handleSnackClick}>
         {teste()}
-      </Snackbar>      
+      </Snackbar>
       <Backdrop className={classes.backdrop} open={open} onClick={handleClose}>
-      <CircularProgress color="inherit" />
+        <CircularProgress color="inherit" />
       </Backdrop>
-    </div>
+    </div >
   );
 };
 
