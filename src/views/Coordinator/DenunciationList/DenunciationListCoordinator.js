@@ -113,7 +113,6 @@ const DenunciationListCoordinator = () => {
     }, [])   
   
 
-  
     // Listar coordenadores
     const listCoodenador = (userId) => {
        console.log("testttttttt"+ userId);
@@ -213,9 +212,6 @@ const DenunciationListCoordinator = () => {
         setMensagem('Ocorreu um erro', erro);
         setOpenDialog(true);
       })
-
-
-  
   }
 
 

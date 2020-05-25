@@ -171,11 +171,11 @@ const Sidebar = props => {
         icon: <PersonAddIcon />
       },
    
-      {
-        title: 'Gerenciar Cood/Mod',
-        href: '/novo-usuario',
-        icon: <PersonAddIcon />
-      },
+      // {
+      //   title: 'Gerenciar Cood/Mod',
+      //   href: '/novo-usuario',
+      //   icon: <PersonAddIcon />
+      // },
 
     )
   }

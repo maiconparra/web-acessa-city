@@ -21,6 +21,8 @@ import {
   InputLabel
 } from '@material-ui/core';
 
+import currentUser from 'utils/AppUser';
+
 const useStyles = makeStyles((theme) => ({
   root: {},
   backdrop: {
@@ -50,6 +52,9 @@ const AccountDetails = props => {
 
   const [errors, setErrors] = useState([]);
 
+
+  const [userLogado, setUserLogado] = useState({});
+
   const handleChange = event => {
     setValues({
       ...values,
@@ -65,7 +70,8 @@ const AccountDetails = props => {
     event.preventDefault();
 
     const userCreate = {
-
+      
+      cityHallId: userLogado.cityHallId,
       email: values.email,
       emailVerified: true,
       password: values.password,
@@ -98,6 +104,14 @@ const AccountDetails = props => {
       ))}
     </div>)
   }
+
+
+  React.useEffect(() =>{
+    
+    currentUser().then((result)=>{
+       setUserLogado(result);
+    })
+  },[]);
 
   return (
     <div>
@@ -205,6 +219,7 @@ const AccountDetails = props => {
                     <option aria-label="None" value="" />
                     <option value='coordinator'>Coordenador</option>
                     <option value='moderator'>Moderador</option>
+                    <option value='city_hall'>Prefeitura</option>
                   </Select>
                 </FormControl>
               </Grid>

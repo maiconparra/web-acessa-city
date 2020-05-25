@@ -7,7 +7,6 @@ import { Main as MainLayout, Minimal as MinimalLayout } from './layouts';
 import {
   Dashboard as DashboardView,
   ProductList as ProductListView,
-  UserList as UserListView,
   Typography as TypographyView,
   Icons as IconsView,
   Account as AccountView,
@@ -27,7 +26,8 @@ import {
   AproveCityHallList as AproveCityHallListView,
   PrefecturesList as PrefecturesListView,
   CitizensList as CitizensListView,
-  ModeratorCoordinatorList as   ModeratorCoordinatorListView,
+  Profile as ProfileView,
+  ModeratorCoordinatorList as ModeratorCoordinatorListView,
 
 
 
@@ -69,7 +69,7 @@ const Routes = () => {
 
   if (roles.loaded) {
     return (
-      
+
       <Switch>
 
         <Redirect
@@ -117,27 +117,30 @@ const Routes = () => {
           path="/settings"
         />
 
-
-
-
         {/* Rotas da Prefeitura */}
 
-
-       
         <RouteWithLayout
           component={ModeratorCoordinatorListView}
           exact
           layout={MainLayout}
           path="/gerenciar-usuarios"
-          permission={true}
+          permission={roles.city_hall}
         />
+
         <RouteWithLayout
+          component={ProfileView}
+          exact
+          layout={MainLayout}
+          path="/profile"
+          permission={roles.city_hall}
+        />
+        {/* <RouteWithLayout
           component={CreateUserView}
           exact
           layout={MainLayout}
           path="/novo-usuario"
           permission={true}
-        />
+        /> */}
         {/* FIM Rotas da Prefeitura*/}
 
 
@@ -150,7 +153,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/denuncias-moderador"
-          permission={true}
+          permission={roles.moderator}
         />
 
         <RouteWithLayout
@@ -158,7 +161,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/comentarios-moderador"
-          permission={true}
+          permission={roles.moderator}
         />
 
         {/* FIM Rotas do Moderador */}
@@ -208,7 +211,8 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/criar-prefeitura"
-          permission={true}
+          permission={roles.admin}
+        // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
         <RouteWithLayout
@@ -216,7 +220,8 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/prefeituras"
-          permission={true}
+          permission={roles.admin}
+        // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
 
@@ -225,7 +230,8 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/cidadaos"
-          permission={true}
+          permission={roles.admin}
+        // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
         {/* FIM Rotas do Master */}
 
