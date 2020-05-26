@@ -54,7 +54,7 @@ import firebase from 'firebase/app'
 
 
 import API from '../../../../../utils/API';
-import { ReportCommentaries } from '../../../../../components';
+import AccountDetails from '../../../../../views/Account/components/AccountDetails';
 import { getInitials } from 'helpers';
 
 const useStyles = makeStyles(theme => ({
@@ -145,13 +145,36 @@ const ModeratorCoordinatorTable = props => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget)
   };
 
   const anchorElClose = () => {
     setAnchorEl(null);
   };
   //FIM Abrir opções dos 3 pontinho
+
+  ///ABRIR MODAL RECUPERAR SENHA
+
+  const [open, setOpen] = React.useState(false);
+
+
+  const [openAccount, setAccount] = useState({
+    users: '',
+  });
+
+  const handleClickAccount = (usersCM) => {
+    setAccount({
+      ...users,
+      users: usersCM
+    });
+    setOpen(true)
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
 
   return (
     <Card
@@ -176,45 +199,70 @@ const ModeratorCoordinatorTable = props => {
                     <TableRow key={user.id}
                       hover={true}
                     >
-                      <TableCell>{user.firstName}</TableCell>
+                      <TableCell onClick={() => handleClickAccount(user)}>{user.firstName}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.roles[0]}</TableCell>
-                        <TableCell>
-                          <IconButton aria-label="display more actions" edge="end" color="inherit">
-                            <MoreIcon onClick={handleClick} />
-                          </IconButton>
-                          <StyledMenu
-                            id="customized-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={anchorElClose}
-                          >
-                            <StyledMenuItem>
-                              <ListItemIcon >
-                                <EditIcon fontSize="small" />
-                              </ListItemIcon>
-                              <ListItemText primary="Editar" />
-                            </StyledMenuItem>
+                      <TableCell>
+                        <IconButton key={user.id} aria-label="display more actions" edge="end" color="inherit">
+                          <MoreIcon onClick={() => handleClickAccount(user)}/>  {/* onClick={handleClick}  */}
+                        </IconButton>
+                        <StyledMenu
+                          id="customized-menu"
+                          anchorEl={anchorEl}
+                          keepMounted
+                          open={Boolean(anchorEl)}
+                          onClose={anchorElClose}
+                        >
+                          <StyledMenuItem>
+                            <ListItemIcon >
+                              <EditIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText 
+                             primary="Editar" />
+                          </StyledMenuItem>
 
-                            <StyledMenuItem>
-                              <ListItemIcon>
-                                <DeleteIcon fontSize="small" />
-                              </ListItemIcon>
-                              <ListItemText primary="Excluir" />
-                            </StyledMenuItem>
-                          </StyledMenu>
-                        </TableCell>
+                          <StyledMenuItem>
+                            <ListItemIcon>
+                              <DeleteIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText primary="Excluir" />
+                          </StyledMenuItem>
+                        </StyledMenu>
+                      </TableCell>
                     </TableRow>
                   )
                 })
                 }
               </TableBody>
             </Table>
+
+            {open &&
+              < Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                open={open}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                  timeout: 500,
+                }}
+              >
+                <Fade in={open}>
+                  <div className={classes.paper}>
+
+                    <AccountDetails openAccount={openAccount} />
+
+                  </div>
+                </Fade>
+              </Modal>
+            }
+
           </div>
         </PerfectScrollbar>
       </CardContent>
-    </Card>
+    </Card >
   );
 };
 
