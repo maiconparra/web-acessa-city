@@ -28,7 +28,7 @@ import {
   CitizensList as CitizensListView,
   Profile as ProfileView,
   ModeratorCoordinatorList as ModeratorCoordinatorListView,
-
+  ReportMap as ReportMapView,
 
 
 } from './views';
@@ -83,12 +83,7 @@ const Routes = () => {
           layout={MainLayout}
           path="/category"
         />
-        <RouteWithLayout
-          component={MeuExemploBanana}
-          exact
-          layout={MainLayout}
-          path="/meu-exemplo"
-        />
+
 
 
         <RouteWithLayout
@@ -268,7 +263,20 @@ const Routes = () => {
           path="/meu-perfil"
           permission={true}
         />
-
+        <RouteWithLayout
+          component={MeuExemploBanana}
+          exact
+          layout={MainLayout}
+          path="/meu-exemplo"
+          permission={true}
+        />
+        <RouteWithLayout
+          component={ReportMapView}
+          exact
+          layout={MainLayout}
+          path="/mapa-de-denuncias"
+          permission={true}
+        />
         <Route
           component={NotFoundView}
           exact

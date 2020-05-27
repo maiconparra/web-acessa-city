@@ -22,6 +22,6 @@ export { default as PrefecturesList } from './AdminMaster/PrefecturesList';
 export { default as CitizensList } from './AdminMaster/CitizensList';
 export { default as CreateUser} from './User/CreateUser';
 export { default as ModeratorCoordinatorList } from './User/ModeratorCoordinatorList';
-
+export { default as ReportMap } from './ReportMap';
 
 
