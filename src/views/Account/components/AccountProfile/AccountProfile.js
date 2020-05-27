@@ -5,6 +5,7 @@ import moment from 'moment';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
+  CardHeader,
   CardActions,
   CardContent,
   Avatar,
@@ -16,6 +17,7 @@ import {
 import s3 from 'utils/AWS-S3'
 import api from 'utils/API'
 import currentUser from 'utils/AppUser'
+import ChangePassword from 'components/ChangePassword'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -83,68 +85,81 @@ const AccountProfile = props => {
   }, [])
 
   return (
-    <Card
-      {...rest}
-      className={clsx(classes.root, className)}
-    >
-      <CardContent>
-        <div className={classes.details}>
-          <div>
-            <Typography
-              gutterBottom
-              variant="h2"
-            >
-              {user.firstName}
-            </Typography>
-            <Typography
-              className={classes.locationText}
-              color="textSecondary"
-              variant="body1"
-            >
-              {user.email}
-            </Typography>
+    <div>    
+      <Card
+        {...rest}
+        className={clsx(classes.root, className)}
+      >
+        <CardContent>
+          <div className={classes.details}>
+            <div>
+              <Typography
+                gutterBottom
+                variant="h2"
+              >
+                {user.firstName}
+              </Typography>
+              <Typography
+                className={classes.locationText}
+                color="textSecondary"
+                variant="body1"
+              >
+                {user.email} 
+              </Typography>
+            </div>
+  
+              <input
+                onChange={uploadFileImg}
+                type="file"
+                id="my_file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileUploadInput}
+              />
+              <Avatar
+                className={classes.avatar}
+                src={user.profileUrl}
+                onClick={showFileUpload}
+              />
+          
           </div>
- 
-            <input
-              onChange={uploadFileImg}
-              type="file"
-              id="my_file"
-              accept="image/*"
-              style={{ display: "none" }}
-              ref={fileUploadInput}
+          {/* <div className={classes.progress}>
+            <Typography variant="body1">Profile Completeness: 70%</Typography>
+            <LinearProgress
+              value={70}
+              variant="determinate"
             />
-            <Avatar
-              className={classes.avatar}
-              src={user.profileUrl}
-              onClick={showFileUpload}
-            />
-        
-        </div>
-        {/* <div className={classes.progress}>
-          <Typography variant="body1">Profile Completeness: 70%</Typography>
-          <LinearProgress
-            value={70}
-            variant="determinate"
+          </div> */}
+        </CardContent>
+        <Divider />
+        <CardActions>
+          <input onChange={uploadFileImg} type="file" id="my_file" accept="image/*"
+            hidden={true}
+            ref={fileUploadInput}
           />
-        </div> */}
-      </CardContent>
-      <Divider />
-      <CardActions>
-        <input onChange={uploadFileImg} type="file" id="my_file" accept="image/*"
-          hidden={true}
-          ref={fileUploadInput}
+          <Button
+            className={classes.uploadButton}
+            color="primary"
+            variant="text"
+            onClick={() => fileUploadInput.current.click()}
+          >
+            Atualizar foto
+          </Button>
+          <Button onClick={() => updatePhoto("")} variant="text">Remover foto</Button>
+        </CardActions>      
+      </Card>
+      <Card
+      >
+        <CardHeader
+          subheader="Alterar minha senha"
+          title="Segurança"
         />
-        <Button
-          className={classes.uploadButton}
-          color="primary"
-          variant="text"
-          onClick={() => fileUploadInput.current.click()}
-        >
-          Atualizar foto
-        </Button>
-        <Button onClick={() => updatePhoto("")} variant="text">Remover foto</Button>
-      </CardActions>
-    </Card>
+        <Divider />
+        <CardContent>
+          <ChangePassword></ChangePassword>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

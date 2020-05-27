@@ -120,7 +120,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/gerenciar-usuarios"
-          permission={roles.city_hall}
+          permission={true}
         />
 
         <RouteWithLayout
@@ -130,13 +130,13 @@ const Routes = () => {
           path="/profile"
           permission={roles.city_hall}
         />
-        {/* <RouteWithLayout
+        <RouteWithLayout
           component={CreateUserView}
           exact
           layout={MainLayout}
           path="/novo-usuario"
           permission={true}
-        /> */}
+        />
         {/* FIM Rotas da Prefeitura*/}
 
 
@@ -172,7 +172,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/denuncias"
-          permission={roles.coordinator}
+          permission={true}
         />
 
         <RouteWithLayout
@@ -180,14 +180,14 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/comentarios"
-          permission={roles.coordinator}
+          permission={true}
         />
         <RouteWithLayout
           component={CategoryListView}
           exact
           layout={MainLayout}
           path="/categorias-subcategorias"
-          permission={roles.coordinator}
+          permission={true}
         />
         {/* FIM Rotas do Coordinator */}
 
@@ -207,7 +207,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/criar-prefeitura"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
@@ -216,7 +216,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/prefeituras"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
@@ -226,7 +226,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/cidadaos"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
         {/* FIM Rotas do Master */}

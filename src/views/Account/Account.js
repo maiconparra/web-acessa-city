@@ -35,7 +35,7 @@ const Account = () => {
           xl={8}
           xs={12}
         >
-          <AccountDetails />
+          <AccountDetails/>
         </Grid>
       </Grid>
     </div>

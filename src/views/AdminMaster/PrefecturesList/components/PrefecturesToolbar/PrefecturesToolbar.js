@@ -3,42 +3,22 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+
 import {
-  Input,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Button,
   TextField,
   Grid,
   Select,
-  MenuItem,
   FormControl,
   InputLabel,
-  Card,
-  CardActions,
-  CardContent,
-  Avatar,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  CardHeader,
-  TablePagination,
-  Box,
-  Paper,
-  Rows,
-  TableContainer
+  Backdrop
 } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
+import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import CreateUser from '../../../../../views/User/CreateUser';
 
 // import { SearchInput } from 'components';  //chamar botão de pesquisa
 
@@ -62,6 +42,11 @@ const useStyles = makeStyles(theme => ({
   searchInput: {
     marginRight: theme.spacing(1)
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+  //modal
   modal: {
     display: 'flex',
     alignItems: 'center',
@@ -70,103 +55,71 @@ const useStyles = makeStyles(theme => ({
     overflow: 'scroll'
 
   },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  button: {
+    marginRight: 10,
+    marginTop: 10,
+  },
+  //FIM modal
 
 }));
 
-
 const PrefecturesToolbar = props => {
-  const { className, denunciationsSlect, categories, ...rest } = props;
+  const { className, ...rest } = props;
 
-  const [descricao, setDescricao] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [denunciationCategory, setDenunciationCategory] = useState('');
-  const [denunciationStreet, setDenunciationStreet] = useState('');
-  const [denunciationNeighborhood, setDenunciationNeighborhood] = useState('');
-  const [denunciationData, setDenunciationData] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
-  const [mensagem, setMensagem] = useState('');
-
+  const onClearFilter = [];
+  const onCreateUser = [];
   const classes = useStyles();
 
-  
+  //Modal Cadastrar Usuários
+  const [openModal, setOpenModal] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
 
 
-  const handleData = (sender) => {
-    setDenunciationData({
-      ...denunciationData,
-      data: sender
+  const [values, setValues] = useState({
+    roles: '',
+    firstName: '',
+    email: '',
+  });
+
+  const handleChangeFilter = event => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value
+    });
+  };
+
+  const limparForm = (event) => {
+    event.preventDefault();
+    setValues({
+      roles: '',
+      firstName: '',
+      email: '',
     })
-  }
-
-  const handleStreet = (sender) => {
-    setDenunciationStreet({
-      ...denunciationStreet,
-      street: sender
-    })
-  }
-  const handleNeighborhood = (sender) => {
-    setDenunciationNeighborhood({
-      ...denunciationNeighborhood,
-      neighborhood: sender
-    })
+    onClearFilter();
   }
 
 
-  const submit = (event) => {
+
+  const handleClickFilter = (event) => {
     event.preventDefault();
-    //Filtro geral
-    const filtro = {
-      category: denunciationCategory,
-      setDenunciationData: denunciationStreet.street,
-      neighborhood: denunciationNeighborhood.neighborhood,
-      creationDate: denunciationData.data,
-    }
-    props.filter(filtro);
+      
+    props.filter(values);
 
   }
 
-
-
-  const submitLimpar = (event) => {
-    event.preventDefault();
-
-    
-    setDenunciationCategory('');
-    setDenunciationStreet({});
-    setDenunciationNeighborhood('');
-    setDenunciationData('');
-  }
-
-
-  const [progressStatus, setProgressStatus] = React.useState(true);
-
-  //Filtro denúncias em progresso
-  const submitEmProgresso = (event) => {
-    event.preventDefault();
-
-    const filtroAprove = {
-      id: 'c37d9588-1875-44dd-8cf1-6781de7533c3',
-      statusProgress: false,
-    }
-    props.filterAprove(filtroAprove);
-    setProgressStatus(false)
-    setMensagem('Denúncias em progresso!');
-    setOpenDialog(true);
-
-  }
-
-  const submitEmProgresso2 = (event) => {
-    event.preventDefault();
-
-    const filtroAprove = {
-      id: '96afa0df-8ad9-4a44-a726-70582b7bd010',
-      statusProgress: true,
-    }
-    props.filterAprove(filtroAprove);
-    setProgressStatus(true)
-    setMensagem('Denúncias não aprovadas!');
-    setOpenDialog(true);
-  }
 
   return (
     <div {...rest} className={clsx(classes.root, className)}>
@@ -176,60 +129,35 @@ const PrefecturesToolbar = props => {
 
           <Grid item xs={12} sm={2}>
             <FormControl className={classes.formControl} fullWidth>
-              <InputLabel htmlFor="age-native-simple">Categorias</InputLabel>
+              <InputLabel htmlFor="age-native-simple">Tipo</InputLabel>
               <Select
                 native
-                value={denunciationCategory}
-                onChange={e => setDenunciationCategory(e.target.value)}
+                value={values.roles}
+                onChange={handleChangeFilter}
+                label="Tipo"
+                inputProps={{
+                  name: 'roles',
+                }}
               >
                 <option aria-label="None" value="" />
-                {categories.map(denunciationCategory => {
-                  return (
-                    <option value={denunciationCategory.id}>{denunciationCategory.name}</option>
-                  )
-                })
-                }
+                <option value='coordinator'>Coordenador</option>
+                <option value='moderator'>Moderador</option>
               </Select>
             </FormControl>
           </Grid>
 
-          {/* <Grid item xs={12} sm={2}>
-            <FormControl variant="outlined" margin="dense" fullWidth>
-              <InputLabel>Rua:</InputLabel>
-              <Select native label="Endereço" value={denunciationStreet} onChange={e => setDenunciationStreet(e.target.value)}>
-                <option aria-label="None" value="" />
-                {denunciationsSlect.map(denunciationStreet => {
-                  return (
-                    <option value={denunciationStreet.street}>{denunciationStreet.street}</option>
-                  )
-                })
-                }
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={2}>
-            <FormControl variant="outlined" margin="dense" fullWidth>
-              <InputLabel>Bairro:</InputLabel>
-              <Select native label="Bairro" value={denunciationNeighborhood} onChange={e => setDenunciationNeighborhood(e.target.value)}>
-                <option aria-label="None" value="" />
-                {denunciationsSlect.map(denunciationNeighborhood => {
-                  return (
-                    <option value={denunciationNeighborhood.neighborhood}>{denunciationNeighborhood.neighborhood}</option>
-                  )
-                })
-                }
-              </Select>
-            </FormControl>
-          </Grid> */}
           <Grid item xs={12} sm={2}>
             <div>
               <TextField
                 fullWidth
                 id="standard-rua"
-                label="Rua"
-                value={denunciationStreet.street}
-                onChange={e => handleStreet(e.target.value)}
+                label="Nome"
+                onChange={handleChangeFilter}
+                required
+                value={values.firstName}
+                inputProps={{
+                  name: 'firstName',
+                }}
               />
             </div>
           </Grid>
@@ -239,89 +167,73 @@ const PrefecturesToolbar = props => {
               <TextField
                 fullWidth
                 id="standard-bairro"
-                label="Bairro"
-                value={denunciationNeighborhood.neighborhood}
-                onChange={e => handleNeighborhood(e.target.value)}
+                label="Email"
+                onChange={handleChangeFilter}
+                required
+                value={values.email}
+                inputProps={{
+                  name: 'email',
+                }}
               />
             </div>
           </Grid>
+          <Grid item xs={12} sm={1}>
+            <FormControl margin="dense" fullWidth>
+              <Button onClick={handleClickFilter} variant="contained" color="primary">Filtrar</Button>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={1}>
+            <FormControl margin="dense" fullWidth>
+              <Button  onClick={limparForm} variant="contained" >Limpar</Button>
+            </FormControl>
+          </Grid>
+
+
           <Grid item xs={12} sm={2}>
-            <TextField
-              onChange={e => handleData(e.target.value)}
-              id="date"
-              label="Data"
-              type="date"
-              className={classes.textField}
-              value={denunciationData.data}
-              InputLabelProps={{
-                shrink: true,
+
+            <div
+              style={{
+                float: 'right',
               }}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={1}>
-            <FormControl margin="dense" fullWidth>
-              <Button onClick={submit} variant="contained" color="primary">Filtrar</Button>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={1}>
-            <FormControl margin="dense" fullWidth>
-              <Button onClick={submitLimpar}  variant="contained" >Limpar</Button>
-            </FormControl>
-          </Grid>
-          
-
-          <Grid item xs={12} sm={2}>
-            {progressStatus &&
-              <div
-                style={{
-                  float: 'right',
-                }}
-              >
-                <FormControl margin="dense">
-                  <Button
-                    onClick={submitEmProgresso}
-                    style={{
-                      background: 'green',
-                    }}
-                    variant="contained" color="secondary"> Aprovadas <CheckIcon /></Button>
-                </FormControl>
-              </div>
-            }
-
-            {progressStatus == false &&
-
-              <div
-                style={{
-                  float: 'right',
-                }}
-              >
-                <FormControl margin="dense">
-                  <Button
-                    onClick={submitEmProgresso2}
-                    style={{
-                      background: 'red',
-                    }}
-                    variant="contained" color="secondary"> Denúncias </Button>
-                </FormControl>
-              </div>
-
-            }
+            >
+              <FormControl margin="dense">
+                <Button
+                  onClick={handleOpen}
+                  style={{
+                    background: 'green',
+                  }}
+                  variant="contained" color="secondary"><AddIcon />Cadastro</Button>
+              </FormControl>
+            </div>
           </Grid>
         </Grid>
 
-      </div >
+        {/* // Modal CADASTRAR USUÀRIO*/}
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={classes.modal}
+          open={openModal}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={openModal}>
+            <div className={classes.paper}>
 
-      <Dialog open={openDialog} onClose={e => setOpenDialog(false)}>
-        <DialogTitle>Atenção</DialogTitle>
-        <DialogContent>
-          {mensagem}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
-        </DialogActions>
-      </Dialog>
+              <CreateUser onCreateUser={onCreateUser} />
+
+            </div>
+          </Fade>
+        </Modal>
+        
+        {/* // FIM Modal CADASTRAR USUÀRIO*/}
+
+      </div >
     </div >
   );
 };
