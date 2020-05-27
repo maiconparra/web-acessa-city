@@ -29,6 +29,7 @@ import {
   Profile as ProfileView,
   ModeratorCoordinatorList as ModeratorCoordinatorListView,
   ReportMap as ReportMapView,
+  CreateReport as CreateReportView
 
 
 } from './views';
@@ -275,6 +276,13 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/mapa-de-denuncias"
+          permission={true}
+        />
+        <RouteWithLayout
+          component={CreateReportView}
+          exact
+          layout={MainLayout}
+          path="/criar-denuncia"
           permission={true}
         />
         <Route

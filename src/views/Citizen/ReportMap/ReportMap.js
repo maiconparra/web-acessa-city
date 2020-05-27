@@ -1,5 +1,9 @@
 import React from 'react';
+import { Switch, Route } from 'react-router-dom'
+import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/styles';
+import RoomIcon from '@material-ui/icons/Room';
+
 import {
   Card,
   Form,
@@ -16,7 +20,8 @@ import {
   Tooltip,
   Typography,
   TextField,
-  Grid
+  Grid,
+  Ic
 } from '@material-ui/core';
 import Camera, { idealResolution } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
@@ -29,13 +34,12 @@ import {
 
 
 
-import API from '../../utils/API';
+import API from '../../../utils/API';
 import { useState, useEffect } from 'react';
-import { ReportCommentaries } from '../../components';
-import ReportInteractionHistory from '../ReportInteractionHistory';
+/* import { ReportCommentaries } from '../../../components';
+import ReportInteractionHistory from '../../ReportInteractionHistory'; */
 import currentUser from 'utils/AppUser';
 import GoogleMapReact from 'google-map-react';
-
 
 const styles = makeStyles({
   gridButton: {
@@ -58,9 +62,11 @@ const styles = makeStyles({
   camera: {
     width: "100px",
     height: "100px"
+  },
+  marker: {
+    color: "red",
   }
 });
-
 
 const ReportMap = props => {
 
@@ -77,7 +83,7 @@ const ReportMap = props => {
       (position) => {
         console.log(position.coords.latitude);
         console.log(position.coords.longitude);
-        const {latitude, longitude} = position.coords;
+        const { latitude, longitude } = position.coords;
         setLongitude(longitude);
         setLatitude(latitude);
       },
@@ -90,7 +96,7 @@ const ReportMap = props => {
   }, [])
 
   const teste = () => {
-    console.log("State longitude: " + longitude + "State latidude: "+ latitude)
+    console.log("State longitude: " + longitude + "State latidude: " + latitude)
   }
 
   const style = styles();
@@ -101,10 +107,10 @@ const ReportMap = props => {
 
   const defaultProps = {
     center: {
-      lat: 59.95,
-      lng: 30.33
+      lat: latitude,
+      lng: longitude
     },
-    zoom: 11
+    zoom: 19
   };
 
   function handleTakePhoto(dataUri) {
@@ -135,15 +141,18 @@ const ReportMap = props => {
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
-        <Button
-          lat={59.955413}
-          lng={30.337844}
+        {/* <Marker
+          position={{ latitude: latitude, longitude: longitude }}
+        /> */}
+        {/* <Button
           text="My Marker"
           onClick={teste}
-        >
-          DENÚNCIA
-
-        </Button>
+          position={{ latitude: latitude, longitude: longitude }}
+          className={style.marker}
+          
+        > */}
+         <RoomIcon className={style.marker} position={{ latitude: latitude, longitude: longitude }}/>
+        {/* </Button> */}
       </GoogleMapReact>
       <Grid
         className={style.gridButton}
@@ -153,69 +162,14 @@ const ReportMap = props => {
       >
         <div style={{ textAlign: 'right' }}>
           <Button
-            style={{ position: 'absolute', backgroundColor: '#fff' }}
-            onClick={loadReport}
-            text="My Marker"
-          >
-            DENÚNCIAR
-        </Button>
+            href="/criar-denuncia"
+            style={{ display: 'absolute', backgroundColor: '#fff' }}
+          >DENÚNCIAR
+          </Button>
         </div>
 
       </Grid>
 
-
-      {clicked.check ?
-        <Grid
-          className={style.gridForm}
-        >
-          <form onSubmit={onCreateReport}>
-            <Typography
-              className={style.title}
-              variant="h2"
-            >
-              INFORME O QUE ESTÁ OCORRENDO NA REGIÃO OU LOCAL!!
-                </Typography>
-            <TextField
-              label="Titulo da Denúncia"
-              name="title"
-              type="text"
-              variant="outlined"
-            />
-            <br />
-            <br />
-            <TextField
-              label="Descrição da Denúncia"
-              name="title"
-              type="text"
-              variant="outlined"
-            />
-
-            <Camera
-              onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
-              idealResolution={{ width: 1920, height: 1080 }}
-            />
-
-            <Grid
-              className={{ marginTop: "10px" }}
-            >
-              <Button
-                type="submit"
-                className={{ alignSelf: "rigth", marginTop: "35px" }}
-                color="primary"
-              >
-                ENVIAR
-            </Button>
-              <Button
-                type="submit"
-                className={{ alignSelf: "left", marginTop: "35px" }}
-                color="primary"
-              >
-                CANCELAR
-            </Button>
-            </Grid>
-          </form>
-        </Grid>
-        : null}
 
 
     </div>
