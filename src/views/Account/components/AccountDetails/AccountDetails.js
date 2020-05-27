@@ -18,17 +18,21 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import API from 'utils/API'
+import currentUser from 'utils/AppUser';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
 const AccountDetails = props => {
-  const { className, openAccount, ...rest } = props;
+  const { className, userId, ...rest } = props;
 
 
   const classes = useStyles();
 
+
+  const [user, setUser] = useState({})
 
   const [values, setValues] = useState({
     firstName: '',
@@ -43,13 +47,55 @@ const AccountDetails = props => {
     });
   };
 
- 
+
   const handleClickAlterar = (event) => {
     event.preventDefault();
 
-    console.log("EUUU:", values)
+    if (!userId) {
+      currentUser().then((result) => {
+        const alter = {
+          userId: result.id,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+        }
+        
+        API.put('/user/update-data-profile',alter).then((result) => {
+  
+          console.log('sucesso')
+        }).catch((erro) => {
+          console.log('erro', erro);
+        })
+
+      }).catch((erro) => {
+        console.log("erro", erro)
+      })
+    } else {
+      const alter = {
+        userId: userId,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email: values.email,
+      }
+
+      API.put('/user/update-data-profile',alter).then((result) => {
+
+        console.log('sucesso')
+      }).catch((erro) => {
+        console.log('erro', erro);
+      })
       
-    //props.filter();
+    }
+
+
+
+
+
+    
+
+    //API.post(`/user/update-data-profile`)
+
+
   }
 
 
@@ -63,7 +109,35 @@ const AccountDetails = props => {
   const handleCloseRecuperar = () => {
     setOpenRecuperarSenha(false);
   };
-  
+
+  const carregarUser = (id) => {
+    API.get(`/user/${id}`).then((result) => {
+      setUser(result.data)
+      setValues({
+        ...values,
+        firstName: result.data.firstName,
+        lastName: result.data.lastName,
+        email: result.data.email,
+      });
+    }).catch((erro) => {
+      console.log('erro', erro);
+    })
+  }
+  React.useEffect(() => {
+
+    if (!userId) {
+      currentUser().then((result) => {
+        //userId = result.id;
+        carregarUser(result.id);
+
+      }).catch((erro) => {
+        console.log("erro", erro)
+      })
+    } else {
+      carregarUser(userId);
+    }
+
+  }, []);
 
   return (
     <Card
@@ -97,7 +171,7 @@ const AccountDetails = props => {
                 name="firstName"
                 required
                 onChange={handleChange}
-                value={openAccount.users.firstName}
+                value={values.firstName}
                 variant="outlined"
               />
             </Grid>
@@ -113,7 +187,7 @@ const AccountDetails = props => {
                 margin="dense"
                 name="lastName"
                 onChange={handleChange}
-                value={openAccount.users.lastName}
+                value={values.lastName}
                 variant="outlined"
               />
             </Grid>
@@ -130,7 +204,7 @@ const AccountDetails = props => {
                 name="email"
                 required
                 onChange={handleChange}
-                value={openAccount.users.email}
+                value={values.email}
                 variant="outlined"
               />
             </Grid>

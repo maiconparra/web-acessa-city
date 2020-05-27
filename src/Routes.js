@@ -28,7 +28,7 @@ import {
   CitizensList as CitizensListView,
   Profile as ProfileView,
   ModeratorCoordinatorList as ModeratorCoordinatorListView,
-
+  ReportMap as ReportMapView,
 
 
 } from './views';
@@ -83,12 +83,7 @@ const Routes = () => {
           layout={MainLayout}
           path="/category"
         />
-        <RouteWithLayout
-          component={MeuExemploBanana}
-          exact
-          layout={MainLayout}
-          path="/meu-exemplo"
-        />
+
 
 
         <RouteWithLayout
@@ -124,7 +119,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/gerenciar-usuarios"
-          permission={roles.city_hall}
+          permission={true}
         />
 
         <RouteWithLayout
@@ -134,13 +129,13 @@ const Routes = () => {
           path="/profile"
           permission={roles.city_hall}
         />
-        {/* <RouteWithLayout
+        <RouteWithLayout
           component={CreateUserView}
           exact
           layout={MainLayout}
           path="/novo-usuario"
           permission={true}
-        /> */}
+        />
         {/* FIM Rotas da Prefeitura*/}
 
 
@@ -176,7 +171,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/denuncias"
-          permission={roles.coordinator}
+          permission={true}
         />
 
         <RouteWithLayout
@@ -184,14 +179,14 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/comentarios"
-          permission={roles.coordinator}
+          permission={true}
         />
         <RouteWithLayout
           component={CategoryListView}
           exact
           layout={MainLayout}
           path="/categorias-subcategorias"
-          permission={roles.coordinator}
+          permission={true}
         />
         {/* FIM Rotas do Coordinator */}
 
@@ -211,7 +206,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/criar-prefeitura"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
@@ -220,7 +215,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/prefeituras"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
 
@@ -230,7 +225,7 @@ const Routes = () => {
           exact
           layout={MainLayout}
           path="/cidadaos"
-          permission={roles.admin}
+          permission={true}
         // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
         />
         {/* FIM Rotas do Master */}
@@ -268,7 +263,20 @@ const Routes = () => {
           path="/meu-perfil"
           permission={true}
         />
-
+        <RouteWithLayout
+          component={MeuExemploBanana}
+          exact
+          layout={MainLayout}
+          path="/meu-exemplo"
+          permission={true}
+        />
+        <RouteWithLayout
+          component={ReportMapView}
+          exact
+          layout={MainLayout}
+          path="/mapa-de-denuncias"
+          permission={true}
+        />
         <Route
           component={NotFoundView}
           exact

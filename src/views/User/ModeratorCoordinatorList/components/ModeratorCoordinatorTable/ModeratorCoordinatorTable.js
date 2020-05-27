@@ -163,6 +163,8 @@ const ModeratorCoordinatorTable = props => {
   });
 
   const handleClickAccount = (usersCM) => {
+
+    console.log("sdfsddsdasddasdasda", usersCM)
     setAccount({
       ...users,
       users: usersCM
@@ -203,8 +205,8 @@ const ModeratorCoordinatorTable = props => {
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.roles[0]}</TableCell>
                       <TableCell>
-                        <IconButton key={user.id} aria-label="display more actions" edge="end" color="inherit">
-                          <MoreIcon onClick={() => handleClickAccount(user)}/>  {/* onClick={handleClick}  */}
+                        <IconButton aria-label="display more actions" edge="end" color="inherit">
+                          <MoreIcon  onClick={() => handleClickAccount(user)}/>  {/* onClick={handleClick}  */}
                         </IconButton>
                         <StyledMenu
                           id="customized-menu"
@@ -218,7 +220,7 @@ const ModeratorCoordinatorTable = props => {
                               <EditIcon fontSize="small" />
                             </ListItemIcon>
                             <ListItemText 
-                             primary="Editar" />
+                             primary={"Editar" + user.id}/>
                           </StyledMenuItem>
 
                           <StyledMenuItem>
@@ -252,7 +254,7 @@ const ModeratorCoordinatorTable = props => {
                 <Fade in={open}>
                   <div className={classes.paper}>
 
-                    <AccountDetails openAccount={openAccount} />
+                    <AccountDetails userId={openAccount.users.id} />
 
                   </div>
                 </Fade>

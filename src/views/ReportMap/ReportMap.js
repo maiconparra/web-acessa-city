@@ -62,7 +62,7 @@ const styles = makeStyles({
 });
 
 
-const MeuExemplo = props => {
+const ReportMap = props => {
 
   const [location, setLocation] = useState({
     latitude: '',
@@ -222,4 +222,4 @@ const MeuExemplo = props => {
   )
 }
 
-export default MeuExemplo;
+export default ReportMap;
