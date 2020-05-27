@@ -20,6 +20,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import API from 'utils/API'
 import currentUser from 'utils/AppUser';
+import firebase from 'firebase/app'
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -46,6 +47,17 @@ const AccountDetails = props => {
       [event.target.name]: event.target.value
     });
   };
+
+  const enviaEmailRecuperacaoSenha = (userEmail) => {
+    var auth = firebase.auth();
+    
+    auth.sendPasswordResetEmail(userEmail).then(function() {
+      alert('Email enviado com sucesso')
+    }).catch(function(error) {
+      alert('Falha no envio do e-mail');
+      console.log(error);
+    });
+  }
 
 
   const handleClickAlterar = (event) => {
@@ -107,6 +119,7 @@ const AccountDetails = props => {
   };
 
   const handleCloseRecuperar = () => {
+    enviaEmailRecuperacaoSenha(values.email);
     setOpenRecuperarSenha(false);
   };
 
@@ -225,7 +238,7 @@ const AccountDetails = props => {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
-                <DialogTitle id="alert-dialog-title">Reuperação de senha!</DialogTitle>
+                <DialogTitle id="alert-dialog-title">Recuperação de senha!</DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
                     Chegará um email de recuperação de senha no seu email.

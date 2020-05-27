@@ -9,7 +9,6 @@ import {
     Button,
     TextField
   } from '@material-ui/core';
-
 import firebase from 'firebase/app'
 
 
@@ -42,9 +41,14 @@ const ChangePassword = props => {
             var newPassword = password.password;
             
             user.updatePassword(newPassword).then(function() {
-            alert('mensagem verde: senha alterada com sucesso');
+                setPassword({
+                    ...password,
+                    password: '',
+                    confirmPassword: ''                    
+                })
+                alert('mensagem verde: senha alterada com sucesso');
             }).catch(function(error) {
-              // An error happened.
+              console.log('Erro na troca de senha::::', error)
             });
         }
         else {
