@@ -220,7 +220,7 @@ const SignIn = props => {
               user.getIdTokenResult().then((token) => {
                 console.log(token.token)
                 asyncLogin(token.token).then(result => {                  
-                  history.push('/');
+                  window.location = '/'
                 })
                 .catch(error => {
                   console.log(error)
