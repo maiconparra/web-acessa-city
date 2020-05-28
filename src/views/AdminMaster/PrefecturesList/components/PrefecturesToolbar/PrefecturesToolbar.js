@@ -119,8 +119,7 @@ const PrefecturesToolbar = props => {
     props.filter(values);
 
   }
-
-
+  
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.root}>
