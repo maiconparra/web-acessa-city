@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -21,7 +21,8 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import mockData from './data';
+import API from '../../../../utils/API';
+
 import { StatusBullet } from 'components';
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +56,18 @@ const LatestOrders = props => {
 
   const classes = useStyles();
 
-  const [orders] = useState(mockData);
+  const [report, setReport] = useState([{}]);
+
+  useEffect(() => {
+    API.get('/report')
+      .then(result => {
+        setReport({
+          report: result.data
+        });
+      }).catch(err => {
+        window.alert(err.message);
+      });
+  },[report]);
 
   return (
     <Card
@@ -100,24 +112,24 @@ const LatestOrders = props => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map(order => (
+                {report.map(report => (
                   <TableRow
                     hover
-                    key={order.id}
+                    key={report.id}
                   >
-                    <TableCell>{order.ref}</TableCell>
-                    <TableCell>{order.customer.name}</TableCell>
+                    <TableCell>{report.title}</TableCell>
+                    <TableCell>{report.description}</TableCell>
                     <TableCell>
-                      {moment(order.createdAt).format('DD/MM/YYYY')}
+                      {moment(report.creationData).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
                       <div className={classes.statusContainer}>
                         <StatusBullet
                           className={classes.status}
-                          color={statusColors[order.status]}
+                          color={statusColors[report.reportStatus]}
                           size="sm"
                         />
-                        {order.status}
+                        {report.reportStatus}
                       </div>
                     </TableCell>
                   </TableRow>
