@@ -33,6 +33,7 @@ import API from '../../utils/API';
 import { useState, useEffect } from 'react';
 import { ReportCommentaries } from '../../components';
 import ReportInteractionHistory from '../ReportInteractionHistory';
+import Report from 'components/Report';
 import currentUser from 'utils/AppUser';
 import GoogleMapReact from 'google-map-react';
 
@@ -129,96 +130,7 @@ const MeuExemplo = props => {
   }
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <GoogleMapReact
-        bootstrapURLKeys={'AIzaSyDBxtpy4QlnhPfGK7mF_TnbLXooEXVPy_0'}
-        defaultCenter={defaultProps.center}
-        defaultZoom={defaultProps.zoom}
-      >
-        <Button
-          lat={59.955413}
-          lng={30.337844}
-          text="My Marker"
-          onClick={teste}
-        >
-          DENÚNCIA
-
-        </Button>
-      </GoogleMapReact>
-      <Grid
-        className={style.gridButton}
-        item
-        lg={7}
-        xs={12}
-      >
-        <div style={{ textAlign: 'right' }}>
-          <Button
-            style={{ position: 'absolute', backgroundColor: '#fff' }}
-            onClick={loadReport}
-            text="My Marker"
-          >
-            DENÚNCIAR
-        </Button>
-        </div>
-
-      </Grid>
-
-
-      {clicked.check ?
-        <Grid
-          className={style.gridForm}
-        >
-          <form onSubmit={onCreateReport}>
-            <Typography
-              className={style.title}
-              variant="h2"
-            >
-              INFORME O QUE ESTÁ OCORRENDO NA REGIÃO OU LOCAL!!
-                </Typography>
-            <TextField
-              label="Titulo da Denúncia"
-              name="title"
-              type="text"
-              variant="outlined"
-            />
-            <br />
-            <br />
-            <TextField
-              label="Descrição da Denúncia"
-              name="title"
-              type="text"
-              variant="outlined"
-            />
-
-            <Camera
-              onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
-              idealResolution={{ width: 1920, height: 1080 }}
-            />
-
-            <Grid
-              className={{ marginTop: "10px" }}
-            >
-              <Button
-                type="submit"
-                className={{ alignSelf: "rigth", marginTop: "35px" }}
-                color="primary"
-              >
-                ENVIAR
-            </Button>
-              <Button
-                type="submit"
-                className={{ alignSelf: "left", marginTop: "35px" }}
-                color="primary"
-              >
-                CANCELAR
-            </Button>
-            </Grid>
-          </form>
-        </Grid>
-        : null}
-
-
-    </div>
+    <Report reportId={'85615f64-3d93-4e4f-bfb5-4960ff62d22f'}></Report>   
   )
 }
 
