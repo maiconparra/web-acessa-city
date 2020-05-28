@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   Button,
   InputLabel,
@@ -56,6 +58,8 @@ const styles = makeStyles({
 
 const MeuExemplo = props => {
 
+  const { history } = props;
+
   const { register, handleSubmit, watch, errors } = useForm();
 
   const [location, setLocation] = useState({
@@ -99,15 +103,6 @@ const MeuExemplo = props => {
     );
 
 
-  }, []);
-
-  useEffect(() => {
-    API.get('/category')
-      .then(resolve => {
-        setCategory({
-          category: resolve.data
-        });
-      });
   }, []);
 
 
@@ -156,9 +151,7 @@ const MeuExemplo = props => {
   function loadReport(event) {
     event.preventDefault();
 
-    setClicked({
-      check: true
-    });
+    history.push('/criar-denuncia');
   }
 
   const onCreateReport = data => console.log(data);
@@ -194,92 +187,13 @@ const MeuExemplo = props => {
             DENÚNCIAR
           </Button>
         </div>
-        <div 
-          style= { {alignSelf: 'left'} }>
-
-        </div>
       </Grid>
-
-
-      {clicked.check ?
-        <Grid
-          className={style.gridForm}
-        >
-          <form onSubmit={onCreateReport}>
-            <Typography
-              className={style.title}
-              variant="h2"
-            >
-              INFORME O QUE ESTÁ OCORRENDO NA REGIÃO OU LOCAL!!
-            </Typography>
-            
-            <TextField
-              label="Titulo da Denúncia"
-              name="title"
-              type="text"
-              variant="outlined"
-              onChange = { handleChange }
-              value = { report.values.title }
-            />
-            <br />
-            <br />
-            <TextField
-              label="Descrição da Denúncia"
-              name="description"
-              type="text"
-              variant="outlined"
-              onChange = { handleChange }
-              value = { report.values.description }
-            />
-            <InputLabel htmlFor = "select">Categorrias</InputLabel>
-            <NativeSelect>
-              <option 
-                key = { category.category[0].id }
-                value = { report.values.categoryId }
-                onChange = { handleChange }
-              > { category.category[0].name } </option>
-              <option 
-                key = { category.category[1].id } 
-                value = { report.values.categoryId }
-                onChange = { handleChange } 
-              > { category.category[1].name } </option>
-              <option 
-                key = { category.category[2].id } 
-                value = { report.values.categoryId }
-                onChange = { handleChange }
-              > { category.category[2].name } </option>
-            </NativeSelect>
-            <MobileView>  
-              <Camera
-                onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
-                idealResolution={{ width: 1920, height: 1080 }}
-              />
-            </MobileView>
-            <Grid
-              className={{ marginTop: "10px" }}
-            >
-              <Button
-                type="submit"
-                className={{ alignSelf: "rigth", marginTop: "35px" }}
-                color="primary"
-              >
-                ENVIAR
-              </Button>
-              <Button
-                type="submit"
-                className={{ alignSelf: "left", marginTop: "35px" }}
-                color="primary"
-              >
-                CANCELAR
-              </Button>
-            </Grid>
-          </form>
-        </Grid>
-        : null}
-
-
     </div>
   )
 }
 
-export default MeuExemplo;
+MeuExemplo.propTypes = {
+  history: PropTypes.object
+};
+
+export default withRouter(MeuExemplo);

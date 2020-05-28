@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
@@ -7,6 +9,7 @@ import {
   CardHeader,
   CardContent,
   Button,
+  NativeSelect,
   Divider,
   Table,
   TableBody,
@@ -28,13 +31,16 @@ import {
 } from "react-device-detect";
 
 
+import currentUser from '../../../utils/AppUser';
+
+
 
 import API from '../../../utils/API';
-import { useState, useEffect } from 'react';
+
 /* import { ReportCommentaries } from '../../../components';
 import ReportInteractionHistory from '../../ReportInteractionHistory'; */
-import currentUser from 'utils/AppUser';
 import GoogleMapReact from 'google-map-react';
+import { RaceOperator } from 'rxjs/internal/observable/race';
 
 const styles = makeStyles({
   gridButton: {
@@ -62,13 +68,15 @@ const styles = makeStyles({
 
 const CreateReport = props => {
 
+  const { history } = props;
+
   const [location, setLocation] = useState({
     latitude: '',
     longitude: ''
-  })
+  });
 
-  const [longitude, setLongitude] = useState('')
-  const [latitude, setLatitude] = useState('')
+  const [longitude, setLongitude] = useState('');
+  const [latitude, setLatitude] = useState('');
   useEffect(() => {
 
     navigator.geolocation.getCurrentPosition(
@@ -80,22 +88,27 @@ const CreateReport = props => {
         setLatitude(latitude);
       },
       (error) => {
-        console.log("ERRO! " + error.message)
+        console.log("ERRO! " + error.message);
       }
-    )
+    );
 
 
-  }, [])
+  }, []);
 
   const teste = () => {
     console.log("State longitude: " + longitude + "State latidude: " + latitude)
-  }
+  };
 
   const style = styles();
 
   const [clicked, setClicked] = useState({
     check: false
   });
+
+  const [ category, setCategory ] = useState([]);
+  const [ user, setUser ] = useState('');
+  const [ status, setStatus ] = useState([]);
+  const [ urgency, setUrgency ] = useState([]);
 
   const defaultProps = {
     center: {
@@ -105,6 +118,86 @@ const CreateReport = props => {
     zoom: 11
   };
 
+
+  currentUser().then(result => {
+    setUser(
+      result.id
+    );
+  }).catch(err => {
+    window.alert(err.message);
+  });
+
+
+
+  useEffect(() => {
+    API.get('/report-status')
+      .then(result => {
+        setStatus(
+          result.data[3].id
+        );
+      }).catch(err => {
+        window.alert(err.message);
+      });
+  },[]);
+
+  useEffect(() => {
+    API.get('/urgency-level')
+      .then(result => {
+        setUrgency(
+          result.data[0].id
+        );
+      }).catch(err => {
+        window.alert(err.message);
+      });
+  },[]);
+
+  useEffect(() => {
+    API.get('/category')
+      .then(result => {
+        setCategory(
+          result.data
+        );
+      })
+      .catch(err => {
+        window.alert(err.message);
+      });
+  }, []);
+
+
+  const [ report, setReport ] = useState({
+    values: {
+      userId: user,
+      reportStatusId: status,
+      urgencyLevelId: urgency,
+      longitude: location.longitude,
+      latitude: location.latitude,
+      categoryId: '0979e26b-15ae-412e-8382-bfaa5b68a2a3',
+      cityId: '7ae590f1-c6a4-4bb3-91bf-1e82ea45bb4b',
+      description: '',
+      title: ''
+    }
+  });
+
+  function handleChange(event){
+    event.persist();
+
+    setReport({
+      ...report,
+      values: {
+        ...report.values,
+        [event.target.name]: event.target.value
+      }
+    });
+
+  }
+
+  useEffect(() => {
+    setReport({
+      
+    });
+  }, []);
+
+
   function handleTakePhoto(dataUri) {
     // Do stuff with the photo...
     console.log('takePhoto');
@@ -113,17 +206,19 @@ const CreateReport = props => {
   function loadReport(event) {
     event.preventDefault();
 
-    setClicked({
-      check: true
-    });
+    
   }
 
   function onCreateReport(event) {
     event.preventDefault();
 
-    setClicked({
-      check: false
-    });
+    API.post('/report', report)
+      .then(result => {
+
+      }).catch(err => {
+        window.alert(err.message);
+      });
+      
   }
 
   return (
@@ -133,16 +228,19 @@ const CreateReport = props => {
         className={style.gridForm}
       >
         <form onSubmit={onCreateReport}>
-          
-          <Camera
-            onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
-            idealResolution={{ width: 1920, height: 1080 }}
-          />
+          <MobileView>
+            <Camera
+              onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
+              idealResolution={{ width: 1920, height: 1080 }}
+            />
+          </MobileView>
           <TextField
             fullWidth
             label="Titulo da Denúncia"
             name="title"
             type="text"
+            onChange = {handleChange}
+            value = {report.title}
             variant="outlined"
           />
           
@@ -151,8 +249,23 @@ const CreateReport = props => {
             label="Descrição da Denúncia"
             name="title"
             type="text"
+            onChange = {handleChange}
+            value = {report.description}
             variant="outlined"
           />
+
+          <NativeSelect>
+            {
+              category.map(category => (
+                <option 
+                  key = {category.id} 
+                >{category.name}</option>
+              ))
+            }
+          </NativeSelect>
+          <BrowserView>
+            <input type="file" accept="image/*" capture="camera"/>
+          </BrowserView>
           <Grid
             className={{ marginTop: "10px" }}
           >
@@ -171,7 +284,7 @@ const CreateReport = props => {
               CANCELAR
             </Button>
           </Grid>
-          <input type="file" accept="image/*" capture="camera"></input>
+          
         </form>
       </Grid>
 
@@ -179,4 +292,8 @@ const CreateReport = props => {
   )
 }
 
-export default CreateReport;
+CreateReport.propTypes = {
+  history: PropTypes.object
+};
+
+export default withRouter(CreateReport);

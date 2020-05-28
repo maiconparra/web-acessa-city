@@ -56,14 +56,14 @@ const LatestOrders = props => {
 
   const classes = useStyles();
 
-  const [report, setReport] = useState([{}]);
+  const [report, setReport] = useState([]);
 
   useEffect(() => {
     API.get('/report')
       .then(result => {
-        setReport({
-          report: result.data
-        });
+        setReport(
+          result.data
+        );
       }).catch(err => {
         window.alert(err.message);
       });
@@ -126,10 +126,10 @@ const LatestOrders = props => {
                       <div className={classes.statusContainer}>
                         <StatusBullet
                           className={classes.status}
-                          color={statusColors[report.reportStatus]}
+                          color={statusColors[report.reportStatus.description]}
                           size="sm"
                         />
-                        {report.reportStatus}
+                        {report.reportStatus.description}
                       </div>
                     </TableCell>
                   </TableRow>

@@ -11,9 +11,9 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './assets/scss/index.scss';
 import validators from './common/validators';
 import Routes from './Routes';
-import firebase from "firebase/app";
-import "firebase/auth";
-import { login, logout } from 'utils/auth';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+//import { login, logout } from 'utils/auth';
 
 import enviroment from 'enviroments/enviroment-dev';
 
@@ -34,18 +34,18 @@ firebase.auth().onIdTokenChanged(function(user) {
     // })
   }
 });
- firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    user.getIdToken()
-      .then((token) => {
-        console.log(token);
-        // login(token)
-      })    
-      // ...
-  } else {
-    logout();
-  }
-});
+// firebase.auth().onAuthStateChanged(function(user) {
+//   if (user) {
+//     user.getIdToken()
+//       .then((token) => {
+//         console.log(token);
+//         // login(token)
+//       })    
+//     // ...
+//   } else {
+//     logout()
+//   }
+// });
 
 validate.validators = {
   ...validate.validators,
