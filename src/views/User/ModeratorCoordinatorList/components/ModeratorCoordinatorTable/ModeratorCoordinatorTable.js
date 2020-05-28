@@ -177,6 +177,18 @@ const ModeratorCoordinatorTable = props => {
   };
 
 
+  const handleClickDelete = (userDelete) => {
+
+    API.delete(`/user/${userDelete.id}`)
+    .then(response => {
+      console.log("sucesso")
+    }).catch(erro => {
+      console.log(erro);
+    })
+
+  }
+
+
 
   return (
     <Card
@@ -205,31 +217,15 @@ const ModeratorCoordinatorTable = props => {
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.roles[0]}</TableCell>
                       <TableCell>
-                        <IconButton aria-label="display more actions" edge="end" color="inherit">
-                          <MoreIcon  onClick={() => handleClickAccount(user)}/>  {/* onClick={handleClick}  */}
+                        <IconButton
+                          aria-label="display more actions" edge="end" color="inherit">
+                          <EditIcon
+                            onClick={() => handleClickAccount(user)} />  {/* onClick={handleClick}  */}
                         </IconButton>
-                        <StyledMenu
-                          id="customized-menu"
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={Boolean(anchorEl)}
-                          onClose={anchorElClose}
-                        >
-                          <StyledMenuItem>
-                            <ListItemIcon >
-                              <EditIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText 
-                             primary={"Editar" + user.id}/>
-                          </StyledMenuItem>
+                        <IconButton aria-label="display more actions" edge="end" color="inherit">
+                          <DeleteIcon onClick={() => handleClickDelete(user)} />  {/* onClick={handleClick}  */}
+                        </IconButton>
 
-                          <StyledMenuItem>
-                            <ListItemIcon>
-                              <DeleteIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText primary="Excluir" />
-                          </StyledMenuItem>
-                        </StyledMenu>
                       </TableCell>
                     </TableRow>
                   )
