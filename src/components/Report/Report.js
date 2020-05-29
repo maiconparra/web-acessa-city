@@ -31,11 +31,25 @@ const Report = props => {
 
     const [report, setReport] = useState({});
     const [user, setUser] = useState({});
+    const [rating, setRating] = useState(0);
     const [media, setMedia] = useState({
         hasMedia: false,
         photos: [],
         videos: []
     })
+
+    const ratingChanged = (newRating) => {
+        const userRating = {
+            userId: user.id,
+            reportId: reportId,
+            rating: newRating
+        }
+
+        api.post('/report-classification', userRating)
+            .then(result => {
+                setRating(newRating)
+            })
+    }
 
     const updateMediaLinks = attachments => {
         const photos = media.photos;
@@ -61,9 +75,12 @@ const Report = props => {
 
             })
 
-        currentUser().then(result => {
-            console.log(result)
+        currentUser().then(result => {            
             setUser(result);
+            api.get(`/report-classification?userId=${result.id}&reportId=${reportId}`)
+                .then(result => {
+                    setRating(result.data.rating);
+                })
         })            
     }, [])
 
@@ -85,9 +102,10 @@ const Report = props => {
             <CardContent>
             <ReactStars
                 count={5}
-                // onChange={ratingChanged}
+                onChange={ratingChanged}
                 half={false}
                 size={24}
+                value={rating}
                 color2={'#ffd700'} 
             />
                 <Typography gutterBottom variant="h3" component="h2">
