@@ -30,6 +30,8 @@ import {
   isMobile,
 } from "react-device-detect";
 
+import fileUpload from 'utils/AWS-S3';
+
 
 import currentUser from '../../../utils/AppUser';
 
@@ -70,10 +72,7 @@ const CreateReport = props => {
 
   const { history } = props;
 
-  const [location, setLocation] = useState({
-    latitude: '',
-    longitude: ''
-  });
+ 
 
   const [longitude, setLongitude] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -111,6 +110,7 @@ const CreateReport = props => {
   const [ user, setUser ] = useState('');
   const [ status, setStatus ] = useState([]);
   const [ urgency, setUrgency ] = useState([]);
+  const [ urlPhoto, setUrlPhoto ] = useState('');
   
   let categoryId;
 
@@ -172,7 +172,13 @@ const CreateReport = props => {
     values: {}
   });
 
-  
+  function handlePhoto(event){
+    event.persist();
+    
+    setUrlPhoto(event.target.files[0]);
+  }
+
+  console.log( 'Photo: ' + urlPhoto);
 
   function handleChange(event){
     event.persist();
@@ -182,8 +188,8 @@ const CreateReport = props => {
       values: {
         title: event.target.value,
         description: event.target.value,
-        longitude: location.longitude,
-        latitude: location.latitude,
+        longitude,
+        latitude,
         categoryId,
         userId: user,
         reportStatusId: status,
@@ -192,7 +198,7 @@ const CreateReport = props => {
       }
 
     });
-    console.log( ' User: ' + user + 'Urgency Level:  ' + report.values.urgencyLevelId + '  Status:  ' + report.values.reportStatusId + ' CategoryId: ' + report.values.categoryId +  ' Description ' + report.values.description + ' Title ' + report.values.title);
+    console.log( ' User: ' + user + 'Urgency Level:  ' + report.values.urgencyLevelId + '  Status:  ' + report.values.reportStatusId + ' CategoryId: ' + report.values.categoryId +' Description ' + report.values.description + ' Title ' + report.values.title + ' Url da Foto: ' + urlPhoto);
   }
   
   function handleTakePhoto(dataUri) {
@@ -200,16 +206,23 @@ const CreateReport = props => {
     console.log('takePhoto');
   }
 
-  function selectCategory(category){
-      return category;
-  }
+  const photo = 'https://acessacity.s3.amazonaws.com/photos/user.png';
+
+
 
   function onCreateReport(event) {
     event.preventDefault();
 
     API.post('/report', report.values)
       .then(result => {
+        fileUpload(urlPhoto)
+          .then((result) => {
+            console.log('Sucesso!!!'+ JSON.stringify(result.files));
+          }).catch((erro) => {
+            console.log(erro.message);
+          });
         console.log(JSON.stringify(result.data));
+        console.log('Photo: ' + urlPhoto);
       }).catch(err => {
         window.alert(err.message);
       });
@@ -259,9 +272,9 @@ const CreateReport = props => {
               ))
             }
           </NativeSelect>
-          <BrowserView>
-            <input type="file" accept="image/*" capture="camera"/>
-          </BrowserView>
+         
+          <input type="file" accept="image/*" capture="camera" onChange = { handlePhoto }/>
+        
           <Grid
             className={{ marginTop: "10px" }}
           >
