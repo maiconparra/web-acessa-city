@@ -10,14 +10,6 @@ import {
   NativeSelect,
   Grid
 } from '@material-ui/core';
-import Camera from 'react-html5-camera-photo';
-import 'react-html5-camera-photo/build/css/index.css';
-import {
-  BrowserView,
-  MobileView,
-  isBrowser,
-  isMobile,
-} from 'react-device-detect';
 
 
 import { useForm } from 'react-hook-form';
@@ -28,6 +20,7 @@ import API from '../../utils/API';
 import { useState, useEffect } from 'react';
 import { ReportCommentaries } from '../../components';
 import ReportInteractionHistory from '../ReportInteractionHistory';
+import Report from 'components/Report';
 import currentUser from 'utils/AppUser';
 import GoogleMapReact from 'google-map-react';
 
@@ -154,7 +147,6 @@ const MeuExemplo = props => {
     history.push('/criar-denuncia');
   }
 
-  const onCreateReport = data => console.log(data);
 
   return (
     <div style={{ height: '100vh', width: '100%' }}>
@@ -188,7 +180,9 @@ const MeuExemplo = props => {
           </Button>
         </div>
       </Grid>
+      <Report reportId={'85615f64-3d93-4e4f-bfb5-4960ff62d22f'}/>
     </div>
+
   )
 }
 

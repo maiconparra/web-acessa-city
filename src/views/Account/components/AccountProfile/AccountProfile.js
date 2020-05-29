@@ -17,7 +17,6 @@ import {
 import s3 from 'utils/AWS-S3'
 import api from 'utils/API'
 import currentUser from 'utils/AppUser'
-import ChangePassword from 'components/ChangePassword'
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -147,17 +146,6 @@ const AccountProfile = props => {
           </Button>
           <Button onClick={() => updatePhoto("")} variant="text">Remover foto</Button>
         </CardActions>      
-      </Card>
-      <Card
-      >
-        <CardHeader
-          subheader="Alterar minha senha"
-          title="Segurança"
-        />
-        <Divider />
-        <CardContent>
-          <ChangePassword></ChangePassword>
-        </CardContent>
       </Card>
     </div>
   );

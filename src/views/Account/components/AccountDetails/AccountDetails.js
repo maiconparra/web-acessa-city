@@ -35,6 +35,8 @@ const AccountDetails = props => {
 
   const [user, setUser] = useState({})
 
+  const[controleUser, setControleUser] = useState('');
+
   const [values, setValues] = useState({
     firstName: '',
     lastName: '',
@@ -99,15 +101,6 @@ const AccountDetails = props => {
       
     }
 
-
-
-
-
-    
-
-    //API.post(`/user/update-data-profile`)
-
-
   }
 
 
@@ -146,8 +139,10 @@ const AccountDetails = props => {
       }).catch((erro) => {
         console.log("erro", erro)
       })
+      setControleUser(false)
     } else {
       carregarUser(userId);
+      setControleUser(true)
     }
 
   }, []);
@@ -221,6 +216,9 @@ const AccountDetails = props => {
                 variant="outlined"
               />
             </Grid>
+
+
+            {controleUser == true &&
             <Grid
               item
               md={12}
@@ -256,6 +254,8 @@ const AccountDetails = props => {
               </Dialog>
 
             </Grid>
+
+}
             {/* <Grid
               item
               md={6}

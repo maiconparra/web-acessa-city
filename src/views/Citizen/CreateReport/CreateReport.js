@@ -84,8 +84,8 @@ const CreateReport = props => {
         console.log(position.coords.latitude);
         console.log(position.coords.longitude);
         const { latitude, longitude } = position.coords;
-        setLongitude(longitude);
-        setLatitude(latitude);
+        setLongitude(longitude.toFixed(4));
+        setLatitude(latitude.toFixed(4));
       },
       (error) => {
         console.log("ERRO! " + error.message);
@@ -96,8 +96,10 @@ const CreateReport = props => {
   }, []);
 
   const teste = () => {
-    console.log("State longitude: " + longitude + "State latidude: " + latitude)
+    console.log('State longitude: ' + longitude + 'State latidude: ' + latitude);
   };
+
+  teste();
 
   const style = styles();
 
@@ -109,6 +111,8 @@ const CreateReport = props => {
   const [ user, setUser ] = useState('');
   const [ status, setStatus ] = useState([]);
   const [ urgency, setUrgency ] = useState([]);
+  
+  let categoryId;
 
   const defaultProps = {
     center: {
@@ -165,18 +169,10 @@ const CreateReport = props => {
 
 
   const [ report, setReport ] = useState({
-    values: {
-      userId: user,
-      reportStatusId: status,
-      urgencyLevelId: urgency,
-      longitude: location.longitude,
-      latitude: location.latitude,
-      categoryId: '0979e26b-15ae-412e-8382-bfaa5b68a2a3',
-      cityId: '7ae590f1-c6a4-4bb3-91bf-1e82ea45bb4b',
-      description: '',
-      title: ''
-    }
+    values: {}
   });
+
+  
 
   function handleChange(event){
     event.persist();
@@ -184,37 +180,36 @@ const CreateReport = props => {
     setReport({
       ...report,
       values: {
-        ...report.values,
-        [event.target.name]: event.target.value
+        title: event.target.value,
+        description: event.target.value,
+        longitude: location.longitude,
+        latitude: location.latitude,
+        categoryId,
+        userId: user,
+        reportStatusId: status,
+        urgencyLevelId: urgency,
+        accuracy: 10
       }
-    });
 
+    });
+    console.log( ' User: ' + user + 'Urgency Level:  ' + report.values.urgencyLevelId + '  Status:  ' + report.values.reportStatusId + ' CategoryId: ' + report.values.categoryId +  ' Description ' + report.values.description + ' Title ' + report.values.title);
   }
-
-  useEffect(() => {
-    setReport({
-      
-    });
-  }, []);
-
-
+  
   function handleTakePhoto(dataUri) {
     // Do stuff with the photo...
     console.log('takePhoto');
   }
 
-  function loadReport(event) {
-    event.preventDefault();
-
-    
+  function selectCategory(category){
+      return category;
   }
 
   function onCreateReport(event) {
     event.preventDefault();
 
-    API.post('/report', report)
+    API.post('/report', report.values)
       .then(result => {
-
+        console.log(JSON.stringify(result.data));
       }).catch(err => {
         window.alert(err.message);
       });
@@ -247,7 +242,7 @@ const CreateReport = props => {
           <TextField
             fullWidth
             label="Descrição da Denúncia"
-            name="title"
+            name="description"
             type="text"
             onChange = {handleChange}
             value = {report.description}
@@ -258,6 +253,7 @@ const CreateReport = props => {
             {
               category.map(category => (
                 <option 
+                  onClick = { categoryId = category.id }
                   key = {category.id} 
                 >{category.name}</option>
               ))
