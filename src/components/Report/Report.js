@@ -14,6 +14,7 @@ import api from 'utils/API';
 import Carousel from 'react-material-ui-carousel'
 import ReactStars from 'react-rating-stars-component'
 import ReportInteractionHistory from 'views/ReportInteractionHistory'
+import currentUser from 'utils/AppUser'
 
 const useStyles = makeStyles({
     root: {
@@ -29,6 +30,7 @@ const Report = props => {
     const classes = useStyles();
 
     const [report, setReport] = useState({});
+    const [user, setUser] = useState({});
     const [media, setMedia] = useState({
         hasMedia: false,
         photos: [],
@@ -51,9 +53,18 @@ const Report = props => {
     useEffect(() => {
         api.get('/report/'+reportId)
             .then((result) => {
+                console.log(result.data)
                 updateMediaLinks(result.data.attachments)
                 setReport(result.data);
             })
+            .catch(error => {
+
+            })
+
+        currentUser().then(result => {
+            console.log(result)
+            setUser(result);
+        })            
     }, [])
 
     return (
@@ -67,7 +78,7 @@ const Report = props => {
                             image={item}
                             title={item}
                         />
-                    )
+                    )                    
                 }
                 </Carousel>
             }
@@ -79,14 +90,19 @@ const Report = props => {
                 size={24}
                 color2={'#ffd700'} 
             />
-                <Typography gutterBottom variant="h5" component="h2">
+                <Typography gutterBottom variant="h3" component="h2">
                     {report.title}
+                </Typography>
+                <Typography gutterBottom variant="h5" component="h2">
+                    Categoria: {report.category ? report.category.name : ''}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
                     {report.description}
                 </Typography>
                 
-                <ReportInteractionHistory reportId={reportId}></ReportInteractionHistory>
+                {user &&
+                    <ReportInteractionHistory reportId={reportId} currentUserId={user.id} ></ReportInteractionHistory>
+                }                
             </CardContent>
           <CardActions>
             <Button size="small" color="primary">
