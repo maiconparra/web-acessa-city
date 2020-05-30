@@ -19,7 +19,7 @@ import {
   Tooltip,
   Typography,
   TextField,
-  Grid
+  Grid,
 } from '@material-ui/core';
 import Camera, { idealResolution } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
@@ -29,6 +29,8 @@ import {
   isBrowser,
   isMobile,
 } from "react-device-detect";
+import IconButton from '@material-ui/core/IconButton';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 import fileUpload from 'utils/AWS-S3';
 
@@ -44,7 +46,7 @@ import ReportInteractionHistory from '../../ReportInteractionHistory'; */
 import GoogleMapReact from 'google-map-react';
 import { RaceOperator } from 'rxjs/internal/observable/race';
 
-const styles = makeStyles({
+const styles = makeStyles((theme) => ({
   gridButton: {
     position: "absolute",
     marginTop: "-675px",
@@ -65,8 +67,16 @@ const styles = makeStyles({
   camera: {
     width: "100px",
     height: "100px"
-  }
-});
+  },
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+  input: {
+    display: 'none',
+  },
+}));
 
 const CreateReport = props => {
 
@@ -111,6 +121,12 @@ const CreateReport = props => {
   const [ status, setStatus ] = useState([]);
   const [ urgency, setUrgency ] = useState([]);
   const [ urlPhoto, setUrlPhoto ] = useState('');
+  
+  let reportId;
+
+  let midaType;
+
+  let urlUploadPhoto;
   
   let categoryId;
 
@@ -215,14 +231,28 @@ const CreateReport = props => {
 
     API.post('/report', report.values)
       .then(result => {
+
+        reportId = result.data.id;
+        
+        console.log('Report ID: ' + reportId);
+
         fileUpload(urlPhoto)
           .then((result) => {
-            console.log('Sucesso!!!'+ JSON.stringify(result.files));
+
+            API.post('/report-attachment', {
+              reportId,
+              mediaType: 'png',
+              url: result.url
+            }).then(result => {
+              console.log('Report Attachment:  ' + result.data);
+            });
+
+            console.log('Sucesso!!!'+ result.url);
           }).catch((erro) => {
             console.log(erro.message);
           });
         console.log(JSON.stringify(result.data));
-        console.log('Photo: ' + urlPhoto);
+        console.log('Photo: ' + JSON.stringify(urlPhoto));
       }).catch(err => {
         window.alert(err.message);
       });
@@ -272,9 +302,14 @@ const CreateReport = props => {
               ))
             }
           </NativeSelect>
-         
-          <input type="file" accept="image/*" capture="camera" onChange = { handlePhoto }/>
-        
+          <div className = { styles.root }>
+            <input accept="image/*" className={style.input} onChange = { handlePhoto }  id="icon-button-file" type="file" />
+            <label htmlFor="icon-button-file">
+              <IconButton color="primary" aria-label="upload picture" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </div>
           <Grid
             className={{ marginTop: "10px" }}
           >
