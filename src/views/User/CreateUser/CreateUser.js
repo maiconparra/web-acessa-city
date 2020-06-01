@@ -1,12 +1,13 @@
-import React ,{useState} from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { 
-  Grid, 
+import {
+  Grid,
   Backdrop,
   CircularProgress,
   Snackbar,
-  SnackbarContent, } from '@material-ui/core';
-import { AccountProfile, AccountDetails } from './components';
+  SnackbarContent,
+} from '@material-ui/core';
+import { AccountDetails } from './components';
 import API from 'utils/API';
 
 const useStyles = makeStyles(theme => ({
@@ -15,9 +16,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CreateUser = (props)=> {
-  const {onCreateUser} = props;
-
+const CreateUser = (props) => {
+  const { onCreateUser } = props;
 
   const classes = useStyles();
   ////Modal de errro
@@ -35,16 +35,14 @@ const CreateUser = (props)=> {
 
   //FIM
   const createUser = (user) => {
-
-    console.log("Arry cadastro", JSON.stringify(user))
- 
+    setOpenValidador(true)
     API.post('/user', user)
       .then((result) => {
         setOpenValidador(false)
         setErrors([
           "O usuário " + user.email + " foi criado com sucesso."])
 
-        if(onCreateUser){
+        if (onCreateUser) {
           onCreateUser(result.data)
         }
         setErrorsStatus(true)
@@ -112,7 +110,6 @@ const CreateUser = (props)=> {
         spacing={4}
       >
         <Grid>
-          {/* <AccountProfile></AccountProfile> */}
           <AccountDetails createUser={createUser} />
         </Grid>
       </Grid>
@@ -122,7 +119,9 @@ const CreateUser = (props)=> {
       <Snackbar open={errors.length} onClick={handleSnackClick}>
         {erros()}
       </Snackbar>
-      <Backdrop className={classes.backdrop} open={openValidador} onClick={handleCloseValidador}>
+      <Backdrop 
+      style={{ zIndex: 99999999}}
+      className={classes.backdrop} open={openValidador} onClick={handleCloseValidador}>
         <CircularProgress color="inherit" />
       </Backdrop>
 

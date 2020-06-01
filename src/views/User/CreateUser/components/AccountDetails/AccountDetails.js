@@ -66,11 +66,29 @@ const AccountDetails = props => {
     setErrors([]);
   }
 
+  const [password, setPassword] = useState({
+    password: '',
+    confirmPassword: ''
+  });
+
+  const handleChange2 = (keyName, e) => { setPassword({ ...password, [keyName]: e.target.value }); }
+
+
   const handleClick = (event) => {
     event.preventDefault();
+   
+    let infoError = '';
+
+    if (password.password != password.confirmPassword) {
+      infoError = 'A senha é diferente da confirmação de senha'
+    }
+
+    if (password.password.length < 6) {
+      infoError = 'A senha deve conter pelo menos 6 caracteres'
+    }
 
     const userCreate = {
-      
+
       cityHallId: userLogado.cityHallId,
       email: values.email,
       emailVerified: true,
@@ -97,6 +115,8 @@ const AccountDetails = props => {
     })
   }
 
+
+
   const teste = () => {
     return (<div>
       {errors.map(error => (
@@ -106,12 +126,12 @@ const AccountDetails = props => {
   }
 
 
-  React.useEffect(() =>{
-    
-    currentUser().then((result)=>{
-       setUserLogado(result);
+  React.useEffect(() => {
+
+    currentUser().then((result) => {
+      setUserLogado(result);
     })
-  },[]);
+  }, []);
 
   return (
     <div>
@@ -169,7 +189,7 @@ const AccountDetails = props => {
               </Grid>
               <Grid
                 item
-                md={6}
+                md={4}
                 xs={12}
               >
                 <TextField
@@ -191,19 +211,35 @@ const AccountDetails = props => {
               >
                 <TextField
                   fullWidth
+                  error={password.password != password.confirmPassword}
                   helperText="Informe a senha"
                   label="Senha"
                   margin="dense"
                   name="password"
-                  onChange={handleChange}
+                  onChange={handleChange2}
                   type="password"
-                  value={values.password}
+                  onChange={sender => handleChange2('password', sender)}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <TextField
+                  fullWidth
+                  error={password.password != password.confirmPassword}
+                  helperText="Confirmar senha"
+                  label="Confirmação da senha"
+                  margin="dense"
+                  name="confirmPassword"
+                  type="password"
+                  required
+                  onChange={sender => handleChange2('confirmPassword', sender)}
+                  value={password.confirmPassword}
                   variant="outlined"
                 />
               </Grid>
               <Grid
                 item
-                md={3}
+                md={2}
                 xs={12}
               >
                 <FormControl variant="outlined" margin="dense" fullWidth>
@@ -219,7 +255,6 @@ const AccountDetails = props => {
                     <option aria-label="None" value="" />
                     <option value='coordinator'>Coordenador</option>
                     <option value='moderator'>Moderador</option>
-                    <option value='city_hall'>Prefeitura</option>
                   </Select>
                 </FormControl>
               </Grid>
@@ -228,6 +263,7 @@ const AccountDetails = props => {
           <Divider />
           <CardActions>
             <Button
+              disabled={!password.password || password.password != password.confirmPassword} 
               color="primary"
               variant="contained"
               onClick={handleClick}
