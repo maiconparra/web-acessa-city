@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
 import {
   Card,
+  Container,
   Form,
   CardActions,
   CardHeader,
   CardContent,
   Button,
-  NativeSelect,
+  Select,
+  MenuItem,
+  FormHelperText,
   Divider,
   Table,
   TableBody,
@@ -17,9 +20,11 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  TextareaAutosize,
   Typography,
   TextField,
   Grid,
+  FormControl,
 } from '@material-ui/core';
 import Camera, { idealResolution } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
@@ -71,11 +76,27 @@ const styles = makeStyles((theme) => ({
   root: {
     '& > *': {
       margin: theme.spacing(1),
+      width: '25ch',
     },
   },
   input: {
     display: 'none',
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  }, 
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+  textField: {
+    marginTop: theme.spacing(2),
+    width: '300px'
+  },
+  textArea: {
+    width: '300px',
+    marginTop: theme.spacing(2)
+  }
 }));
 
 const CreateReport = props => {
@@ -120,15 +141,11 @@ const CreateReport = props => {
   const [ user, setUser ] = useState('');
   const [ status, setStatus ] = useState([]);
   const [ urgency, setUrgency ] = useState([]);
-  const [ urlPhoto, setUrlPhoto ] = useState('');
+  const [ urlPhoto, setUrlPhoto ] = useState([]);
+  const [ categoryId, setCategoryId ] = useState('');
   
   let reportId;
 
-  let midaType;
-
-  let urlUploadPhoto;
-  
-  let categoryId;
 
   const defaultProps = {
     center: {
@@ -191,7 +208,9 @@ const CreateReport = props => {
   function handlePhoto(event){
     event.persist();
     
-    setUrlPhoto(event.target.files[0]);
+    setUrlPhoto(
+      [event.target.files]
+    );
   }
 
   console.log( 'Photo: ' + urlPhoto);
@@ -224,7 +243,11 @@ const CreateReport = props => {
 
   const photo = 'https://acessacity.s3.amazonaws.com/photos/user.png';
 
+  function onSelectCategory(event){
+    event.persist();
 
+    setCategoryId(event.target.value);
+  }
 
   function onCreateReport(event) {
     event.preventDefault();
@@ -239,14 +262,16 @@ const CreateReport = props => {
         fileUpload(urlPhoto)
           .then((result) => {
 
-            API.post('/report-attachment', {
-              reportId,
-              mediaType: 'png',
-              url: result.url
-            }).then(result => {
-              console.log('Report Attachment:  ' + result.data);
-            });
 
+            for(let i = 0; i < urlPhoto.length; i++){  
+              API.post('/report-attachment', {
+                reportId,
+                midaType: 'png',
+                url: result.url
+              }).then(result => {
+                console.log('Report Attachment:  ' + result.data);
+              });
+            }
             console.log('Sucesso!!!'+ result.url);
           }).catch((erro) => {
             console.log(erro.message);
@@ -259,80 +284,100 @@ const CreateReport = props => {
       
   }
 
+  
+
   return (
-    <div>
+    <Container>
 
       <Grid
         className={style.gridForm}
       >
-        <form onSubmit={onCreateReport}>
-          <MobileView>
-            <Camera
-              onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
-              idealResolution={{ width: 1920, height: 1080 }}
-            />
-          </MobileView>
-          <TextField
-            fullWidth
-            label="Titulo da Denúncia"
-            name="title"
-            type="text"
-            onChange = {handleChange}
-            value = {report.title}
-            variant="outlined"
-          />
-          
-          <TextField
-            fullWidth
-            label="Descrição da Denúncia"
-            name="description"
-            type="text"
-            onChange = {handleChange}
-            value = {report.description}
-            variant="outlined"
-          />
-
-          <NativeSelect>
-            {
-              category.map(category => (
-                <option 
-                  onClick = { categoryId = category.id }
-                  key = {category.id} 
-                >{category.name}</option>
-              ))
-            }
-          </NativeSelect>
-          <div className = { styles.root }>
-            <input accept="image/*" className={style.input} onChange = { handlePhoto }  id="icon-button-file" type="file" />
-            <label htmlFor="icon-button-file">
-              <IconButton color="primary" aria-label="upload picture" component="span">
-                <PhotoCamera />
-              </IconButton>
-            </label>
-          </div>
-          <Grid
-            className={{ marginTop: "10px" }}
-          >
-            <Button
-              type="submit"
-              className={{ alignSelf: "rigth", marginTop: "35px" }}
-              color="primary"
+        <form className = { style.root } onSubmit={onCreateReport}>
+          <FormControl>
+            <MobileView>
+              <Camera
+                onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
+                idealResolution={{ width: 1920, height: 1080 }}
+              />
+            </MobileView>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                className = { style.textField }
+                label="Titulo da Denúncia"
+                name="title"
+                type="text"
+                onChange = {handleChange}
+                value = {report.title}
+                variant="outlined"
+              />
+            </Grid>
+            <Typography>
+              <TextareaAutosize
+                fullWidth
+                className = { style.textArea }
+                label="Descrição da Denúncia"
+                name="description"
+                type="text"
+                placeholder = "Descrição da Denúncia"
+                onChange = {handleChange}
+                value = {report.description}
+                variant="outlined"
+              />
+            </Typography>
+            <Typography component = "div" className = { style.root }>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                onChange = { onSelectCategory }
+              >
+                {
+                  category.map(category => (
+                    <MenuItem 
+                      value = { category.id }
+                    >{category.name }</MenuItem>
+                  ))
+                }
+              </Select>
+            </Typography>
+            <Typography component = "div" className = { style.root }>
+              <input 
+                accept="image/*" 
+                className={style.input} 
+                onChange = { handlePhoto }
+                id="icon-button-file" 
+                type="file" 
+              />
+              <label htmlFor="icon-button-file">
+                <IconButton color="primary" aria-label="upload picture" component="span">
+                  <PhotoCamera />
+                </IconButton>
+              </label>
+            </Typography>
+            <Grid
+              className={{ marginTop: "10px" }}
             >
-              ENVIAR
-            </Button>
-            <Button
-              type="submit"
-              className={{ alignSelf: "left", marginTop: "35px" }}
-              color="primary"
-            >
-              CANCELAR
-            </Button>
-          </Grid>
-          
+              <Button
+                type="submit"
+                className={{ alignSelf: "rigth", marginTop: "35px" }}
+                color="primary"
+              >
+                ENVIAR
+              </Button>
+              <Button
+                type="submit"
+                className={{ alignSelf: "left", marginTop: "35px" }}
+                color="primary"
+              >
+                CANCELAR
+              </Button>
+            </Grid>
+            <FormHelperText>Some important helper text</FormHelperText>
+          </FormControl>
         </form>
       </Grid>
 
-    </div>
+    </Container>
   )
 }
 
