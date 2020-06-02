@@ -204,15 +204,6 @@ const Routes = () => {
         /> */}
 
         <RouteWithLayout
-          component={CityHallCreateView}
-          exact
-          layout={MainLayout}
-          path="/criar-prefeitura"
-          permission={roles.admin}
-        // permission={roles.admin || roles.moderator || roles.coordinator || roles.city_hall}
-        />
-
-        <RouteWithLayout
           component={PrefecturesListView}
           exact
           layout={MainLayout}

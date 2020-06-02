@@ -51,7 +51,7 @@ const AccountDetails = props => {
   };
 
   const [errors, setErrors] = useState([]);
-
+  const [errorsStatus, setErrorsStatus] = React.useState(true);
 
   const [userLogado, setUserLogado] = useState({});
 
@@ -66,6 +66,24 @@ const AccountDetails = props => {
     setErrors([]);
   }
 
+  const campoVazio = values =>{
+
+    values.name === '' ||
+    values.cnpj=== ''||
+    values.email=== ''||
+    values.address=== ''||
+    values.neighborhood=== ''||
+    values.zipCode=== ''||
+    values.number=== ''||
+    values.cityId=== ''
+    ?  
+    setErrors([
+      "Existem campos vazios."
+    ]) : 
+    setErrorsStatus(false);
+  }
+
+
   const [password, setPassword] = useState({
     password: '',
     confirmPassword: ''
@@ -76,16 +94,8 @@ const AccountDetails = props => {
 
   const handleClick = (event) => {
     event.preventDefault();
-   
-    let infoError = '';
 
-    if (password.password != password.confirmPassword) {
-      infoError = 'A senha é diferente da confirmação de senha'
-    }
-
-    if (password.password.length < 6) {
-      infoError = 'A senha deve conter pelo menos 6 caracteres'
-    }
+    campoVazio(values)
 
     const userCreate = {
 
@@ -103,7 +113,6 @@ const AccountDetails = props => {
     props.createUser(userCreate);
     limparForm()
   }
-
 
   const limparForm = () => {
     setValues({
@@ -255,6 +264,7 @@ const AccountDetails = props => {
                     <option aria-label="None" value="" />
                     <option value='coordinator'>Coordenador</option>
                     <option value='moderator'>Moderador</option>
+                    <option value='user'>Usuários</option>
                   </Select>
                 </FormControl>
               </Grid>
@@ -263,7 +273,7 @@ const AccountDetails = props => {
           <Divider />
           <CardActions>
             <Button
-              disabled={!password.password || password.password != password.confirmPassword} 
+              // disabled={!password.password || password.password != password.confirmPassword} 
               color="primary"
               variant="contained"
               onClick={handleClick}
