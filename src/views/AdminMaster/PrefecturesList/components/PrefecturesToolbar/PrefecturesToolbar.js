@@ -18,7 +18,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import Modal from '@material-ui/core/Modal';
 import Fade from '@material-ui/core/Fade';
-import CreateUser from '../../../../../views/User/CreateUser';
+import CityHallCreate from '../../../../../views/AdminMaster/CityHallCreate';
 
 // import { SearchInput } from 'components';  //chamar botão de pesquisa
 
@@ -70,10 +70,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const PrefecturesToolbar = props => {
-  const { className, ...rest } = props;
+  const { className, onClearFilter, onCreatePrefecture, ...rest } = props;
 
-  const onClearFilter = [];
-  const onCreateUser = [];
   const classes = useStyles();
 
   //Modal Cadastrar Usuários
@@ -89,8 +87,8 @@ const PrefecturesToolbar = props => {
 
 
   const [values, setValues] = useState({
-    roles: '',
-    firstName: '',
+    name: '',
+    cnpj: '',
     email: '',
   });
 
@@ -104,8 +102,8 @@ const PrefecturesToolbar = props => {
   const limparForm = (event) => {
     event.preventDefault();
     setValues({
-      roles: '',
-      firstName: '',
+      name: '',
+      cnpj: '',
       email: '',
     })
     onClearFilter();
@@ -115,47 +113,30 @@ const PrefecturesToolbar = props => {
 
   const handleClickFilter = (event) => {
     event.preventDefault();
-      
+
     props.filter(values);
 
   }
-  
+
+
   return (
     <div {...rest} className={clsx(classes.root, className)}>
       <div className={classes.root}>
 
         <Grid container spacing={1}>
 
-          <Grid item xs={12} sm={2}>
-            <FormControl className={classes.formControl} fullWidth>
-              <InputLabel htmlFor="age-native-simple">Tipo</InputLabel>
-              <Select
-                native
-                value={values.roles}
-                onChange={handleChangeFilter}
-                label="Tipo"
-                inputProps={{
-                  name: 'roles',
-                }}
-              >
-                <option aria-label="None" value="" />
-                <option value='coordinator'>Coordenador</option>
-                <option value='moderator'>Moderador</option>
-              </Select>
-            </FormControl>
-          </Grid>
 
           <Grid item xs={12} sm={2}>
             <div>
               <TextField
                 fullWidth
-                id="standard-rua"
+                id="standard-name"
                 label="Nome"
                 onChange={handleChangeFilter}
                 required
-                value={values.firstName}
+                value={values.name}
                 inputProps={{
-                  name: 'firstName',
+                  name: 'name',
                 }}
               />
             </div>
@@ -165,7 +146,23 @@ const PrefecturesToolbar = props => {
             <div>
               <TextField
                 fullWidth
-                id="standard-bairro"
+                id="standard-cnpj"
+                label="CNPJ"
+                onChange={handleChangeFilter}
+                required
+                value={values.cnpj}
+                inputProps={{
+                  name: 'cnpj',
+                }}
+              />
+            </div>
+          </Grid>
+
+          <Grid item xs={12} sm={2}>
+            <div>
+              <TextField
+                fullWidth
+                id="standard-email"
                 label="Email"
                 onChange={handleChangeFilter}
                 required
@@ -184,7 +181,7 @@ const PrefecturesToolbar = props => {
 
           <Grid item xs={12} sm={1}>
             <FormControl margin="dense" fullWidth>
-              <Button  onClick={limparForm} variant="contained" >Limpar</Button>
+              <Button onClick={limparForm} variant="contained" >Limpar</Button>
             </FormControl>
           </Grid>
 
@@ -224,12 +221,12 @@ const PrefecturesToolbar = props => {
           <Fade in={openModal}>
             <div className={classes.paper}>
 
-              <CreateUser onCreateUser={onCreateUser} />
+              <CityHallCreate onCreatePrefecture={onCreatePrefecture} />
 
             </div>
           </Fade>
         </Modal>
-        
+
         {/* // FIM Modal CADASTRAR USUÀRIO*/}
 
       </div >

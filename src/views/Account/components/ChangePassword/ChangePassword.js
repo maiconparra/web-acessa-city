@@ -42,7 +42,6 @@ const ChangePassword = props => {
             infoError = 'A senha deve conter pelo menos 6 caracteres'
         }
 
-
         if (!infoError) {
             var user = firebase.auth().currentUser;
             var newPassword = password.password;

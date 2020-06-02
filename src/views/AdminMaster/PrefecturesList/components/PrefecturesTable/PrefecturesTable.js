@@ -137,35 +137,28 @@ const StyledMenuItem = withStyles((theme) => ({
 //FIM Abrir opções dos 3 pontinho
 
 const PrefecturesTable = props => {
-  const { className, ...rest } = props;
-  const classes = useStyles();
-  
+  const { className, prefectures, ...rest } = props;
   const users = [];
-  //Abrir opções dos 3 pontinho
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const classes = useStyles();
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget)
-  };
-
-  const anchorElClose = () => {
-    setAnchorEl(null);
-  };
-  //FIM Abrir opções dos 3 pontinho
+  console.log("Usuário", JSON.stringify(prefectures))
+  
 
   ///ABRIR MODAL RECUPERAR SENHA
 
   const [open, setOpen] = React.useState(false);
 
 
-  const [openAccount, setAccount] = useState({
-    users: '',
+  const [openPrefecture, setOpenPrefecture] = useState({
+    prefectures: '',
   });
 
-  const handleClickAccount = (usersCM) => {
-    setAccount({
-      ...users,
-      users: usersCM
+  const handleClickAccount = (prefecturesL) => {
+
+    console.log("sdfsddsdasddasdasda", prefecturesL)
+    setOpenPrefecture({
+      ...prefectures,
+      prefectures: prefecturesL
     });
     setOpen(true)
   };
@@ -175,6 +168,16 @@ const PrefecturesTable = props => {
   };
 
 
+  const handleClickDelete = (userDelete) => {
+
+    API.delete(`/user/${userDelete.id}`)
+    .then(response => {
+      console.log("sucesso")
+    }).catch(erro => {
+      console.log(erro);
+    })
+
+  }
 
   return (
     <Card
@@ -188,46 +191,30 @@ const PrefecturesTable = props => {
               <TableHead>
                 <TableRow>
                   <TableCell>Nome</TableCell>
+                  <TableCell>CNPJ</TableCell>
                   <TableCell>Email</TableCell>
-                  <TableCell>Tipo</TableCell>
                   <TableCell>Ações</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map(user => {
+                {prefectures.map(prefecture => {
                   return (
-                    <TableRow key={user.id}
+                    <TableRow key={prefecture.id}
                       hover={true}
                     >
-                      <TableCell onClick={() => handleClickAccount(user)}>{user.firstName}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.roles[0]}</TableCell>
+                      <TableCell onClick={() => handleClickAccount(prefecture)}>{prefecture.name}</TableCell>
+                      <TableCell>{prefecture.cnpj}</TableCell>
+                      <TableCell>{prefecture.address}</TableCell>
                       <TableCell>
-                        <IconButton key={user.id} aria-label="display more actions" edge="end" color="inherit">
-                          <MoreIcon onClick={() => handleClickAccount(user)}/>  {/* onClick={handleClick}  */}
+                        <IconButton
+                          aria-label="display more actions" edge="end" color="inherit">
+                          <EditIcon
+                            onClick={() => handleClickAccount(prefecture)} />  {/* onClick={handleClick}  */}
                         </IconButton>
-                        <StyledMenu
-                          id="customized-menu"
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={Boolean(anchorEl)}
-                          onClose={anchorElClose}
-                        >
-                          <StyledMenuItem>
-                            <ListItemIcon >
-                              <EditIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText 
-                             primary="Editar" />
-                          </StyledMenuItem>
+                        <IconButton aria-label="display more actions" edge="end" color="inherit">
+                          <DeleteIcon onClick={() => handleClickDelete(prefecture)} />  {/* onClick={handleClick}  */}
+                        </IconButton>
 
-                          <StyledMenuItem>
-                            <ListItemIcon>
-                              <DeleteIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText primary="Excluir" />
-                          </StyledMenuItem>
-                        </StyledMenu>
                       </TableCell>
                     </TableRow>
                   )
@@ -251,8 +238,8 @@ const PrefecturesTable = props => {
               >
                 <Fade in={open}>
                   <div className={classes.paper}>
-
-                    <AccountDetails openAccount={openAccount} />
+ 
+                   <AccountDetails userId={openPrefecture.prefectures.id} />
 
                   </div>
                 </Fade>

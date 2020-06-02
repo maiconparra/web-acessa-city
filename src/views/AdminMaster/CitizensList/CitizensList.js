@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import moment from 'moment';
 
 import { CitizensToolbar, CitizensTable } from './components';
 
 import {
-   Dialog,
-   DialogActions,
-   DialogContent,
-   DialogTitle,
-   Button
-}from '@material-ui/core';
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  SnackbarContent,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
+} from '@material-ui/core';
 
 import API from '../../../utils/API';
-import firebase from 'firebase/app'
+// import currentUser from 'utils/AppUser';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,247 +30,147 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     marginTop: theme.spacing(2)
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 const CitizensList = () => {
   const classes = useStyles();
 
-  const [denunciations, setDenunciations] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [denunciationsSlect, setDenunciationsSelect] = useState([]);
-  const [coodenadores, setCoordenadores] = useState([]);
-  const [statusProgressDenunciation, setStatusProgressDenunciation] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [mensagem, setMensagem] = useState('');
+  ////Modal de errro
+
+  const [errors, setErrors] = useState([]);
+  const [errorsStatus, setErrorsStatus] = useState('');
+  const [citizens, setCitizens] = useState([]);
+  const [citizensBackup, setCitizensBackup] = useState([]);
+  const [openValidador, setOpenValidador] = React.useState(false);
+  const handleCloseValidador = () => {
+    setOpenValidador(false);
+  };
 
 
- 
+  const handleSnackClick = () => {
+    setErrors([]);
+  }
+
+  // CHAMAR API DE USUARIOS
+  const listCitizens = () => {
+      API.get('/user')
+        .then(response => {
+          const CitizensList = response.data;
+          setCitizens(CitizensList)
+          setCitizensBackup(CitizensList)
+        })
+        .catch((aError) => {
+          if (aError.response.status == 400) {
+            setOpenValidador(false)
+            console.log(aError.response.data.errors)
+            setErrors(aError.response.data.errors)
+
+            setTimeout(() => {
+              setErrors([]);
+            }, 10000);
+          }
+          else if (aError.response.status == 500) {
+            setErrors([
+              "Erro no servidor"
+            ])
+
+            setTimeout(() => {
+              setErrors([]);
+            }, 10000);
+          }
+          setErrorsStatus(false)
+          setOpenValidador(false)
+        })
+  }
+
+  // FILTRAR USUÀRIOS
+  const filter = (citizenFilter) =>{
+
+    console.log("filtro",  citizenFilter.firstName)
+
   
+      const listaFiltrada = citizensBackup.filter(function(citizen){
 
-   //Enviar coodenador
-   //Alt    
-  const envioCoordenador = (update) => {
-      
-    API.post(`/report/${update.reportId}/coordinator-update`,update
-    ).then(response => {
-        const newCoodenador = response.data;
-        const param = {
-              userId: user.id,
-              reportStatusId: '96afa0df-8ad9-4a44-a726-70582b7bd010',
-              description: 'Aprovação de Moderador'
+        let retornaCitizen = true
+
+        if(citizenFilter.firstName){
+          retornaCitizen = retornaCitizen && citizen.firstName.toUpperCase().includes(citizenFilter.firstName.toUpperCase());
         }
-        API.post(`/report/${update.reportId}/status-update`, param
-
-        ).then(responseStatus => {
-            
-          listDenunciations();
-          setMensagem('Denuncia enviada para o coodenador com sucesso!');
-          setOpenDialog(true);
-
-        }).catch(erro =>{
-
-        })
-        console.log(newCoodenador)
-       //setDenunciations(  [...denunciations, newDenunciation])
-       }).catch(erro => {
-        console.log(erro);
+    
+        if(citizenFilter.email){
+          retornaCitizen = retornaCitizen && citizen.email.toUpperCase().includes(citizenFilter.email.toUpperCase());
+        }
+        return retornaCitizen ;
       })
+       setCitizens(listaFiltrada);
+
   }
 
 
-    //Negar denuncia
-    const envioDeny = (deny) => {
+  const limpar = () =>{  
+    setCitizens(citizensBackup)
+  }
 
-         deny.userId = user.id;
-         console.log("deny" + JSON.stringify(deny))
-      API.post(`/report/${deny.denunciationsId}/status-update`, deny
-
-      ).then(response => {
-        listDenunciations();
-        setMensagem('Denúncia negada!');
-        setOpenDialog(true);
-      
-         }).catch(erro => {
-          console.log(erro);
-        })
-    }
-
-    const [user, setUser] = useState({
-      userId:''
-    })  
-  
-
-    function onChange(firebaseUser) {
-      if (firebaseUser) {
-        firebaseUser.getIdTokenResult().then((token) => {
-          const claims = token.claims;
-            setUser({
-                ...user,
-                userId: claims.app_user_id
-            })
-            listCoodenador(claims.app_user_id);
-        })
-      } else {
-          // No user is signed in.
+  const onCreateUser = (citizen) =>{
+      if(citizen){
+        listCitizens();
       }
   }
-  
-    React.useEffect(() => {        
-      const unsubscribe = firebase.auth().onAuthStateChanged(onChange)
-      return () => unsubscribe()
-    }, [])   
-  
-
-  
-    // Listar coordenadores
-    const listCoodenador = (userId) => {
-       console.log("testttttttt"+ userId);
-      API.get(`/user/${userId}/coordinators`
-      ).then(response => {
-         const listCoodenadores = response.data;
-         console.log("cooodenadorrr" +  JSON.stringify(listCoodenadores))
-         setCoordenadores(listCoodenadores);
-         }).catch(erro => {
-          console.log(erro);
-          setMensagem('Ocorreu um erro', erro);
-          setOpenDialog(true);
-        })
-    }
-
-
-  // Listar os dados  na tela
-  const listDenunciations = () => {
-    API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
-    ).then(response => {
-       const listDenunciations2 = response.data;
-       console.log(listDenunciations2);
-       setDenunciations(listDenunciations2);
-       setDenunciationsSelect(listDenunciations2);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-  }
-
- //Fitrar Denuncias
-  const filter = (filtro) =>{
-      let stringFiltro = ''
-      if(filtro.category){
-        stringFiltro +=  '&category=' + filtro.category 
-      }
-
-      if(filtro.street){
-        stringFiltro +=  '&street=' + filtro.street 
-      }
-
-      if(filtro.neighborhood){
-        stringFiltro +=  '&neighborhood=' + filtro.neighborhood 
-      }
-      
-
-    console.log("filtro aqui" + JSON.stringify(filtro))
-    API.get(`/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010${stringFiltro}`,
-    ).then(response => {
-      const filterDenunciation = response.data;
-      setDenunciations(filterDenunciation);
-      setMensagem('Filtro realizado com sucesso!');
-      setOpenDialog(true);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-  }
-
-  //filtrar Aprovados
-  const filterAprove = (aprove) =>{
-    setStatusProgressDenunciation(aprove.statusProgress) //manar status se é denuncian ão aprovadas ou aprovaas
-    API.get(`/report?status=${aprove.id}`,
-    ).then(response => {
-      const filterAprove2 = response.data;
-      setDenunciations(filterAprove2);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-  }
-
-  /////Envio de em progresso
-  const envioProgress = (progress) =>{
-
-    //console.log("user", user.userId);
-    // console.log("progress", JSON.stringify(progress))
-    var dataformatada = moment(progress.data).format('MM/DD/YYYY');
-
-    const progressJson ={
-      reportId: progress.denunciationsId,
-      userId: user.userId,
-      description: progress.description,
-      startDate: dataformatada 
-    }
-    console.log("progress", JSON.stringify(progressJson))
-    API.post(`/report/start-progress`, progressJson
-    ).then(response => {
-         listDenunciations();
-        setMensagem("Denuncia em Progresso");
-        setOpenDialog(true);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-
-
-  
-  }
-
-
-  ///Lista de categorias
-   ///Listar os dados  na tela co comentarios
-
-   const listCategory = () => {
-    API.get('/category'
-    ).then(response => {
-       const listCategory2 = response.data;
-       setCategories(listCategory2);
-       }).catch(erro => {
-        console.log(erro);
-        setMensagem('Ocorreu um erro', erro);
-        setOpenDialog(true);
-      })
-  }
-  //encerrar dnunucias
-  const enviorEncerrar =(encerrar) => {
-    console.log("filtro aqui ecerrado" + JSON.stringify(encerrar))
-  }
-
 
   // Atualizar os dados na tela
-  useEffect(() => {
-      listDenunciations();
-      listCategory();
-    },[]);
+  React.useEffect(() => {
+    listCitizens();
+  }, []);
 
+
+  const erros = () => {
+    if (errorsStatus == true) {
+      return (
+        <div>
+          {errors.map(error => (
+            <SnackbarContent
+              style={{
+                background: 'green',
+              }}
+              message={<h3>{error}</h3>} />
+          ))}
+        </div>)
+    } else {
+      return (
+        <div>
+          {errors.map(error => (
+            <SnackbarContent autoHideDuration={1}
+              style={{
+                background: 'red',
+              }}
+              message={<h3>{error}</h3>}
+            />
+          ))}
+        </div>)
+    }
+  }
 
   return (
     <div className={classes.root}>
       {/* <DenunciationsToolbar save={save} /> */}
-       <CitizensToolbar denunciationsSlect={denunciationsSlect} categories={categories}  filter={filter} filterAprove={filterAprove} />
+
+      <CitizensToolbar   filter={filter} onClearFilter={limpar}  onCreateUser={onCreateUser}/>   
       <div className={classes.content}>
-        <CitizensTable statusProgressDenunciation={statusProgressDenunciation} denunciations={denunciations} coodenadores={coodenadores} envioCoordenador={envioCoordenador}  envioDeny={envioDeny} envioProgress={envioProgress} enviorEncerrar={enviorEncerrar}/>
+        <CitizensTable citizens={citizens} />
       </div>
-      <Dialog open={openDialog} onClose={ e => setOpenDialog(false)}>
-        <DialogTitle>Atenção</DialogTitle>
-        <DialogContent>
-          {mensagem}
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={e => setOpenDialog(false)}>Fechar</Button>
-        </DialogActions>
-      </Dialog>
+
+      <Snackbar open={errors.length} onClick={handleSnackClick}>
+        {erros()}
+      </Snackbar>
+      <Backdrop className={classes.backdrop} open={openValidador} onClick={handleCloseValidador}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
     </div>
   );
 };

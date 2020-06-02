@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const CityHallCreate = props => {
-  const { className, ...rest } = props;
+  const { className,onCreatePrefecture, ...rest } = props;
 
   const classes = useStyles();
 
@@ -158,6 +158,10 @@ const CityHallCreate = props => {
           "A prefeitura " + values.name + ", e o usuário " +
           values.email + " foram criados com sucesso."
         ])
+
+        if (onCreatePrefecture) {
+          onCreatePrefecture(result.data)
+        }
         limparForm()
       })
       .catch((aError) => {

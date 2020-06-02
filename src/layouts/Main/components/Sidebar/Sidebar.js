@@ -137,11 +137,7 @@ const Sidebar = props => {
   const masterMenu = (menu) => {
     menu.push(
 
-      {
-        title: 'Criar Prefeitura',
-        href: '/criar-prefeitura',
-        icon: <AccountBalanceIcon />
-      },
+   
       {
         title: 'Gerenciar Prefeituras',
         href: '/prefeituras',
@@ -152,11 +148,6 @@ const Sidebar = props => {
         href: '/cidadaos',
         icon: <GroupIcon />
       },  
-      {
-        title: 'Cadastrar usuários',
-        href: '/novo-usuario',
-        icon: <PersonAddIcon />
-      },
 
     )
   }
