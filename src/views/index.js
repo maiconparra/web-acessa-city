@@ -24,5 +24,6 @@ export { default as CreateUser} from './User/CreateUser';
 export { default as ModeratorCoordinatorList } from './User/ModeratorCoordinatorList';
 export { default as ReportMap } from './Citizen/ReportMap';
 export { default as CreateReport } from './Citizen/CreateReport';
+export { default as HistoricReport } from './Citizen/HistoricReport';
 
 

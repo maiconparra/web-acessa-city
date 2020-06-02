@@ -43,7 +43,7 @@ import { useState, useEffect } from 'react';
 import currentUser from 'utils/AppUser';
 import GoogleMapReact from 'google-map-react';
 
-const styles = makeStyles(theme=>({
+const styles = makeStyles(theme => ({
   gridButton: {
     position: "absolute",
     marginTop: "-675px",
@@ -65,10 +65,15 @@ const styles = makeStyles(theme=>({
     width: "100px",
     height: "100px"
   },
-  marker: {
+  markerApproved: {
     color: "red",
+    fontSize: 45
   },
-   modal: {
+  markerFinished: {
+    color: "green",
+    fontSize: 45
+  },
+  modal: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -81,10 +86,10 @@ const styles = makeStyles(theme=>({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  button1:{
-    display: 'absolute', 
-    backgroundColor: '#fff', 
-    width: 100, 
+  button1: {
+    display: 'absolute',
+    backgroundColor: '#fff',
+    width: 100,
     marginBottom: 5,
     "&:hover": {
       background: "#efefef"
@@ -98,11 +103,42 @@ const styles = makeStyles(theme=>({
 
 const ReportMap = props => {
 
-  const [locations, setLocations] = useState([])
+  const [locationsAproved, setLocationsApproved] = useState([])
+  const [locationsFinished, setLocationsFinished] = useState([])
+
   const [longitude, setLongitude] = useState('')
   const [latitude, setLatitude] = useState('')
   const [idReportModal, setidReportModal] = useState('')
- 
+
+  const limpaEstadoApproved = () => {
+    setLocationsApproved([]);
+  }
+
+  const limpaEstadoFinished = () => {
+    setLocationsFinished([]);
+  }
+
+  const filterBoth = () => {
+    API.get('/report?status=c37d9588-1875-44dd-8cf1-6781de7533c3'
+    ).then(response => {
+      const report = response.data
+      setLocationsFinished(report)
+    }).catch(erro => {
+      console.log(erro);
+      /* setMensagem('Ocorreu um erro', erro);
+      setOpenDialog(true); */
+    })
+    API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
+    ).then(response => {
+      const report = response.data
+      setLocationsApproved(report)
+    }).catch(erro => {
+      console.log(erro);
+      /* setMensagem('Ocorreu um erro', erro);
+      setOpenDialog(true); */
+    })
+  }
+
   useEffect(() => {
 
     navigator.geolocation.getCurrentPosition(
@@ -118,57 +154,52 @@ const ReportMap = props => {
         console.log("ERRO! " + error.message)
       }
     )
+    filterBoth();
+
+  }, [])
+
+  const filterFinished = () => {
+    API.get('/report?status=c37d9588-1875-44dd-8cf1-6781de7533c3'
+    ).then(response => {
+      const report = response.data
+      setLocationsFinished(report)
+      limpaEstadoApproved();
+    }).catch(erro => {
+      console.log(erro);
+      /* setMensagem('Ocorreu um erro', erro);
+      setOpenDialog(true); */
+    })
+  }
+
+  const filtroApproved = () => {
+    API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
+    ).then(response => {
+      const report = response.data
+      setLocationsApproved(report)
+      limpaEstadoFinished();
+    }).catch(erro => {
+      console.log(erro);
+      /* setMensagem('Ocorreu um erro', erro);
+      setOpenDialog(true); */
+    })
+  }
+
+  /* const filtrarTodas = () => {
     API.get('/report'
     ).then(response => {
       const report = response.data
-      setLocations(report)      
+      setLocations(report)
     }).catch(erro => {
       console.log(erro);
-      /* setMensagem('Ocorreu um erro', erro);
-      setOpenDialog(true); */
+       setMensagem('Ocorreu um erro', erro);
+      setOpenDialog(true); 
     })
-  }, [])
+  } */
 
-const filtroEncerradas = () =>{
-  API.get('/report?status=c37d9588-1875-44dd-8cf1-6781de7533c3'
-    ).then(response => {
-      const report = response.data
-      setLocations(report)     
-    }).catch(erro => {
-      console.log(erro);
-      /* setMensagem('Ocorreu um erro', erro);
-      setOpenDialog(true); */
-    })
-}
-
-const filtroAprovadas = () =>{
-  API.get('/report?status=96afa0df-8ad9-4a44-a726-70582b7bd010'
-    ).then(response => {
-      const report = response.data
-      setLocations(report)     
-    }).catch(erro => {
-      console.log(erro);
-      /* setMensagem('Ocorreu um erro', erro);
-      setOpenDialog(true); */
-    })
-}
-
-const filtrarTodas = () =>{
-  API.get('/report'
-    ).then(response => {
-      const report = response.data
-      setLocations(report)     
-    }).catch(erro => {
-      console.log(erro);
-      /* setMensagem('Ocorreu um erro', erro);
-      setOpenDialog(true); */
-    })
-}
-
-  const teste = () => {
-
-    console.log("ESTADO " + JSON.stringify(locations[0].latitude));
-  }
+  /*  const teste = () => {
+ 
+     console.log("ESTADO " + JSON.stringify(locations[0].latitude));
+   } */
 
   const style = styles();
 
@@ -185,7 +216,7 @@ const filtrarTodas = () =>{
   };
 
   function handleTakePhoto(dataUri) {
-    
+
     console.log('takePhoto');
   }
 
@@ -206,7 +237,7 @@ const filtrarTodas = () =>{
   }
 
 
-/* INICIO MODAL */
+  /* INICIO MODAL */
 
   const [open, setOpen] = React.useState(false);
 
@@ -218,38 +249,54 @@ const filtrarTodas = () =>{
     setOpen(true, props);
   };
 
+  const closeModal = () => {
+    setOpen(false)
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
-/* FIM MODAL */
+  /* FIM MODAL */
 
-  
-  return (    
+
+  return (
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
         bootstrapURLKeys={'AIzaSyDBxtpy4QlnhPfGK7mF_TnbLXooEXVPy_0'}
-        defaultCenter={defaultProps.center}        
+        defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >
 
-        
-          {locations.map(locationsMap => (  
-            console.log(locationsMap ),
-            <RoomIcon     
+
+        {locationsAproved.map(locationsMap => (
+          console.log(locationsMap),
+          <RoomIcon
             //Abrir o modal (fazer)
             onClick={() => handleOpen(locationsMap.id)}
-            key={locationsMap.id} 
-            className={style.marker} 
-            lat={locationsMap.latitude} 
-            lng={locationsMap.longitude} 
+            key={locationsMap.id}
+            className={style.markerApproved}
+            lat={locationsMap.latitude}
+            lng={locationsMap.longitude}
           />
-      
-    ))}
-        <RoomIcon/>
-        <RoomIcon className={style.marker}  lat={-22.893186} lng={-47.166818} />    
-       
+
+        ))}
+        {locationsFinished.map(locationsMap => (
+          console.log(locationsMap),
+          <RoomIcon
+            //Abrir o modal (fazer)
+            onClick={() => handleOpen(locationsMap.id)}
+            key={locationsMap.id}
+            className={style.markerFinished}
+            lat={locationsMap.latitude}
+            lng={locationsMap.longitude}
+          />
+
+        ))}
+        <RoomIcon />
+        <RoomIcon className={style.marker} lat={-22.893186} lng={-47.166818} />
+
       </GoogleMapReact>
-      
+
       <Grid
         className={style.gridButton}
         item
@@ -260,63 +307,59 @@ const filtrarTodas = () =>{
           <Button
             href="/criar-denuncia"
             className={style.button1}
-          >DENÚNCIAR
-          </Button>          
+          >DENÚNCIAR</Button>
+          <Button
+            href="/historico-de-denuncias"
+            className={style.button1}
+          >HISTÓRICO</Button>
+          <Button
+            href="/historico-denuncias"
+            className={style.button1}
+          >HISTÓRICO</Button>
+          <Button
+            text="My Marker"
+            onClick={filterFinished}
+            className={style.button1}
+          >EM PROGRESSO</Button>
 
           <Button
-          text="My Marker"
-          onClick={filtroEncerradas}          
-          className={style.button1}
-          >
-          EM PROGRESSO
-          
-          </Button>   
-
+            text="My Marker"
+            onClick={filtroApproved}
+            className={style.button1}
+          >APROVADAS</Button>
           <Button
-          text="My Marker"
-          onClick={filtroAprovadas}          
-          className={style.button1}
-          
-          >
-          APROVADAS
-          
-          </Button>       
-          <Button
-          text="My Marker"
-          onClick={filtrarTodas}          
-          className={style.button1}
-          >
-          TODAS DENÚNCIAS
-          
-          </Button>
+            text="My Marker"
+            onClick={filterBoth}
+            className={style.button1}
+          >TODAS DENÚNCIAS</Button>
         </div>
 
       </Grid>
       {/* MODAL */}
-      <div>      
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        className={style.modal}
-        open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={open}>
-          {/* DENTRO DO MODAL */}
-          <div className={style.paper}>                      
-             {/* Passar o id da denúncia para reportId vvvvvvvvvvvv */}  
-            <Report reportId={idReportModal}></Report>   
-            <Button>Voltar</Button>                                    
-           
-          </div>
-        </Fade>
-      </Modal>
-    
+      <div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          className={style.modal}
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            {/* DENTRO DO MODAL */}
+            <div className={style.paper}>
+              {/* Passar o id da denúncia para reportId vvvvvvvvvvvv */}
+              <Report reportId={idReportModal}></Report>
+              <Button onClick={handleClose}>Voltar</Button>
+
+            </div>
+          </Fade>
+        </Modal>
+
       </div>
       {/* FIM MODAL */}
 
