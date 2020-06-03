@@ -48,8 +48,7 @@ import API from '../../../utils/API';
 
 /* import { ReportCommentaries } from '../../../components';
 import ReportInteractionHistory from '../../ReportInteractionHistory'; */
-import GoogleMapReact from 'google-map-react';
-import { RaceOperator } from 'rxjs/internal/observable/race';
+
 
 const styles = makeStyles((theme) => ({
   gridButton: {
@@ -293,7 +292,7 @@ const CreateReport = props => {
         className={style.gridForm}
       >
         <form className = { style.root } onSubmit={onCreateReport}>
-          <FormControl>
+          
             <MobileView>
               <Camera
                 onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
@@ -325,6 +324,7 @@ const CreateReport = props => {
                 variant="outlined"
               />
             </Typography>
+            
             <Typography component = "div" className = { style.root }>
               <Select
                 labelId="demo-simple-select-label"
@@ -340,6 +340,7 @@ const CreateReport = props => {
                 }
               </Select>
             </Typography>
+            
             <Typography component = "div" className = { style.root }>
               <input 
                 accept="image/*" 
@@ -372,8 +373,7 @@ const CreateReport = props => {
                 CANCELAR
               </Button>
             </Grid>
-            <FormHelperText>Some important helper text</FormHelperText>
-          </FormControl>
+          
         </form>
       </Grid>
 

@@ -202,6 +202,35 @@ const SignIn = props => {
       })     
   }
 
+  const handleFaceBookSignIn = event => {
+    event.preventDefault();
+
+    const faceBookProvider = new firebase.auth.FacebookAuthProvider();
+
+    firebase.auth()
+      .signInWithPopup(faceBookProvider)
+      .then(result => {
+        firebase.auth().onAuthStateChanged(user => {
+          if(user) {
+            user.getIdTokenResult().then((token) => {
+              console.log(token.token)
+              asyncLogin(token.token).then(result => {
+                window.location = '/'
+              })
+              .catch(error => {
+                console.log(error)
+              })
+            })
+            .catch(error => {
+              console.error(error);
+            })
+          }
+        })
+      }).catch(err => {
+        console.error(err);
+      });
+  };
+
   const logout = event => {
     event.preventDefault();
     firebase.auth().signOut();
@@ -315,7 +344,7 @@ const SignIn = props => {
                   <Grid item>
                     <Button
                       color="primary"
-                      onClick={handleSignIn}
+                      onClick={handleFaceBookSignIn}
                       size="large"
                       variant="contained"
                     >
