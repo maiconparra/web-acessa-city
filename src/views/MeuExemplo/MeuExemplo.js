@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   Card,
   Form,
@@ -65,6 +67,13 @@ const styles = makeStyles({
 
 const MeuExemplo = props => {
 
+<<<<<<< HEAD
+=======
+  const { history } = props;
+
+  const { register, handleSubmit, watch, errors } = useForm();
+
+>>>>>>> 5f7f2ea... Implementando Report
   const [location, setLocation] = useState({
     latitude: '',
     longitude: ''
@@ -85,7 +94,14 @@ const MeuExemplo = props => {
       (error) => {
         console.log("ERRO! " + error.message)
       }
+<<<<<<< HEAD
     )
+=======
+    );
+
+
+  }, []);
+>>>>>>> 5f7f2ea... Implementando Report
 
 
   }, [])
@@ -116,11 +132,10 @@ const MeuExemplo = props => {
   function loadReport(event) {
     event.preventDefault();
 
-    setClicked({
-      check: true
-    });
+    history.push('/criar-denuncia');
   }
 
+<<<<<<< HEAD
   function onCreateReport(event) {
     event.preventDefault();
 
@@ -131,7 +146,48 @@ const MeuExemplo = props => {
 
   return (
     <Report reportId={'85615f64-3d93-4e4f-bfb5-4960ff62d22f'}></Report>   
+=======
+  const onCreateReport = data => console.log(data);
+
+  return (
+    <div style={{ height: '100vh', width: '100%' }}>
+      <GoogleMapReact
+        bootstrapURLKeys={'AIzaSyDBxtpy4QlnhPfGK7mF_TnbLXooEXVPy_0'}
+        defaultCenter={defaultProps.center}
+        defaultZoom={defaultProps.zoom}
+      >
+        <Button
+          lat={location.latitude}
+          lng={location.longitude}
+          text="My Marker"
+          onClick={teste}
+        >
+          DENÚNCIA
+        </Button>
+      </GoogleMapReact>
+      <Grid
+        className={style.gridButton}
+        item
+        lg={7}
+        xs={12}
+      >
+        <div style={{ alignSelf: 'left' }}>
+          <Button
+            style={{ position: 'absolute', backgroundColor: '#fff' }}
+            onClick={loadReport}
+            text="My Marker"
+          >
+            DENÚNCIAR
+          </Button>
+        </div>
+      </Grid>
+    </div>
+>>>>>>> 5f7f2ea... Implementando Report
   )
 }
 
-export default MeuExemplo;
+MeuExemplo.propTypes = {
+  history: PropTypes.object
+};
+
+export default withRouter(MeuExemplo);

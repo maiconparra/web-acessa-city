@@ -10,9 +10,13 @@ import {
   CardHeader,
   CardContent,
   Button,
+<<<<<<< HEAD
   Select,
   MenuItem,
   FormHelperText,
+=======
+  NativeSelect,
+>>>>>>> 5f7f2ea... Implementando Report
   Divider,
   Table,
   TableBody,
@@ -43,12 +47,23 @@ import fileUpload from 'utils/AWS-S3';
 import currentUser from '../../../utils/AppUser';
 
 
+import currentUser from '../../../utils/AppUser';
+
+
 
 import API from '../../../utils/API';
+<<<<<<< HEAD
 import Category from 'views/Category';
 
 /* import { ReportCommentaries } from '../../../components';
 import ReportInteractionHistory from '../../ReportInteractionHistory'; */
+=======
+
+/* import { ReportCommentaries } from '../../../components';
+import ReportInteractionHistory from '../../ReportInteractionHistory'; */
+import GoogleMapReact from 'google-map-react';
+import { RaceOperator } from 'rxjs/internal/observable/race';
+>>>>>>> 5f7f2ea... Implementando Report
 
 
 const styles = makeStyles((theme) => ({
@@ -103,7 +118,14 @@ const CreateReport = props => {
 
   const { history } = props;
 
+<<<<<<< HEAD
  
+=======
+  const [location, setLocation] = useState({
+    latitude: '',
+    longitude: ''
+  });
+>>>>>>> 5f7f2ea... Implementando Report
 
   const [longitude, setLongitude] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -126,10 +148,15 @@ const CreateReport = props => {
   }, []);
 
   const teste = () => {
+<<<<<<< HEAD
     console.log('State longitude: ' + longitude + 'State latidude: ' + latitude);
   };
 
   teste();
+=======
+    console.log("State longitude: " + longitude + "State latidude: " + latitude)
+  };
+>>>>>>> 5f7f2ea... Implementando Report
 
   const style = styles();
 
@@ -137,6 +164,7 @@ const CreateReport = props => {
     check: false
   });
 
+<<<<<<< HEAD
   const [ category, setCategory ] = useState([{
     id: '',
     name: '',
@@ -149,6 +177,22 @@ const CreateReport = props => {
 
 
 
+=======
+  const [ category, setCategory ] = useState([]);
+  const [ user, setUser ] = useState('');
+  const [ status, setStatus ] = useState([]);
+  const [ urgency, setUrgency ] = useState([]);
+
+  const defaultProps = {
+    center: {
+      lat: 59.95,
+      lng: 30.33
+    },
+    zoom: 11
+  };
+
+
+>>>>>>> 5f7f2ea... Implementando Report
   currentUser().then(result => {
     setUser(
       result.id
@@ -187,8 +231,11 @@ const CreateReport = props => {
         setCategory(
           result.data
         );
+<<<<<<< HEAD
 
         console.log('Category:  ' + JSON.stringify(result.data));
+=======
+>>>>>>> 5f7f2ea... Implementando Report
       })
       .catch(err => {
         window.alert(err.message);
@@ -197,6 +244,7 @@ const CreateReport = props => {
 
 
   const [ report, setReport ] = useState({
+<<<<<<< HEAD
     values: {}
   });
 
@@ -214,6 +262,44 @@ const CreateReport = props => {
       console.log('Erro ao fazer upload da foto: ' + err.message);
     });
    
+=======
+    values: {
+      userId: user,
+      reportStatusId: status,
+      urgencyLevelId: urgency,
+      longitude: location.longitude,
+      latitude: location.latitude,
+      categoryId: '0979e26b-15ae-412e-8382-bfaa5b68a2a3',
+      cityId: '7ae590f1-c6a4-4bb3-91bf-1e82ea45bb4b',
+      description: '',
+      title: ''
+    }
+  });
+
+  function handleChange(event){
+    event.persist();
+
+    setReport({
+      ...report,
+      values: {
+        ...report.values,
+        [event.target.name]: event.target.value
+      }
+    });
+
+  }
+
+  useEffect(() => {
+    setReport({
+      
+    });
+  }, []);
+
+
+  function handleTakePhoto(dataUri) {
+    // Do stuff with the photo...
+    console.log('takePhoto');
+>>>>>>> 5f7f2ea... Implementando Report
   }
 
   function handleChange(event){
@@ -233,8 +319,12 @@ const CreateReport = props => {
         accuracy: 10
       }
 
+<<<<<<< HEAD
     });
     console.log( ' User: ' + user + 'Urgency Level:  ' + report.values.urgencyLevelId + '  Status:  ' + report.values.reportStatusId + ' CategoryId: ' + report.values.categoryId +' Description ' + report.values.description + ' Title ' + report.values.title + ' Url da Foto: ' + urlPhoto);
+=======
+    
+>>>>>>> 5f7f2ea... Implementando Report
   }
   
   function handleTakePhoto(dataUri) {
@@ -250,6 +340,7 @@ const CreateReport = props => {
   function onCreateReport(event) {
     event.preventDefault();
 
+<<<<<<< HEAD
     API.post('/report', report.values)
       .then(result => {
         
@@ -261,6 +352,11 @@ const CreateReport = props => {
         });
        
         
+=======
+    API.post('/report', report)
+      .then(result => {
+
+>>>>>>> 5f7f2ea... Implementando Report
       }).catch(err => {
         window.alert(err.message);
       });
@@ -275,6 +371,7 @@ const CreateReport = props => {
       <Grid
         className={style.gridForm}
       >
+<<<<<<< HEAD
         <form className = { style.root } onSubmit={onCreateReport}>
           <FormControl className={style.formControl}>
             <MobileView>
@@ -358,6 +455,66 @@ const CreateReport = props => {
               </Button>
             </Grid>
           </FormControl>
+=======
+        <form onSubmit={onCreateReport}>
+          <MobileView>
+            <Camera
+              onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
+              idealResolution={{ width: 1920, height: 1080 }}
+            />
+          </MobileView>
+          <TextField
+            fullWidth
+            label="Titulo da Denúncia"
+            name="title"
+            type="text"
+            onChange = {handleChange}
+            value = {report.title}
+            variant="outlined"
+          />
+          
+          <TextField
+            fullWidth
+            label="Descrição da Denúncia"
+            name="title"
+            type="text"
+            onChange = {handleChange}
+            value = {report.description}
+            variant="outlined"
+          />
+
+          <NativeSelect>
+            {
+              category.map(category => (
+                <option 
+                  key = {category.id} 
+                >{category.name}</option>
+              ))
+            }
+          </NativeSelect>
+          <BrowserView>
+            <input type="file" accept="image/*" capture="camera"/>
+          </BrowserView>
+          <Grid
+            className={{ marginTop: "10px" }}
+          >
+            <Button
+              type="submit"
+              className={{ alignSelf: "rigth", marginTop: "35px" }}
+              color="primary"
+            >
+              ENVIAR
+            </Button>
+            <Button
+              type="submit"
+              className={{ alignSelf: "left", marginTop: "35px" }}
+              color="primary"
+            >
+              CANCELAR
+            </Button>
+          </Grid>
+          
+>>>>>>> 5f7f2ea... Implementando Report
         </form>
       </Grid>
 
