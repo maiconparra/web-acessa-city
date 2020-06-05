@@ -63,6 +63,7 @@ const LatestOrders = props => {
     API.get('/report')
       .then(result => {
 
+
         setReport(result.data);
         
       }).catch(err => {
@@ -70,11 +71,14 @@ const LatestOrders = props => {
       });
   },[report]);
 
+
   const loadCreatRepots = event => {
     event.preventDefault();
 
     window.location = '/criar-denuncia';
   };
+
+
 
   return (
     <Card

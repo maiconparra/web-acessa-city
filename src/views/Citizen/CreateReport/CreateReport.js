@@ -47,6 +47,7 @@ import currentUser from '../../../utils/AppUser';
 import API from '../../../utils/API';
 import Category from 'views/Category';
 
+
 /* import { ReportCommentaries } from '../../../components';
 import ReportInteractionHistory from '../../ReportInteractionHistory'; */
 
@@ -137,6 +138,7 @@ const CreateReport = props => {
     check: false
   });
 
+
   const [ category, setCategory ] = useState([{
     id: '',
     name: '',
@@ -188,6 +190,7 @@ const CreateReport = props => {
         );
 
         console.log('Category:  ' + JSON.stringify(result.data));
+
       })
       .catch(err => {
         window.alert(err.message);
@@ -250,10 +253,8 @@ const CreateReport = props => {
 
     API.post('/report', report.values)
       .then(result => {
-
         
-        
-    
+  
         API.post('/report-attachment', {
           reportId: result.data.id,
           mediaType: 'png',
@@ -261,6 +262,7 @@ const CreateReport = props => {
         });
         
         
+
       }).catch(err => {
         window.alert(err.message);
       });
@@ -276,7 +278,9 @@ const CreateReport = props => {
         className={style.gridForm}
       >
         <form className = { style.root } onSubmit={onCreateReport}>
+
           <FormControl className={style.formControl}>
+
             <MobileView>
               <Camera
                 onTakePhoto={(dataUri) => { handleTakePhoto(dataUri); }}
@@ -291,7 +295,9 @@ const CreateReport = props => {
                 name="title"
                 type="text"
                 onChange = {handleChange}
+
                 value = {report.values.title}
+
                 variant="outlined"
               />
             </Grid>
@@ -304,21 +310,23 @@ const CreateReport = props => {
                 type="text"
                 placeholder = "Descrição da Denúncia"
                 onChange = {handleChange}
+
                 value = {report.values.description}
+
                 variant="outlined"
               />
             </Typography>
-            
             <Typography className = { style.root }>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 name = "categoryId"
                 onChange = { handleChange }
+
               >
                 {
                   category.map(category => (
-                    <MenuItem 
+                    <MenuItem
                       value = { category.id } 
                     >{category.name }</MenuItem>
                   ))
@@ -333,6 +341,7 @@ const CreateReport = props => {
                 className={style.input} 
                 id="icon-button-file" 
                 type="file"
+
               />
               <label htmlFor="icon-button-file">
                 <IconButton color="primary" aria-label="upload picture" component="span">
@@ -359,6 +368,7 @@ const CreateReport = props => {
               </Button>
             </Grid>
           </FormControl>
+
         </form>
       </Grid>
 
