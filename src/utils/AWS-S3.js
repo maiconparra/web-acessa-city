@@ -28,7 +28,7 @@
         
               retorno.fotoUrl= data.location;
               retorno.sucesso = true;
-              retorno.mensagem = 'Arquivo atualizado com sucesso'          
+              retorno.mensagem = 'Arquivo atualizado com sucesso';          
 
             resolve(retorno);
 

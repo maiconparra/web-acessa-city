@@ -53,8 +53,6 @@ const statusColors = {
 
 const LatestOrders = props => {
 
-  const { history } = props;
-
   const { className, ...rest } = props;
 
   const classes = useStyles();
@@ -64,13 +62,9 @@ const LatestOrders = props => {
   useEffect(() => {
     API.get('/report')
       .then(result => {
-<<<<<<< HEAD
+
         setReport(result.data);
-=======
-        setReport(
-          result.data
-        );
->>>>>>> 5f7f2ea... Implementando Report
+        
       }).catch(err => {
         window.alert(err.message);
       });
