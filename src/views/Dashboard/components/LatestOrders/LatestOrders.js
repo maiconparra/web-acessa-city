@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -21,7 +21,8 @@ import {
 } from '@material-ui/core';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 
-import mockData from './data';
+import API from '../../../../utils/API';
+
 import { StatusBullet } from 'components';
 
 const useStyles = makeStyles(theme => ({
@@ -51,11 +52,29 @@ const statusColors = {
 };
 
 const LatestOrders = props => {
+
+  const { history } = props;
+
   const { className, ...rest } = props;
 
   const classes = useStyles();
 
-  const [orders] = useState(mockData);
+  const [report, setReport] = useState([]);
+
+  useEffect(() => {
+    API.get('/report')
+      .then(result => {
+        setReport(result.data);
+      }).catch(err => {
+        window.alert(err.message);
+      });
+  },[report]);
+
+  const loadCreatRepots = event => {
+    event.preventDefault();
+
+    window.location = '/criar-denuncia';
+  };
 
   return (
     <Card
@@ -68,11 +87,12 @@ const LatestOrders = props => {
             color="primary"
             size="small"
             variant="outlined"
+            onClick = { loadCreatRepots }
           >
-            New entry
+            Nova Denúnica
           </Button>
         }
-        title="Latest Orders"
+        title="Denúncias Recentes"
       />
       <Divider />
       <CardContent className={classes.content}>
@@ -81,8 +101,8 @@ const LatestOrders = props => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Order Ref</TableCell>
-                  <TableCell>Customer</TableCell>
+                  <TableCell>Titulo</TableCell>
+                  <TableCell>Descrição</TableCell>
                   <TableCell sortDirection="desc">
                     <Tooltip
                       enterDelay={300}
@@ -92,32 +112,32 @@ const LatestOrders = props => {
                         active
                         direction="desc"
                       >
-                        Date
+                        Data
                       </TableSortLabel>
                     </Tooltip>
                   </TableCell>
-                  <TableCell>Status</TableCell>
+                  <TableCell>Estatus</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders.map(order => (
+                {report.map(report => (
                   <TableRow
                     hover
-                    key={order.id}
+                    key={report.id}
                   >
-                    <TableCell>{order.ref}</TableCell>
-                    <TableCell>{order.customer.name}</TableCell>
+                    <TableCell>{report.title}</TableCell>
+                    <TableCell>{report.description}</TableCell>
                     <TableCell>
-                      {moment(order.createdAt).format('DD/MM/YYYY')}
+                      {moment(report.creationData).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
                       <div className={classes.statusContainer}>
                         <StatusBullet
                           className={classes.status}
-                          color={statusColors[order.status]}
+                          color={statusColors[report.reportStatus.description]}
                           size="sm"
                         />
-                        {order.status}
+                        {report.reportStatus.description}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -142,7 +162,8 @@ const LatestOrders = props => {
 };
 
 LatestOrders.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  history: PropTypes.object
 };
 
 export default LatestOrders;

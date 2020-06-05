@@ -34,18 +34,18 @@ firebase.auth().onIdTokenChanged(function(user) {
     // })
   }
 });
-// firebase.auth().onAuthStateChanged(function(user) {
-//   if (user) {
-//     user.getIdToken()
-//       .then((token) => {
-//         console.log(token);
-//         // login(token)
-//       })    
-//     // ...
-//   } else {
-//     logout()
-//   }
-// });
+ firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    user.getIdToken()
+      .then((token) => {
+        console.log(token);
+        // login(token)
+      })    
+      // ...
+  } else {
+    logout();
+  }
+});
 
 validate.validators = {
   ...validate.validators,
